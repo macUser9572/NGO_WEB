@@ -58,6 +58,15 @@ class HomeDesktop extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+                Text(
+                  "Jawdaw Re Jaat togai, Hangarai Gat Togai !",
+                  style: GoogleFonts.inter(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: AllColors.primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: width > 900 ? 828 : width * 0.9,
                   child: Text(
@@ -114,10 +123,95 @@ class HomeMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AllColors.primaryColor,
-      body: const Center(
-        child: Text(
-          'Mobile layout',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+      appBar: AppBar(
+        backgroundColor: AllColors.primaryColor,
+        elevation: 0,
+        title: Row(
+          children: [
+            const SizedBox(width: 6),
+            Text(
+              "BCS",
+              style: GoogleFonts.poppins(
+                color: AllColors.primaryColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: Icon(Icons.menu, color: Colors.black),
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+
+            /// Title
+            Text(
+              "Ju Ju !",
+              style: GoogleFonts.poppins(
+                fontSize: 36,
+                fontWeight: FontWeight.w700,
+                color: Colors.green.shade800,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 8),
+
+            /// Subtitle
+            Text(
+              "Jadwar Re Jaat Cogi, Hangarai Gat Togi !",
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 20),
+
+            /// Description
+            Text(
+              "Bangalore Chakma Society (BCS) is a collective of individuals "
+              "from the Chakma community living in Bangalore. Every Chakma "
+              "residing in the city is considered a part of this community. "
+              "Although not a formal organization with a fixed hierarchy, "
+              "BCS operates through mutual understanding, cooperation, "
+              "and respect among its members.\n\n"
+              "Most members are professionals working in corporate or "
+              "government sectors, contributing their skills and experience "
+              "to support the community’s growth. The primary objective of "
+              "BCS is to preserve, promote, and celebrate Chakma culture and "
+              "traditions within the urban environment of Bangalore. "
+              "The community also guides and supports students, encouraging "
+              "their active participation in various events and initiatives "
+              "organized by BCS.",
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                height: 1.6,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.justify,
+            ),
+
+            const SizedBox(height: 30),
+
+            /// Image section
+            Image.asset(
+              "assets/image/homeimage.png", // <-- update path if needed
+              fit: BoxFit.contain,
+            ),
+
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );

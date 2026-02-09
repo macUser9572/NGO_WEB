@@ -7,11 +7,11 @@ class NavItem {
 final List<NavItem> navItems = [
   NavItem('Home', 0),
   NavItem('About Us', 1),
-  NavItem('Events', 2),
-  NavItem('Members', 3),
-  NavItem('Student Body', 4),
-  NavItem('OurInitiatives', 5),
-  NavItem('Contact', 6),
+  NavItem('Events', 3),
+  NavItem('Members', 4),
+  NavItem('Student Body', 5),
+  NavItem('OurInitiatives', 6),
+  NavItem('Contact',7 ),
 ];
 
 class ProductSubItem {
@@ -31,17 +31,17 @@ int sectionIndexForNav(int navIndex) {
     case 1:
       return 1;
     case 2:
-      return 2;
-    case 3:
       return 3;
-    case 4:
+    case 3:
       return 4;
-    case 5:
+    case 4:
       return 5;
-      case 6:
+    case 5:
       return 6;
-      case 7:
+      case 6:
       return 7;
+      case 7:
+      return 8;
     default:
       return 0;
   }

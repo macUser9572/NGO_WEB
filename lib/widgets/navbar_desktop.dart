@@ -68,20 +68,47 @@ class NavbarDesktop extends StatelessWidget {
   final current = context.watch<ScrollState>().currentSection;
 
   final bool isActive =
-      (index == 0 && current == 0) ||                  // Home
-      (index == 1 && (current == 1 || current == 2)) ||// About
-      (index == 2 && current == 3) ||                  // Events
-      (index == 3 && current == 4) ||                  // Student-Body
-      (index == 4 && current == 5) ||                  // Members
-      (index == 5 && current == 6) ||                  // Extra (if any)
-      (index == 6 && current == 7) ||                  // Initiatives
-      (index == 7 && current == 8);                    // ✅ Reach us
+      (index == 0 && current == 0) ||                   // Home
+      (index == 1 && (current == 1 || current == 2)) || // About (2 pages)
+      (index == 3 && current == 3) ||                   // Events
+      (index == 4 && current == 4) ||                   // Student-Body
+      (index == 5 && current == 5) ||                   // Members
+      (index == 6 && current == 6) ||                   // Initiatives
+      (index == 7 && current == 7);                     // Reach us
+
+  // 🔑 MAP NAVBAR → PAGE INDEX (THIS FIXES EVERYTHING)
+  int pageIndex;
+  switch (index) {
+    case 0:
+      pageIndex = 0; // Home
+      break;
+    case 1:
+      pageIndex = 1; // About page 1
+      break;
+    case 3:
+      pageIndex = 3; // Events
+      break;
+    case 4:
+      pageIndex = 4; // Student-Body
+      break;
+    case 5:
+      pageIndex = 5; // Members
+      break;
+    case 6:
+      pageIndex = 6; // Initiatives
+      break;
+    case 7:
+      pageIndex = 7; // Reach us
+      break;
+    default:
+      pageIndex = 0;
+  }
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8),
     child: InkWell(
       borderRadius: BorderRadius.circular(40),
-      onTap: () => scrollToSection(context, index),
+      onTap: () => scrollToSection(context, pageIndex), // ✅ FIXED
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
@@ -102,3 +129,41 @@ class NavbarDesktop extends StatelessWidget {
   );
 }
 }
+//   Widget _navItem(BuildContext context, String title, int index) {
+//   final current = context.watch<ScrollState>().currentSection;
+
+//   final bool isActive =
+//       (index == 0 && current == 0) ||                  // Home
+//       (index == 1 && (current == 1 || current == 2)) ||// About
+//       (index == 3 && current == 3) ||                  // Events
+//       (index == 4 && current == 4) ||                  // Student-Body
+//       (index == 5 && current == 5) ||                  // Members
+//       (index == 6 && current == 6) ||                  // Extra (if any)
+//       (index == 7 && current == 7) ||                  // Initiatives
+//       (index == 8 && current == 8);                    // ✅ Reach us
+
+//   return Padding(
+//     padding: const EdgeInsets.symmetric(horizontal: 8),
+//     child: InkWell(
+//       borderRadius: BorderRadius.circular(40),
+//       onTap: () => scrollToSection(context, index),
+//       child: AnimatedContainer(
+//         duration: const Duration(milliseconds: 250),
+//         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+//         decoration: BoxDecoration(
+//           color: isActive ? Colors.white : Colors.transparent,
+//           borderRadius: BorderRadius.circular(40),
+//         ),
+//         child: Text(
+//           title,
+//           style: GoogleFonts.inter(
+//             fontSize: 18,
+//             fontWeight: FontWeight.w500,
+//             color: AllColors.primaryColor,
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+// }
