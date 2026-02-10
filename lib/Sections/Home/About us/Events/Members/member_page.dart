@@ -49,7 +49,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Members",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 150,
+                      fontSize: 80,
                       fontWeight: FontWeight.w800,
                       height: 1,
                     ),
@@ -107,6 +107,7 @@ class _DesktopLayout extends StatelessWidget {
                         horizontal: 28,
                         vertical: 16,
                       ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
                     ),
                     onPressed: () {
                       Navigator.push(

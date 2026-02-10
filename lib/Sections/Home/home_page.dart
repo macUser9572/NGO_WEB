@@ -49,11 +49,10 @@ class HomeDesktop extends StatelessWidget {
                 const SizedBox(height: 120),
                 Text(
                   'Ju Ju !',
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     color: AllColors.primaryColor,
-                    fontSize: 150,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w800,
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold,
                     height: 1,
                   ),
                 ),
@@ -206,7 +205,7 @@ class HomeMobile extends StatelessWidget {
 
             /// Image section
             Image.asset(
-              "assets/image/homeimage.png", // <-- update path if needed
+              "assets/image/homeimage.png",
               fit: BoxFit.contain,
             ),
 

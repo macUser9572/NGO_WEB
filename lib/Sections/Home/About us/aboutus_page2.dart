@@ -1,427 +1,169 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class AboutusPage2 extends StatelessWidget {
   const AboutusPage2({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveBuilder(
-      builder: (context, sizing) {
-        if (sizing.deviceScreenType == DeviceScreenType.desktop) {
-          return const _DesktopLayout();
-        }
-        return const _MobileLayout();
-      },
-    );
-  }
-}
+    final size = MediaQuery.of(context).size;
 
-// =============================== DESKTOP LAYOUT ===============================
-
-class _DesktopLayout extends StatelessWidget {
-  const _DesktopLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 80),
-      color: AllColors.fourthColor,
+      width: size.width,
+      height: size.height,
+      color: const Color(0xFFEFFAF4), // light green background
+      padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ================= LEFT SIDE =================
           Expanded(
-            flex: 6,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _sectionTitle("Vision"),
-                const SizedBox(height: 10),
-                _sectionText(
-                  "To preserve and carry forward the\n"
-                  "legacy of Chakma culture and\n"
-                  "tradition in cities, while embracing\n"
-                  "the changes of modern times.",
-                ),
-                const SizedBox(height: 80),
-                _sectionTitle("Mission"),
-                const SizedBox(height: 10),
-                _sectionText(
-                  "To empower the young generation to\n"
-                  "learn, share their knowledge, and\n"
-                  "develop into confident contributors\n"
-                  "to society.",
-                ),
-              ],
+            flex: 5,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _leftTitle("Vision"),
+                  const SizedBox(height: 12),
+                  _leftText(
+                    "To preserve and carry forward the legacy of Chakma culture and\n""tradition in cities, while embracing the changes of modern times.",
+                  ),
+                  const SizedBox(height: 60),
+                  _leftTitle("Mission"),
+                  const SizedBox(height: 12),
+                  _leftText(
+                    "To empower the young generation to learn, share their knowledge,\n"
+                    "and develop into confident contributors to society.",
+                  ),
+                ],
+              ),
             ),
           ),
 
           // ================= DIVIDER =================
           Container(
-            height: 800,
+            height: 600,
             width: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 80),
             color: Colors.grey.shade400,
           ),
 
           // ================= RIGHT SIDE =================
           Expanded(
-            flex: 6,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Values",
-                  style: GoogleFonts.inter(
-                    fontSize: 120,
-                    fontWeight: FontWeight.w600,
-                    color: AllColors.primaryColor,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Unity & Brotherhood",
-                  style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AllColors.thirdColor,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Believe in growing not just as a community, but together with other cultures and identities, building bridges through respect, cooperation, and shared initiatives.",
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AllColors.primaryColor,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Cultural Preservation",
-                  style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AllColors.thirdColor,
-                  ),
-                ),
-                const SizedBox(height: 5),
+            flex: 7,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 60),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _valuesTitle("Values"),
+                  const SizedBox(height: 24),
 
-                Text(
-                  "Upholding and celebrating the rich heritage of Chakma culture.",
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AllColors.primaryColor,
+                  _valueItem(
+                    "Unity & Brotherhood",
+                    "Believe in growing not just as a community, but together with other cultures and identities, building bridges through respect, cooperation, and shared initiatives.",
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Inclusiveness",
-                  style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AllColors.thirdColor,
+
+                  _valueItem(
+                    "Cultural Preservation",
+                    "Upholding and celebrating the rich heritage of Chakma culture.",
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Creating a welcoming environment where every individual feels valued and heard.",
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AllColors.primaryColor,
+
+                  _valueItem(
+                    "Inclusiveness",
+                    "Creating a welcoming environment where every individual feels valued and heard.",
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Growth & Learning",
-                  style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AllColors.thirdColor,
+
+                  _valueItem(
+                    "Growth & Learning",
+                    "Encouraging continuous learning, knowledge-sharing, and personal development.",
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Encouraging continuous learning, knowledge-sharing, and personal development.",
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AllColors.primaryColor,
+
+                  _valueItem(
+                    "Service to Society",
+                    "Working collectively to uplift our community and contribute positively to the broader society.",
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Service to Society",
-                  style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AllColors.thirdColor,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Working collectively to uplift our community and contribute positively to the broader society.",
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: AllColors.primaryColor,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          // Expanded(
-          //   flex: 5,
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       _sectionTitle("Values"),
-          //       const SizedBox(height: 20),
-          //       _sectionText(
-          //         "To empower the young generation to learn, "
-          //         "share their knowledge, and develop into "
-          //         "confident contributors to society.",
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
   }
 
-  // ================= REUSABLE WIDGETS =================
+  // ================= LEFT STYLES =================
 
-  Widget _sectionTitle(String title) {
+  Widget _leftTitle(String text) {
     return Text(
-      title,
+      text,
+      textAlign: TextAlign.center,
       style: GoogleFonts.inter(
-        fontSize: 130,
-        fontWeight: FontWeight.w600,
+        fontSize: 80,
+        fontWeight: FontWeight.w800,
         color: AllColors.primaryColor,
-        height: 1,
       ),
     );
   }
 
-  Widget _sectionText(String text) {
+  Widget _leftText(String text) {
     return SizedBox(
-      width: 480,
+      width: 320,
       child: Text(
         text,
+        textAlign: TextAlign.center,
         style: GoogleFonts.inter(
-          fontSize: 26,
-          fontWeight: FontWeight.w400,
+          fontSize: 16,
+          height: 1.6,
           color: AllColors.primaryColor,
-          height: 1.5,
         ),
       ),
     );
   }
-}
 
-// =============================== MOBILE LAYOUT ===============================
+  // ================= RIGHT STYLES =================
 
-class _MobileLayout extends StatelessWidget {
-  const _MobileLayout({super.key});
+  Widget _valuesTitle(String text) {
+    return Text(
+      text,
+      style: GoogleFonts.inter(
+        fontSize: 80,
+        fontWeight: FontWeight.w800,
+        color:AllColors.primaryColor,
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AllColors.fourthColor,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Vision",
+  Widget _valueItem(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: AllColors.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 6),
+          SizedBox(
+            width: 520,
+            child: Text(
+              description,
               style: GoogleFonts.inter(
-                fontSize: 120,
-                fontWeight: FontWeight.w800,
+                fontSize: 16,
+                height: 1.6,
                 color: AllColors.primaryColor,
               ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              "To preserve and carry forward the legacy "
-              "of Chakma culture and tradition.",
-              style: GoogleFonts.inter(fontSize: 16),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:ngo_website/constraints/all_colors.dart';
-// import 'package:responsive_builder/responsive_builder.dart';
-
-// class AboutusPage2 extends StatelessWidget {
-//   const AboutusPage2({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ResponsiveBuilder(
-//       builder: (context, sizing) {
-//         if (sizing.deviceScreenType == DeviceScreenType.desktop) {
-//           return const _DesktopLayout();
-//         }
-//         return const _MobileLayout();
-//       },
-//     );
-//   }
-// }
-
-// //=============================== DESKTOP LAYOUT ============================
-
-// class _DesktopLayout extends StatelessWidget {
-//   const _DesktopLayout({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: double.infinity,
-//       height: 900,
-//       padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 80),
-//       color: AllColors.fourthColor,
-//       child: Row(
-//         crossAxisAlignment: CrossAxisAlignment.stretch,
-//         children: [
-//           // ================= LEFT SIDE =================
-//           Expanded(
-//             flex: 6,
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 // -------- Vision --------
-//                 Text(
-//                   "Vision",
-//                   style: GoogleFonts.inter(
-//                     fontSize: 130,
-//                     fontWeight: FontWeight.w600,
-//                     color: AllColors.primaryColor,
-//                     height: 1,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 12),
-//                 SizedBox(
-//                   width: 480,
-//                   child: Text(
-//                     "To preserve and carry forward the legacy of Chakma culture and tradition in cities, while embracing the changes of modern times.",
-//                     style: GoogleFonts.inter(
-//                       fontSize: 25,
-//                       fontWeight: FontWeight.w400,
-//                       color: AllColors.primaryColor,
-//                       height: 1.5,
-//                     ),
-//                   ),
-//                 ),
-
-//                 const Spacer(),
-
-//                 // -------- Mission --------
-//                 Text(
-//                   "Mission",
-//                   style: GoogleFonts.inter(
-//                     fontSize: 130,
-//                     fontWeight: FontWeight.w600,
-//                     color: AllColors.primaryColor,
-//                     height: 1,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 12),
-//                 SizedBox(
-//                   width: 480,
-//                   child: Text(
-//                     "To empower the young generation to learn, share their knowledge, and develop into confident contributors to society.",
-//                     style: GoogleFonts.inter(
-//                       fontSize: 26,
-//                       fontWeight: FontWeight.w400,
-//                       color: AllColors.primaryColor,
-//                       height: 1.5,
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-
-//           // ================= RIGHT SIDE =================
-//           Expanded(
-//             flex: 5,
-//             child: Center(
-//               child: Column(
-//                 mainAxisSize: MainAxisSize.min,
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     "Values",
-//                     style: GoogleFonts.inter(
-//                       fontSize: 130,
-//                       fontWeight: FontWeight.w600,
-//                       color: AllColors.primaryColor,
-//                       height: 1,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 20),
-//                   SizedBox(
-//                     width: 480,
-//                     child: Text(
-//                       "To empower the young generation to learn, share their knowledge, and develop into confident contributors to society.",
-//                       style: GoogleFonts.inter(
-//                         fontSize: 26,
-//                         fontWeight: FontWeight.w400,
-//                         color: AllColors.primaryColor,
-//                         height: 1.5,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// //====================== MOBILE LAYOUT ==========================
-// class _MobileLayout extends StatelessWidget {
-//   const _MobileLayout();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AllColors.fourthColor,
-//       body: Padding(
-//         padding: const EdgeInsets.all(24),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               "Vision",
-//               style: GoogleFonts.inter(
-//                 fontSize: 48,
-//                 fontWeight: FontWeight.w800,
-//               ),
-//             ),
-//             const SizedBox(height: 12),
-//             const Text("Mobile layout "),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

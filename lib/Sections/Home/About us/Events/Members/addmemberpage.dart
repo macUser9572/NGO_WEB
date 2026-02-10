@@ -156,6 +156,8 @@ class _AddMemberPageState extends State<AddMemberPage> {
                               value: "Female",
                               child: Text("Female"),
                             ),
+                            DropdownMenuItem(value: "Children",child: Text("Childern")),
+
                             DropdownMenuItem(
                               value: "Others",
                               child: Text("Others"),

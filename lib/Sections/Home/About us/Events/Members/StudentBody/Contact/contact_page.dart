@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ContactPage extends StatelessWidget {
@@ -23,9 +25,29 @@ class ContactPage extends StatelessWidget {
 }
 
 //================================DESKTOPLAYOUT===========================
-
-class _DesktopLayout extends StatelessWidget {
+class _DesktopLayout extends StatefulWidget {
   const _DesktopLayout({super.key});
+
+  @override
+  State<_DesktopLayout> createState() => _DesktopLayoutState();
+}
+
+class _DesktopLayoutState extends State<_DesktopLayout> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
+
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +58,11 @@ class _DesktopLayout extends StatelessWidget {
         width: size.width,
         height: size.height,
         child: Container(
-          color: AllColors.fourthColor,
+          color: AllColors.secondaryColor,
           child: Stack(
             children: [
-              // LEFT FORM
+
+              // ================= LEFT FORM =================
               Positioned(
                 top: size.height * 0.15,
                 left: size.width * 0.06,
@@ -47,7 +70,7 @@ class _DesktopLayout extends StatelessWidget {
                   width: size.width * 0.38,
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
-                    color: Color(0xFFD9F1E6),
+                    color: const Color(0xFFD9F1E6),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
@@ -72,7 +95,7 @@ class _DesktopLayout extends StatelessWidget {
                       const SizedBox(height: 25),
 
                       _label("Your Name"),
-                      _input(),
+                      _input(controller: nameController),
 
                       const SizedBox(height: 18),
                       Row(
@@ -80,14 +103,20 @@ class _DesktopLayout extends StatelessWidget {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [_label("Contact Number"), _input()],
+                              children: [
+                                _label("Contact Number"),
+                                _input(controller: phoneController),
+                              ],
                             ),
                           ),
                           const SizedBox(width: 20),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [_label("Mail"), _input()],
+                              children: [
+                                _label("Mail"),
+                                _input(controller: emailController),
+                              ],
                             ),
                           ),
                         ],
@@ -101,10 +130,11 @@ class _DesktopLayout extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(3),
                         ),
-                        child: const TextField(
+                        child: TextField(
+                          controller: messageController,
                           maxLines: null,
                           expands: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: "Write your Message here",
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(12),
@@ -113,7 +143,7 @@ class _DesktopLayout extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 25),
-                      SizedBox(
+                    SizedBox(
                         width: 100,
                         height: 40,
                         child: ElevatedButton(
@@ -123,7 +153,7 @@ class _DesktopLayout extends StatelessWidget {
                               borderRadius: BorderRadius.circular(3),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: _submitForm,
                           child: Text(
                             "Send",
                             style: GoogleFonts.inter(
@@ -139,8 +169,8 @@ class _DesktopLayout extends StatelessWidget {
                 ),
               ),
 
-              // RIGHT CONTENT (YOUR EXISTING SECTION)
-              Positioned(
+              // ================= RIGHT CONTENT =================
+                  Positioned(
                 top: size.height * 0.20,
                 right: size.width * 0.05,
                 child: SizedBox(
@@ -151,16 +181,16 @@ class _DesktopLayout extends StatelessWidget {
                       Text(
                         "Reach Us",
                         style: GoogleFonts.inter(
-                          fontSize: 130,
+                          fontSize: 80,
                           fontWeight: FontWeight.w800,
                           color: AllColors.primaryColor,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 5),
                       Text(
                         "Need help or have a question?",
                         style: GoogleFonts.inter(
-                          fontSize: 32,
+                          fontSize: 24,
                           fontWeight: FontWeight.w800,
                           color: AllColors.primaryColor,
                         ),
@@ -180,39 +210,12 @@ class _DesktopLayout extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-
-                      // Row(
-                      //   crossAxisAlignment: CrossAxisAlignment.start,
-                      //   children: [
-                      //     SvgPicture.asset(
-                      //       'assets/icons/Signpost.svg',
-                      //       width: 20,
-                      //       height: 20,
-                      //       colorFilter: const ColorFilter.mode(
-                      //         Colors.black87,
-                      //         BlendMode.srcIn,
-                      //       ),
-                      //     ),
-                      //     const SizedBox(width: 10),
-                      //     Expanded(
-                      //       child: Text(
-                      //         "B 501 Elegant Whispering Winds\n"
-                      //         "Thalagattapura\n"
-                      //         "Bangalore - 560109",
-                      //         style: GoogleFonts.inter(
-                      //           fontSize: 14,
-                      //           height: 1.5,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                       Text(
                         "B 501 Elegant Whispering Winds\n"
                         "Thalagattapura\n"
                         "Bangalore - 560109",
                         style: GoogleFonts.inter(
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: AllColors.primaryColor,
                         ),
@@ -228,9 +231,48 @@ class _DesktopLayout extends StatelessWidget {
     );
   }
 
-  // -------- Helpers --------
+  // ================= FIRESTORE SAVE =================
+  Future<void> _submitForm() async {
+    if (nameController.text.isEmpty ||
+        phoneController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        messageController.text.isEmpty) {
+      _showSnackBar("Please fill all fields");
+      return;
+    }
 
-  static Widget _label(String text) {
+    setState(() => isLoading = true);
+
+    try {
+      await FirebaseFirestore.instance.collection('contact_messages').add({
+        'name': nameController.text.trim(),
+        'phone': phoneController.text.trim(),
+        'email': emailController.text.trim(),
+        'message': messageController.text.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      _showSnackBar("Message sent successfully ✅");
+
+      nameController.clear();
+      phoneController.clear();
+      emailController.clear();
+      messageController.clear();
+    } catch (e) {
+      _showSnackBar("Failed to send message ❌");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  // ================= HELPERS =================
+  void _showSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg)),
+    );
+  }
+
+  Widget _label(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
@@ -240,15 +282,16 @@ class _DesktopLayout extends StatelessWidget {
     );
   }
 
-  static Widget _input() {
+  Widget _input({required TextEditingController controller}) {
     return Container(
       height: 40,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(3),
       ),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        controller: controller,
+        decoration: const InputDecoration(
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
         ),
@@ -256,7 +299,7 @@ class _DesktopLayout extends StatelessWidget {
     );
   }
 
-  static Widget _infoRow(IconData icon, String text) {
+  Widget _infoRow(IconData icon, String text) {
     return Row(
       children: [
         Icon(icon, size: 20, color: AllColors.primaryColor),

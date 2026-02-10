@@ -22,7 +22,7 @@ class ProductSubItem {
   ProductSubItem(this.title, this.sectionIndex, this.iconPath);
 }
 
-const int kSectionCount = 7;
+const int kSectionCount = 8;
 
 int sectionIndexForNav(int navIndex) {
   switch (navIndex) {

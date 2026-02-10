@@ -49,7 +49,7 @@ class _DesktopLayout extends StatelessWidget {
                     Text(
                       "BSCA",
                       style: TextStyle(
-                        fontSize: 96,
+                        fontSize: 80,
                         fontWeight: FontWeight.w800,
                         color: AllColors.primaryColor,
                       ),
@@ -57,7 +57,7 @@ class _DesktopLayout extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       "Student Body",
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
                         color: AllColors.primaryColor,
@@ -86,28 +86,33 @@ class _DesktopLayout extends StatelessWidget {
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 28,
-                          vertical: 14,
-                        ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AllColors.primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const StudentListPage(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Student Members",
-                        style: GoogleFonts.inter(
-                          color: AllColors.secondaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero, 
+                      ),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const StudentListPage(),
                         ),
+                      );
+                    },
+                    child: Text(
+                      "Student Members",
+                      style: GoogleFonts.inter(
+                        color: AllColors.secondaryColor,
                       ),
                     ),
+                  ),
+
                   ],
                 ),
               ),

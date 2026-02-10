@@ -38,7 +38,7 @@ class _DesktopLayout extends StatelessWidget {
             "What We Do",
             style: GoogleFonts.inter(
               color: AllColors.primaryColor,
-              fontSize: 150,
+              fontSize: 80,
               fontWeight: FontWeight.w800,
             ),
           ),

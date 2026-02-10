@@ -177,10 +177,10 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
               const SizedBox(height: 20),
 
               //================ COLLEGE =================
-              _label("Collage Name"),
+              _label("College Name"),
               TextField(
                 controller: collageController,
-                decoration: _inputDecoration(hint: "Enter Collage Name"),
+                decoration: _inputDecoration(hint: "Enter College Name"),
               ),
               const SizedBox(height: 20),
 
@@ -201,11 +201,17 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       children: [
                         _label("Gender"),
                         DropdownButtonFormField<String>(
-                          decoration: _inputDecoration(),
+                          isExpanded: true,
+                          dropdownColor: Colors.grey[100],
+                          decoration: _inputDecoration().copyWith(
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                          ),
                           hint: const Text("Select Gender"),
                           items: const [
                             DropdownMenuItem(value: "Male", child: Text("Male")),
                             DropdownMenuItem(value: "Female", child: Text("Female")),
+                            DropdownMenuItem(value: "Children",child: Text("Childern")),
                             DropdownMenuItem(value: "Others", child: Text("Others")),
                           ],
                           onChanged: (value) {
@@ -222,7 +228,13 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       children: [
                         _label("State / Hometown"),
                         DropdownButtonFormField<String>(
-                          decoration: _inputDecoration(),
+                          isExpanded: true,
+                          dropdownColor: Colors.grey[100],
+                          decoration: _inputDecoration().copyWith(
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            floatingLabelBehavior: FloatingLabelBehavior.never
+                          ),
                           hint: const Text("Select State"),
                           items: states
                               .map(
@@ -306,7 +318,13 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       )
                       ),
                       onPressed: () => Navigator.pop(context),
-                      child: const Text("Cancel"),
+                      child: Text("Cancel",
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: AllColors.primaryColor,
+                        fontWeight: FontWeight.w800
+                      ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -324,7 +342,12 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       onPressed: _isLoading ? null : addStudent,
                       child: _isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text("Add Student"),
+                          :  Text("Add Student",
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: AllColors.secondaryColor,
+                          ),),
                     ),
                   ),
                 ],

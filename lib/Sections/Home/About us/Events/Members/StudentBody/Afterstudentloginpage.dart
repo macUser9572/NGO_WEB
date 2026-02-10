@@ -444,43 +444,61 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       Row(
                         children: [
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Gender"),
-                                DropdownButtonFormField<String>(
-                                  value: selectedGender,
-                                  decoration: _inputDecoration(),
-                                  items: const [
-                                    DropdownMenuItem(value: "Male", child: Text("Male")),
-                                    DropdownMenuItem(value: "Female", child: Text("Female")),
-                                    DropdownMenuItem(value: "Others", child: Text("Others")),
-                                  ],
-                                  onChanged: (v) =>
-                                      setState(() => selectedGender = v),
-                                ),
-                              ],
-                            ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label("Gender"),
+                        DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          dropdownColor: Colors.grey[100],
+                          decoration: _inputDecoration().copyWith(
+                            filled: true,
+                            fillColor: Colors.grey[100],
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("State/ Hometown"),
-                                DropdownButtonFormField<String>(
-                                  value: selectedState,
-                                  decoration: _inputDecoration(),
-                                  items: states
-                                      .map((e) =>
-                                          DropdownMenuItem(value: e, child: Text(e)))
-                                      .toList(),
-                                  onChanged: (v) =>
-                                      setState(() => selectedState = v),
-                                ),
-                              ],
-                            ),
+                          hint: const Text("Select Gender"),
+                          items: const [
+                            DropdownMenuItem(value: "Male", child: Text("Male")),
+                            DropdownMenuItem(value: "Female", child: Text("Female")),
+                            DropdownMenuItem(value: "Children",child: Text("Childern")),
+                            DropdownMenuItem(value: "Others", child: Text("Others")),
+                          ],
+                          onChanged: (value) {
+                            setState(() => selectedGender = value);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),         
+                  const SizedBox(width: 16),
+                        Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _label("State / Hometown"),
+                        DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          dropdownColor: Colors.grey[100],
+                          decoration: _inputDecoration().copyWith(
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            floatingLabelBehavior: FloatingLabelBehavior.never
                           ),
+                          hint: const Text("Select State"),
+                          items: states
+                              .map(
+                                (s) => DropdownMenuItem(
+                                  value: s,
+                                  child: Text(s),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() => selectedState = value);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                         ],
                       ),
 

@@ -49,8 +49,7 @@ class NavbarMobile extends StatelessWidget {
             builder: (context) => IconButton(
               icon:const Icon(Icons.menu,
               color: AllColors.secondaryColor),
-              onPressed: ()=>Scaffold.of(context).openDrawer(),
-              )
+              onPressed: ()=>Scaffold.of(context).openDrawer(),)
             )
           ],
         ),

@@ -47,7 +47,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Initiatives",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 120,
+                      fontSize: 80,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -66,7 +66,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Health Insurance Adoption",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -75,7 +75,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Awareness of Law and Justice",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -84,7 +84,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Mental Health Support",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -93,7 +93,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Education and Skill Programs",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -102,7 +102,7 @@ class _DesktopLayout extends StatelessWidget {
                     "Awareness of Chakma Culture and Religion",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -111,29 +111,35 @@ class _DesktopLayout extends StatelessWidget {
                     "Test Rig Software Development",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 20),
                   //=====================Button==================
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AllColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 16,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Know More",
-                      style: GoogleFonts.inter(
-                        color: AllColors.secondaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                                 Positioned(
+            left: 0,
+            bottom: 120,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AllColors.primaryColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 10,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                elevation: 0,
+              ),
+
+              child: const Text(
+                'Know More',
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ),
                 ],
               ),
             ),
@@ -144,7 +150,7 @@ class _DesktopLayout extends StatelessWidget {
             child: Align(
               alignment: Alignment.topRight,
               child: Transform.translate(
-                offset: const Offset(30, 190),
+                offset: const Offset(30, 90),
                 child: Image.asset(
                   "assets/image/ourimage.png",
                   width: 780,

@@ -63,16 +63,16 @@ class Footer extends StatelessWidget {
           children: [
             Container(
               color: AllColors.secondaryColor,
-              height: 78,
-              width: 78,
+              height: 24,
+              width: 24,
               child: AllImages.greenlogo(),
             ),
             const SizedBox(width: 10),
 
             Text(
-              "Bangalore Chakma Society",
+              "BCS",
               style: GoogleFonts.inter(
-                fontSize: 24,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: AllColors.primaryColor,
               ),
@@ -81,7 +81,7 @@ class Footer extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          "Jawdaw Re Jaat togai, Hangarai Gat Togai !",
+          "Jawdaw Re Jaat togai\n Hangarai Gat Togai !",
           style: GoogleFonts.inter(
             fontSize: 30,
             fontWeight: FontWeight.w700,

@@ -28,13 +28,14 @@ class _AboutDesktop extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      width: double.infinity,
-      height: size.height,
-      color: AllColors.secondaryColor,
-      padding: const EdgeInsets.symmetric(horizontal: 80),
-      child: Stack(
-        children: [
+    return SingleChildScrollView(
+  child: Container(
+    width: double.infinity,
+    height: size.height,
+    color: AllColors.secondaryColor,
+    padding: const EdgeInsets.symmetric(horizontal: 80),
+    child: Stack(
+      children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,7 +51,7 @@ class _AboutDesktop extends StatelessWidget {
                         "About us",
                         style: GoogleFonts.inter(
                           color: AllColors.primaryColor,
-                          fontSize: 150,
+                          fontSize: 80,
                           fontWeight: FontWeight.w800,
                           height: 1,
                         ),
@@ -61,7 +62,7 @@ class _AboutDesktop extends StatelessWidget {
                         child: Text(
                           "The Bangalore Chakma Society (BCS) represents the collective journey, resilience, and unity of the Chakma and Buddhist communities who have made Bengaluru their home. The roots of this journey trace back to the early arrivals of Chakma individuals in the city, beginning with pioneers who came as students and professionals and went on to build successful careers laying a proud foundation for the community.",
                           style: GoogleFonts.inter(
-                            fontSize: 20,
+                            fontSize: 16,
                             height: 1.6,
                             color: AllColors.thirdColor,
                           ),
@@ -73,7 +74,7 @@ class _AboutDesktop extends StatelessWidget {
                         child: Text(
                           "While small groups of Chakma individuals visited or stayed briefly in the 1990s, the true groundwork of BCS began to take shape around 2007, when a growing number of students and working professionals settled in Bangalore. Even during these early years, community members came together informally to celebrate culture, religion, and shared identity.",
                           style: GoogleFonts.inter(
-                            fontSize: 20,
+                            fontSize: 16,
                             height: 1.6,
                             color: AllColors.thirdColor,
                           ),
@@ -110,7 +111,7 @@ class _AboutDesktop extends StatelessWidget {
           SizedBox(height: 70),
           Positioned(
             left: 0,
-            bottom: 120,
+            bottom: 170,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
@@ -120,7 +121,7 @@ class _AboutDesktop extends StatelessWidget {
                   vertical: 10,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(1000),
+                  borderRadius: BorderRadius.circular(3),
                 ),
                 elevation: 0,
               ),
@@ -133,6 +134,7 @@ class _AboutDesktop extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }
