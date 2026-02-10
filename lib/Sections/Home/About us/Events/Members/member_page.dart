@@ -137,7 +137,7 @@ class _DesktopLayout extends StatelessWidget {
             child: Align(
               alignment: Alignment.topRight,
               child: Transform.translate(
-                offset: const Offset(30, 190),
+                offset: const Offset(30, 90),
                 child: Image.asset(
                   "assets/image/Memberpage.png",
                   width: 780,

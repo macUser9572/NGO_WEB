@@ -72,9 +72,9 @@ class NavbarDesktop extends StatelessWidget {
   (index == 1 && (current == 1 || current == 2)) ||
   (index == 3 && current == 3) ||
   (index == 4 && current == 4) ||
-  (index == 4 && current == 5) ||
-  (index == 5 && current == 6) || 
-  (index == 6 && current == 7) ||
+  (index == 5 && current == 5) ||
+  (index == 6 && current == 6) || 
+  (index == 7 && current == 7) ||
   (index == 7 && current == 8);
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:ngo_web/constraints/all_colors.dart';
 
 class ContactPage extends StatelessWidget {
   const ContactPage({super.key});
@@ -24,7 +22,8 @@ class ContactPage extends StatelessWidget {
   }
 }
 
-//================================DESKTOPLAYOUT===========================
+// ============================== DESKTOP LAYOUT ==============================
+
 class _DesktopLayout extends StatefulWidget {
   const _DesktopLayout({super.key});
 
@@ -49,6 +48,43 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
     super.dispose();
   }
 
+  // ================= FIRESTORE SUBMIT =================
+  Future<void> _submitForm() async {
+    if (nameController.text.isEmpty ||
+        phoneController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        messageController.text.isEmpty) {
+      _showSnackBar("Please fill all fields");
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('contact_messages')
+          .add({
+        'name': nameController.text.trim(),
+        'phone': phoneController.text.trim(),
+        'email': emailController.text.trim(),
+        'message': messageController.text.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      _showSnackBar("Message sent successfully ✅");
+
+      nameController.clear();
+      phoneController.clear();
+      emailController.clear();
+      messageController.clear();
+    } catch (e) {
+      _showSnackBar("Failed to send message ❌");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -61,7 +97,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
           color: AllColors.secondaryColor,
           child: Stack(
             children: [
-
               // ================= LEFT FORM =================
               Positioned(
                 top: size.height * 0.15,
@@ -143,7 +178,8 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                       ),
 
                       const SizedBox(height: 25),
-                    SizedBox(
+
+                      SizedBox(
                         width: 100,
                         height: 40,
                         child: ElevatedButton(
@@ -153,15 +189,24 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                               borderRadius: BorderRadius.circular(3),
                             ),
                           ),
-                          onPressed: _submitForm,
-                          child: Text(
-                            "Send",
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              color: AllColors.secondaryColor,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
+                          onPressed: isLoading ? null : _submitForm,
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  "Send",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: AllColors.secondaryColor,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -170,7 +215,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
               ),
 
               // ================= RIGHT CONTENT =================
-                  Positioned(
+              Positioned(
                 top: size.height * 0.20,
                 right: size.width * 0.05,
                 child: SizedBox(
@@ -197,7 +242,8 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                       ),
                       const SizedBox(height: 40),
 
-                      _infoRow(Icons.email_outlined, "BCS.Bangalore@gmail.com"),
+                      _infoRow(Icons.email_outlined,
+                          "BCS.Bangalore@gmail.com"),
                       const SizedBox(height: 16),
                       _infoRow(Icons.phone_outlined, "+91 7892345671"),
 
@@ -216,7 +262,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                         "Bangalore - 560109",
                         style: GoogleFonts.inter(
                           fontSize: 14,
-                          fontWeight: FontWeight.w400,
                           color: AllColors.primaryColor,
                         ),
                       ),
@@ -231,40 +276,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
     );
   }
 
-  // ================= FIRESTORE SAVE =================
-  Future<void> _submitForm() async {
-    if (nameController.text.isEmpty ||
-        phoneController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        messageController.text.isEmpty) {
-      _showSnackBar("Please fill all fields");
-      return;
-    }
-
-    setState(() => isLoading = true);
-
-    try {
-      await FirebaseFirestore.instance.collection('contact_messages').add({
-        'name': nameController.text.trim(),
-        'phone': phoneController.text.trim(),
-        'email': emailController.text.trim(),
-        'message': messageController.text.trim(),
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      _showSnackBar("Message sent successfully ✅");
-
-      nameController.clear();
-      phoneController.clear();
-      emailController.clear();
-      messageController.clear();
-    } catch (e) {
-      _showSnackBar("Failed to send message ❌");
-    } finally {
-      setState(() => isLoading = false);
-    }
-  }
-
   // ================= HELPERS =================
   void _showSnackBar(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -277,7 +288,10 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
         text,
-        style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500),
+        style: GoogleFonts.inter(
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
@@ -310,7 +324,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
   }
 }
 
-//======================MOBILELAYOUT==========================
+// ============================== MOBILE LAYOUT ==============================
 
 class _MobileLayout extends StatelessWidget {
   const _MobileLayout();
@@ -318,10 +332,10 @@ class _MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Contact Page')),
-      body: Center(
+      appBar: AppBar(title: const Text("Contact Us")),
+      body: const Center(
         child: Text(
-          'This is the mobile layout',
+          "Mobile layout coming soon",
           style: TextStyle(fontSize: 18),
         ),
       ),
