@@ -55,12 +55,27 @@ class _AddMemberPageState extends State<AddMemberPage> {
       });
 
       // Keep the data into the firease
-      if (selectedGender == 'male') {
-        await FirebaseFirestore.instance
-            .collection("member_count")
-            .doc("members")
-            .update({"male": FieldValue.increment(1)});
-      }
+            if (selectedGender == 'Male') {
+          await FirebaseFirestore.instance
+              .collection("member_count")
+              .doc("members")
+              .update({"Male": FieldValue.increment(1)});
+        } else if (selectedGender == 'Female') {
+          await FirebaseFirestore.instance
+              .collection("member_count")
+              .doc("members")
+              .update({"Female": FieldValue.increment(1)});
+        } else if (selectedGender == 'Children') {
+          await FirebaseFirestore.instance
+              .collection("member_count")
+              .doc("members")
+              .update({"Children": FieldValue.increment(1)});
+        } else  {
+          await FirebaseFirestore.instance
+              .collection("member_count")
+              .doc("members")
+              .update({"Others": FieldValue.increment(1)});
+        }
 
       // Keep the total member
       await FirebaseFirestore.instance
