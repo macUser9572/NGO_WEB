@@ -15,8 +15,8 @@ class _AddMemberPageState extends State<AddMemberPage> {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final descriptionController = TextEditingController();
-  // LOding 
-  bool _isloading = false ;
+  // LOding
+  bool _isloading = false;
 
   String? selectedGender;
   String? selectedState;
@@ -36,26 +36,38 @@ class _AddMemberPageState extends State<AddMemberPage> {
 
   // ================= SAVE TO FIRESTORE =================
   Future<void> addMember() async {
-
     try {
       setState(() {
         _isloading = true;
       });
+
       await FirebaseFirestore.instance.collection('Member_collection').add({
         'name': nameController.text.trim(),
         'phone': phoneController.text.trim(),
-        'gender': selectedGender,
+        'gender': selectedGender, // male / female / children / others
         'state': selectedState,
         'arrivalDate': arrivalDate != null
             ? Timestamp.fromDate(arrivalDate!)
             : null,
         'exitDate': exitDate != null ? Timestamp.fromDate(exitDate!) : null,
-
-        // 'arrivalDate': arrivalDate,
-        // 'exitDate': exitDate,
         'description': descriptionController.text.trim(),
         'createdAt': FieldValue.serverTimestamp(),
       });
+
+      // Keep the data into the firease
+      if (selectedGender == 'male') {
+        await FirebaseFirestore.instance
+            .collection("member_count")
+            .doc("members")
+            .update({"male": FieldValue.increment(1)});
+      }
+
+      // Keep the total member
+      await FirebaseFirestore.instance
+          .collection("member_count")
+          .doc("members")
+          .update({"total": FieldValue.increment(1)});
+
       setState(() {
         _isloading = false;
       });
@@ -68,25 +80,13 @@ class _AddMemberPageState extends State<AddMemberPage> {
           backgroundColor: Colors.green,
         ),
       );
-    } on FirebaseException catch (e) {
-      setState(() {
-        _isloading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Firebase error: ${e.message}"),
-          backgroundColor: Colors.red,
-        ),
-      );
     } catch (e) {
       setState(() {
         _isloading = false;
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Something went wrong: $e"),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
       );
     }
   }
@@ -156,7 +156,10 @@ class _AddMemberPageState extends State<AddMemberPage> {
                               value: "Female",
                               child: Text("Female"),
                             ),
-                            DropdownMenuItem(value: "Children",child: Text("Childern")),
+                            DropdownMenuItem(
+                              value: "Children",
+                              child: Text("Childern"),
+                            ),
 
                             DropdownMenuItem(
                               value: "Others",
@@ -302,28 +305,30 @@ class _AddMemberPageState extends State<AddMemberPage> {
                   ),
                   const SizedBox(width: 16),
                   // ADD MEMBER
-                  _isloading ? CircularProgressIndicator() : SizedBox(
-                    height: 48,
-                    width: 160,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                  _isloading
+                      ? CircularProgressIndicator()
+                      : SizedBox(
+                          height: 48,
+                          width: 160,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AllColors.primaryColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                            ),
+                            onPressed: addMember,
+                            child: Text(
+                              "Add Member",
+                              style: GoogleFonts.inter(
+                                color: AllColors.secondaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: addMember,
-                      child: Text(
-                        "Add Student",
-                        style: GoogleFonts.inter(
-                          color: AllColors.secondaryColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ],

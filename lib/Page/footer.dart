@@ -46,7 +46,7 @@ class Footer extends StatelessWidget {
         Container(
           height: 300,
           width: 1,
-          color: Colors.grey,
+          color: const Color.fromARGB(255, 206, 205, 205),
           margin: const EdgeInsets.symmetric(horizontal: 97),
         ),
         Expanded(flex: 4, child: _rightContent(context)),
@@ -63,8 +63,8 @@ class Footer extends StatelessWidget {
           children: [
             Container(
               color: AllColors.secondaryColor,
-              height: 24,
-              width: 24,
+              height: 48,
+              width: 48,
               child: AllImages.greenlogo(),
             ),
             const SizedBox(width: 10),

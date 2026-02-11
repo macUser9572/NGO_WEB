@@ -26,10 +26,10 @@ class _DesktopLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Container(
+final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;    return Container(
       width: double.infinity,
-      height: size.height,
+      height: height,
       color: AllColors.fourthColor,
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Row(

@@ -87,22 +87,22 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
   // ================= UI =================
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
+final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: SizedBox(
-        width: size.width,
-        height: size.height,
+        width: width,
+        height: height,
         child: Container(
           color: AllColors.secondaryColor,
           child: Stack(
             children: [
               // ================= LEFT FORM =================
               Positioned(
-                top: size.height * 0.15,
-                left: size.width * 0.06,
+                top: height * 0.15,
+                left: width * 0.06,
                 child: Container(
-                  width: size.width * 0.38,
+                  width: width * 0.38,
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     color: const Color(0xFFD9F1E6),
@@ -216,10 +216,10 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
               // ================= RIGHT CONTENT =================
               Positioned(
-                top: size.height * 0.20,
-                right: size.width * 0.05,
+                top: height * 0.20,
+                right: width * 0.05,
                 child: SizedBox(
-                  width: size.width * 0.40,
+                  width: width * 0.40,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -26,12 +26,12 @@ class _AboutDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
   child: Container(
     width: double.infinity,
-    height: size.height,
+    height: height,
     color: AllColors.secondaryColor,
     padding: const EdgeInsets.symmetric(horizontal: 80),
     child: Stack(
@@ -93,7 +93,7 @@ class _AboutDesktop extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 160),
                   child: Container(
-                    height: size.height * 0.6,
+                    height: height * 0.6,
                     decoration: BoxDecoration(
                       color: const Color(0xFFE0E0E0),
                       borderRadius: BorderRadius.circular(8),

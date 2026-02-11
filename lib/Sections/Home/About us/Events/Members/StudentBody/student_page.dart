@@ -28,12 +28,12 @@ class _DesktopLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
+final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: SingleChildScrollView(
         child: Container(
-          width: size.width,
+          width: width,
           color: const Color(0xFFEFFFF6),
           // padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 80),
           padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 80),
