@@ -77,7 +77,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
               .update({"Others": FieldValue.increment(1)});
         }
 
-      // Keep the total member
+      // Keep the total member'
       await FirebaseFirestore.instance
           .collection("member_count")
           .doc("members")

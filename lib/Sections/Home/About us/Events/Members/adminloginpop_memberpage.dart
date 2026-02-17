@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/Member_afterloginpage.dart';
+import 'package:ngo_web/Sections/Home/About%20us/Events/Members/afterloginmainpage.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
-
-
 class AdminLoginPopup extends StatefulWidget {
   const AdminLoginPopup({super.key});
 

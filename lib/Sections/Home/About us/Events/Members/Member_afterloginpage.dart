@@ -5,8 +5,8 @@ import 'package:ngo_web/Sections/Home/About%20us/Events/Members/addmemberpage.da
 import 'package:ngo_web/constraints/all_colors.dart';
 
 
-class AfterLoginPage extends StatelessWidget {
-  const AfterLoginPage({super.key});
+class AddMemberPageTab extends StatelessWidget {
+  const AddMemberPageTab({super.key});
 
   // ===================== FIREBASE STREAM =====================
   Widget membersStream() {
@@ -59,11 +59,11 @@ class AfterLoginPage extends StatelessWidget {
               onTap: () => Navigator.pop(context),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.arrow_back),
-                  SizedBox(width: 6),
-                  Text("Back"),
-                ],
+                // children: [
+                //   Icon(Icons.arrow_back),
+                //   SizedBox(width: 6),
+                //   Text("Back"),
+                // ],
               ),
             ),
             const SizedBox(height: 24),
@@ -477,9 +477,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               ),
                             ),
                             onPressed: () async {
-                              // setState((){
-                              // _isloading = true;
-                              //});
+                         
                                   await FirebaseFirestore.instance
                                   .collection('Member_collection')
                                   .doc(member.id)
@@ -492,9 +490,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 "exitDate": exitDate,
                                 "updatedAt": FieldValue.serverTimestamp(),
                               });
-                              // setState((){
-                              //   _isloading = false;
-                              // });
+                             
 
                               Navigator.pop(context);
 
@@ -504,9 +500,6 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                   backgroundColor: Colors.green,
                                 ),
                               );
-                              // setState((){
-                              //   _isloading= false;
-                              // });
 
                             },
                             child: Text(
