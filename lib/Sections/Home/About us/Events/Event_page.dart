@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
@@ -49,54 +50,54 @@ class _DesktopLayout extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //===================LEFT SECTION================
-              Expanded(
-                flex: 6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //-------CardRow-------
-                    Row(
-                      children: const [
-                        InfoCard(
-                          image: "assets/image/Religion.png",
-                          title: "Religion",
-                        ),
-                        SizedBox(width: 23),
-                        InfoCard(
-                          image: "assets/image/Culture_tradition.png",
-                          title: "Culture tradition",
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "Key Information",
-                      style: GoogleFonts.inter(
-                        color: AllColors.primaryColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: 700,
-                      child: Text(
-                        "The Chakma community joyfully celebrates Kathina Civara Dhana "
-                        "and the vibrant Bizu Festival annually! Bizu, a lively three-day "
-                        "New Year extravaganza, showcases Chakma traditions with rituals, "
-                        "performances, and communal harmony every April. Since 2007, it's "
-                        "been a time for feasting, dancing, singing, and exchanging "
-                        "heartfelt wishes!",
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          height: 1.6,
-                          color: AllColors.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   flex: 6,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       //-------CardRow-------
+              //       Row(
+              //         children: const [
+              //           InfoCard(
+              //             image: "assets/image/Religion.png",
+              //             title: "Religion",
+              //           ),
+              //           SizedBox(width: 23),
+              //           InfoCard(
+              //             image: "assets/image/Culture_tradition.png",
+              //             title: "Culture tradition",
+              //           ),
+              //         ],
+              //       ),
+              //       const SizedBox(height: 5),
+              //       Text(
+              //         "Key Information",
+              //         style: GoogleFonts.inter(
+              //           color: AllColors.primaryColor,
+              //           fontSize: 24,
+              //           fontWeight: FontWeight.w700,
+              //         ),
+              //       ),
+              //       const SizedBox(height: 5),
+              //       SizedBox(
+              //         width: 700,
+              //         child: Text(
+              //           "The Chakma community joyfully celebrates Kathina Civara Dhana "
+              //           "and the vibrant Bizu Festival annually! Bizu, a lively three-day "
+              //           "New Year extravaganza, showcases Chakma traditions with rituals, "
+              //           "performances, and communal harmony every April. Since 2007, it's "
+              //           "been a time for feasting, dancing, singing, and exchanging "
+              //           "heartfelt wishes!",
+              //           style: GoogleFonts.inter(
+              //             fontSize: 16,
+              //             height: 1.6,
+              //             color: AllColors.primaryColor,
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               const SizedBox(height: 300),
               Expanded(
                 flex: 5,
@@ -121,20 +122,20 @@ class _DesktopLayout extends StatelessWidget {
                         color: AllColors.primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    Row(
-                      children: const [
-                        InfoCard(
-                          image: "assets/image/Social_Services.png",
-                          title: "Social Services",
-                        ),
-                        SizedBox(width: 23),
-                        InfoCard(
-                          image: "assets/image/Educational_Initiatives.png",
-                          title: "Educational Initiatives",
-                        ),
-                      ],
-                    ),
+                    // const SizedBox(height: 30),
+                    // Row(
+                    //   children: const [
+                    //     InfoCard(
+                    //       image: "assets/image/Social_Services.png",
+                    //       title: "Social Services",
+                    //     ),
+                    //     SizedBox(width: 23),
+                    //     InfoCard(
+                    //       image: "assets/image/Educational_Initiatives.png",
+                    //       title: "Educational Initiatives",
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -147,49 +148,49 @@ class _DesktopLayout extends StatelessWidget {
 }
 
 //============================ INFO CARD ========================
-class InfoCard extends StatelessWidget {
-  final String image;
-  final String title;
-  const InfoCard({super.key, required this.image, required this.title});
+// class InfoCard extends StatelessWidget {
+//   final String image;
+//   final String title;
+//   const InfoCard({super.key, required this.image, required this.title});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 260,
-      decoration: BoxDecoration(
-        color: AllColors.fourthColor,
-        borderRadius: BorderRadius.vertical(),
-      ),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(),
-            child: Image.asset(
-              image,
-              width: 260,
-              height: 260,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const SizedBox(height: 200);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: 260,
+//       decoration: BoxDecoration(
+//         color: AllColors.fourthColor,
+//         borderRadius: BorderRadius.vertical(),
+//       ),
+//       child: Column(
+//         children: [
+//           ClipRRect(
+//             borderRadius: const BorderRadius.vertical(),
+//             child: Image.asset(
+//               image,
+//               width: 260,
+//               height: 260,
+//               fit: BoxFit.cover,
+//               errorBuilder: (context, error, stackTrace) {
+//                 return const SizedBox(height: 200);
+//               },
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 14),
+//             child: Text(
+//               title,
+//               textAlign: TextAlign.center,
+//               style: GoogleFonts.inter(
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.w600,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 // ===================== MOBILE =====================
 class _MobileLayout extends StatelessWidget {
