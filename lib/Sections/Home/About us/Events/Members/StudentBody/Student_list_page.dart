@@ -67,34 +67,34 @@ class StudentListPage extends StatelessWidget {
             icon: const Icon(Icons.search, color: AllColors.thirdColor),
           ),
           const SizedBox(width: 10),
-          Padding(
-            padding: const EdgeInsets.only(right: 24),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AllColors.primaryColor,
-                elevation: 0,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => const Studentadminpopuppage(),
-                );
-              },
-              child: Text(
-                "Admin Login",
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AllColors.secondaryColor,
-                ),
-              ),
-            ),
-          ),
+           Padding(
+  padding: const EdgeInsets.only(right: 24),
+  child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AllColors.primaryColor,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero, // ✅ Square
+      ),
+    ),
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (_) => const Studentadminpopuppage(),
+      );
+    },
+    child: Text(
+      "Admin Login",
+      style: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AllColors.secondaryColor,
+      ),
+    ),
+  ),
+),
+
         ],
       ),
 

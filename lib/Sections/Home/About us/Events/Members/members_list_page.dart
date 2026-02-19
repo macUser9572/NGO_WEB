@@ -78,25 +78,30 @@ class MembersListPage extends StatelessWidget {
           const SizedBox(width: 10),
           Padding(
             padding: const EdgeInsets.only(right: 24),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AllColors.primaryColor,
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => const AdminLoginPopup(),
-                );
-              },
-              child: Text(
-                "Admin Login",
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  color: AllColors.secondaryColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+        child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AllColors.primaryColor,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero, // ✅ Square
+      ),
+    ),
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (_) => const AdminLoginPopup(),
+      );
+    },
+    child: Text(
+      "Admin Login",
+      style: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AllColors.secondaryColor,
+      ),
+    ),
+  ),
           ),
         ],
       ),

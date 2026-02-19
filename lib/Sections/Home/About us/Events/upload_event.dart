@@ -1,3 +1,4 @@
+
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,7 +15,6 @@ class EventsUploadPage extends StatefulWidget {
 }
 
 class _EventsUploadPageState extends State<EventsUploadPage> {
-
   final TextEditingController title1Controller = TextEditingController();
   final TextEditingController title2Controller = TextEditingController();
   final TextEditingController title3Controller = TextEditingController();
@@ -27,10 +27,9 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
   Uint8List? image4;
 
   bool _isLoading = false;
-
   final ImagePicker _picker = ImagePicker();
 
-  // ================= IMAGE PICK FUNCTION =================
+  // ================= PICK IMAGE =================
   Future<Uint8List?> pickImage() async {
     final XFile? file =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -41,7 +40,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
     return null;
   }
 
-  // ================= UPLOAD IMAGE TO STORAGE =================
+  // ================= UPLOAD IMAGE =================
   Future<String> uploadImage(Uint8List file, String name) async {
     final ref = FirebaseStorage.instance
         .ref()
@@ -58,57 +57,38 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
         title2Controller.text.isEmpty ||
         title3Controller.text.isEmpty ||
         title4Controller.text.isEmpty ||
-        keyInfoController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill all fields"),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return false;
-    }
-
-    if (image1 == null ||
+        keyInfoController.text.isEmpty ||
+        image1 == null ||
         image2 == null ||
         image3 == null ||
         image4 == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Please select all images"),
+          content: Text("Please fill all fields & select images"),
           backgroundColor: Colors.red,
         ),
       );
       return false;
     }
-
     return true;
   }
 
-  // ================= UPLOAD DATA =================
+  // ================= UPLOAD EVENT =================
   Future<void> uploadEvent() async {
-
     if (!validateFields()) return;
-
     if (_isLoading) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      String imageUrl1 =
-          await uploadImage(image1!, "image1_${DateTime.now().millisecondsSinceEpoch}");
+      final time = DateTime.now().millisecondsSinceEpoch;
 
-      String imageUrl2 =
-          await uploadImage(image2!, "image2_${DateTime.now().millisecondsSinceEpoch}");
+      String imageUrl1 = await uploadImage(image1!, "image1_$time");
+      String imageUrl2 = await uploadImage(image2!, "image2_$time");
+      String imageUrl3 = await uploadImage(image3!, "image3_$time");
+      String imageUrl4 = await uploadImage(image4!, "image4_$time");
 
-      String imageUrl3 =
-          await uploadImage(image3!, "image3_${DateTime.now().millisecondsSinceEpoch}");
-
-      String imageUrl4 =
-          await uploadImage(image4!, "image4_${DateTime.now().millisecondsSinceEpoch}");
-
-      await FirebaseFirestore.instance.collection("events").doc("uploaded_events").set({
+      await FirebaseFirestore.instance.collection("events").doc("upload_events").set({
         "title1": title1Controller.text.trim(),
         "title2": title2Controller.text.trim(),
         "title3": title3Controller.text.trim(),
@@ -129,7 +109,6 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
       );
 
       Navigator.pop(context);
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -137,15 +116,12 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
           backgroundColor: Colors.red,
         ),
       );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
+
+    setState(() => _isLoading = false);
   }
 
-  // ================= UI HELPERS =================
-
+  // ================= INPUT FIELD =================
   Widget buildTitleField(String label, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +150,9 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
     );
   }
 
-  Widget buildUploadField(Uint8List? image, Function(Uint8List) onSelected) {
+  // ================= IMAGE UPLOAD FIELD =================
+  Widget buildUploadField(
+      Uint8List? image, Function(Uint8List) onSelected) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -194,8 +172,11 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
             children: [
               Expanded(
                 child: Text(
-                  image == null ? "No file chosen" : "Image Selected",
-                  style: GoogleFonts.inter(color: Colors.grey),
+                  image == null
+                      ? "No file chosen"
+                      : "Image Selected",
+                  style:
+                      GoogleFonts.inter(color: Colors.grey),
                 ),
               ),
               GestureDetector(
@@ -244,73 +225,96 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
     );
   }
 
+  // ================= MAIN UI =================
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AllColors.secondaryColor,
       child: Container(
         width: 800,
-        padding: const EdgeInsets.all(40),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        height: 650,
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          children: [
 
-              Text("EVENTS",
+            // ===== HEADER (FIXED) =====
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "EVENTS",
                   style: GoogleFonts.inter(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800)),
+                    fontSize: 40,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
 
-              const SizedBox(height: 35),
+            const SizedBox(height: 20),
 
-              buildRow("Image 1 Title", title1Controller, image1,
-                  (file) => setState(() => image1 = file)),
+            // ===== BODY (SCROLLABLE) =====
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
 
-              buildRow("Image 2 Title", title2Controller, image2,
-                  (file) => setState(() => image2 = file)),
+                    buildRow("Image 1 Title", title1Controller, image1,
+                        (file) => setState(() => image1 = file)),
 
-              buildRow("Image 3 Title", title3Controller, image3,
-                  (file) => setState(() => image3 = file)),
+                    buildRow("Image 2 Title", title2Controller, image2,
+                        (file) => setState(() => image2 = file)),
 
-              buildRow("Image 4 Title", title4Controller, image4,
-                  (file) => setState(() => image4 = file)),
+                    buildRow("Image 3 Title", title3Controller, image3,
+                        (file) => setState(() => image3 = file)),
 
-              const SizedBox(height: 20),
+                    buildRow("Image 4 Title", title4Controller, image4,
+                        (file) => setState(() => image4 = file)),
 
-              buildTitleField("Key Information", keyInfoController),
+                    const SizedBox(height: 20),
 
-              const SizedBox(height: 40),
+                    buildTitleField("Key Information", keyInfoController),
 
-              Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: _isLoading ? null : uploadEvent,
-                  child: Container(
-                    height: 50,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: AllColors.primaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ),
+
+            // ===== FOOTER (FIXED) =====
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: _isLoading ? null : uploadEvent,
+                child: Container(
+                  height: 50,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: AllColors.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          )
+                        : const Text(
+                            "Upload",
+                            style: TextStyle(
                               color: Colors.white,
-                              strokeWidth: 2,
-                            )
-                          : const Text(
-                              "Upload",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              fontWeight: FontWeight.w600,
                             ),
-                    ),
+                          ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

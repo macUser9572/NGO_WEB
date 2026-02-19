@@ -3,7 +3,6 @@ import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-////////////////////////////////////////Add Student Member page////////////////////////////////
 class AddStudentMemberPage extends StatefulWidget {
   const AddStudentMemberPage({super.key});
 
@@ -37,9 +36,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
   ];
 
   Future<void> addStudent() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       await FirebaseFirestore.instance
@@ -67,24 +64,15 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
           backgroundColor: Colors.green,
         ),
       );
-    } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Firebase error: ${e.message}"),
-          backgroundColor: Colors.red,
-        ),
-      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Something went wrong: $e"),
+          content: Text("Error: $e"),
           backgroundColor: Colors.red,
         ),
       );
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -95,265 +83,296 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: Container(
         width: 700,
+        height: 600,
         padding: const EdgeInsets.all(32),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Add New Student",
-                style: GoogleFonts.inter(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // ================= FIXED HEADER =================
+    Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Expanded(
+      child: Text(
+        "Add New Student",
+        style: GoogleFonts.inter(
+          fontSize: 40,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    ),
+
+    // 🔥 Rounded Close Button
+    InkWell(
+      onTap: () => Navigator.pop(context),
+      borderRadius: BorderRadius.circular(50),
+      child: Container(
+        height: 36,
+        width: 36,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.close,
+          size: 20,
+          color: Colors.black87,
+        ),
+      ),
+    ),
+  ],
+),
+
+            const SizedBox(height: 6),
+            Text(
+              "Fill in the details to add a new student member.",
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                color: AllColors.thirdColor,
               ),
-              const SizedBox(height: 6),
-              Text(
-                "Fill in the details to add a new student member.",
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: AllColors.thirdColor,
-                ),
-              ),
-              const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
 
-//               //const SizedBox(height: 28),
+            // ================= SCROLLABLE BODY =================
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-//               //================ UPLOAD PHOTO =================
-//               // Text(
-//               //   "Upload photo",
-//               //   style: GoogleFonts.inter(
-//               //     fontSize: 14,
-//               //     fontWeight: FontWeight.w600,
-//               //     color: Colors.black,
-//               //   ),
-//               // ),
-//               // const SizedBox(height: 10),
-
-//               // Container(
-//               //   height: 140,
-//               //   width: double.infinity,
-//               //   decoration: BoxDecoration(
-//               //     color: Colors.grey[100],
-//               //     borderRadius: BorderRadius.circular(12),
-//               //     border: Border.all(color: Colors.white10),
-//               //   ),
-//               //   child: Column(
-//               //     mainAxisAlignment: MainAxisAlignment.center,
-//               //     children: [
-//               //       Icon(
-//               //         Icons.cloud_upload_outlined,
-//               //         size: 34,
-//               //         color: Colors.grey,
-//               //       ),
-//               //       const SizedBox(height: 10),
-//               //       Text(
-//               //         "Drag and drop or choose an image",
-//               //         style: GoogleFonts.inter(
-//               //           fontSize: 14,
-//               //           fontWeight: FontWeight.w400,
-//               //           color: Colors.grey,
-//               //         ),
-//               //       ),
-//               //     ],
-//               //   ),
-//               // ),
-
-              //================ NAME =================
-              _label("Student Name"),
-              TextField(
-                controller: nameController,
-                decoration: _inputDecoration(hint: "Enter Student name"),
-              ),
-              const SizedBox(height: 20),
-
-              //================ PHONE =================
-              _label("Student Phone Number"),
-              TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: _inputDecoration(hint: "Enter Student Phone number"),
-              ),
-              const SizedBox(height: 20),
-
-              //================ COLLEGE =================
-              _label("College Name"),
-              TextField(
-                controller: collageController,
-                decoration: _inputDecoration(hint: "Enter College Name"),
-              ),
-              const SizedBox(height: 20),
-
-              //================ COURSE =================
-              _label("Course Name"),
-              TextField(
-                controller: courseController,
-                decoration: _inputDecoration(hint: "Enter Course Name"),
-              ),
-              const SizedBox(height: 20),
-
-              //================ GENDER & STATE =================
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label("Gender"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _inputDecoration().copyWith(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                          ),
-                          hint: const Text("Select Gender"),
-                          items: const [
-                            DropdownMenuItem(value: "Male", child: Text("Male")),
-                            DropdownMenuItem(value: "Female", child: Text("Female")),
-                            DropdownMenuItem(value: "Children",child: Text("Childern")),
-                            DropdownMenuItem(value: "Others", child: Text("Others")),
-                          ],
-                          onChanged: (value) {
-                            setState(() => selectedGender = value);
-                          },
-                        ),
-                      ],
+                    _label("Student Name"),
+                    TextField(
+                      controller: nameController,
+                      decoration:
+                          _inputDecoration(hint: "Enter Student name"),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 20),
+
+                    _label("Student Phone Number"),
+                    TextField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: _inputDecoration(
+                          hint: "Enter Student Phone number"),
+                    ),
+                    const SizedBox(height: 20),
+
+                    _label("College Name"),
+                    TextField(
+                      controller: collageController,
+                      decoration:
+                          _inputDecoration(hint: "Enter College Name"),
+                    ),
+                    const SizedBox(height: 20),
+
+                    _label("Course Name"),
+                    TextField(
+                      controller: courseController,
+                      decoration:
+                          _inputDecoration(hint: "Enter Course Name"),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ================= DROPDOWNS =================
+                    Row(
                       children: [
-                        _label("State / Hometown"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _inputDecoration().copyWith(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            floatingLabelBehavior: FloatingLabelBehavior.never
-                          ),
-                          hint: const Text("Select State"),
-                          items: states
-                              .map(
-                                (s) => DropdownMenuItem(
-                                  value: s,
-                                  child: Text(s),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              _label("Gender"),
+                              DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                dropdownColor: Colors.white,
+                                decoration: _inputDecoration().copyWith(
+                                  filled: true,
+                                  // fillColor: Colors.white,
                                 ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() => selectedState = value);
-                          },
+                                hint: const Text("Select Gender"),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: "Male",
+                                      child: Text("Male")),
+                                  DropdownMenuItem(
+                                      value: "Female",
+                                      child: Text("Female")),
+                                  DropdownMenuItem(
+                                      value: "Children",
+                                      child: Text("Children")),
+                                  DropdownMenuItem(
+                                      value: "Others",
+                                      child: Text("Others")),
+                                ],
+                                onChanged: (value) =>
+                                    setState(() =>
+                                        selectedGender = value),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              _label("State / Hometown"),
+                              DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                dropdownColor: Colors.white,
+                                decoration: _inputDecoration().copyWith(
+                                  filled: true,
+                                  // fillColor: Colors.white,
+                                ),
+                                hint: const Text("Select State"),
+                                items: states
+                                    .map((s) =>
+                                        DropdownMenuItem(
+                                          value: s,
+                                          child: Text(s),
+                                        ))
+                                    .toList(),
+                                onChanged: (value) =>
+                                    setState(() =>
+                                        selectedState = value),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
 
-              const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-              //================ DATES =================
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    // ================= DATES =================
+                    Row(
                       children: [
-                        _label("Arrival Date"),
-                        _dateBox(arrivalDate, () {
-                          _openCalendar(
-                            context,
-                            arrivalDate,
-                            (d) => setState(() => arrivalDate = d),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label("Exit Date"),
-                        _dateBox(exitDate, () {
-                          _openCalendar(
-                            context,
-                            exitDate,
-                            (d) => setState(() => exitDate = d),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              //================ DESCRIPTION =================
-              _label("Description"),
-              TextField(
-                controller: descriptionController,
-                maxLines: 4,
-                decoration: _inputDecoration(hint: "Enter a brief description"),
-              ),
-
-              const SizedBox(height: 32),
-
-              //================ BUTTONS =================
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: 48,
-                    width: 140,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(side: BorderSide(color: AllColors.primaryColor),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(6)
-                      )
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("Cancel",
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: AllColors.primaryColor,
-                        fontWeight: FontWeight.w800
-                      ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  SizedBox(
-                    height: 48,
-                    width: 160,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusGeometry.circular(6),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              _label("Arrival Date"),
+                              _dateBox(arrivalDate, () {
+                                _openCalendar(
+                                  context,
+                                  arrivalDate,
+                                  (d) => setState(() =>
+                                      arrivalDate = d),
+                                );
+                              }),
+                            ],
+                          ),
                         ),
-                      ),
-                      onPressed: _isLoading ? null : addStudent,
-                      child: _isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          :  Text("Add Student",
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AllColors.secondaryColor,
-                          ),),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              _label("Exit Date"),
+                              _dateBox(exitDate, () {
+                                _openCalendar(
+                                  context,
+                                  exitDate,
+                                  (d) => setState(() =>
+                                      exitDate = d),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 20),
+
+                    _label("Description"),
+                    TextField(
+                      controller: descriptionController,
+                      maxLines: 4,
+                      decoration: _inputDecoration(
+                          hint: "Enter a brief description"),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // ================= BUTTONS =================
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: 48,
+                          width: 140,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                  color:
+                                      AllColors.primaryColor),
+                              shape:
+                                  RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(6),
+                              ),
+                            ),
+                            onPressed: () =>
+                                Navigator.pop(context),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                color:
+                                    AllColors.primaryColor,
+                                fontWeight:
+                                    FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        SizedBox(
+                          height: 48,
+                          width: 160,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  AllColors.primaryColor,
+                              elevation: 0,
+                              shape:
+                                  RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(6),
+                              ),
+                            ),
+                            onPressed:
+                                _isLoading ? null : addStudent,
+                            child: _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
+                                : Text(
+                                    "Add Student",
+                                    style:
+                                        GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight:
+                                          FontWeight.w600,
+                                      color: AllColors
+                                          .secondaryColor,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -363,11 +382,14 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(
           text,
-          style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+          style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600),
         ),
       );
 
-  InputDecoration _inputDecoration({String? hint}) => InputDecoration(
+  InputDecoration _inputDecoration({String? hint}) =>
+      InputDecoration(
         hintText: hint,
         filled: true,
         fillColor: Colors.grey[100],
@@ -382,7 +404,8 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
       onTap: onTap,
       child: Container(
         height: 48,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(4),
@@ -399,7 +422,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
     );
   }
 
-   void _openCalendar(
+  void _openCalendar(
     BuildContext context,
     DateTime? initialDate,
     Function(DateTime) onSelected,
@@ -407,9 +430,11 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
     showDialog(
       context: context,
       builder: (_) {
-        DateTime tempDate = initialDate ?? DateTime.now();
+        DateTime tempDate =
+            initialDate ?? DateTime.now();
         return Dialog(
-          backgroundColor: AllColors.secondaryColor,
+          backgroundColor:
+              AllColors.secondaryColor,
           child: SizedBox(
             width: 350,
             height: 420,
@@ -420,17 +445,23 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                     initialDate: tempDate,
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    onDateChanged: (d) => tempDate = d,
+                    onDateChanged: (d) =>
+                        tempDate = d,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding:
+                      const EdgeInsets.all(12),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment:
+                        MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("Cancel", style: GoogleFonts.inter()),
+                        onPressed: () =>
+                            Navigator.pop(context),
+                        child: Text("Cancel",
+                            style:
+                                GoogleFonts.inter()),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
@@ -438,7 +469,9 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                           onSelected(tempDate);
                           Navigator.pop(context);
                         },
-                        child: Text("OK", style: GoogleFonts.inter()),
+                        child: Text("OK",
+                            style:
+                                GoogleFonts.inter()),
                       ),
                     ],
                   ),
@@ -451,4 +484,3 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
     );
   }
 }
-

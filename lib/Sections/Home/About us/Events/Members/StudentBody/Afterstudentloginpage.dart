@@ -90,27 +90,28 @@ class AfterLoginStudentPage extends StatelessWidget {
                   children: [
                     const Icon(Icons.search),
                     const SizedBox(width: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => const AddStudentMemberPage(),
-                        );
-                      },
-                      child: Text(
-                        "Add Student",
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          color: AllColors.secondaryColor,
-                        ),
-                      ),
-                    ),
+             ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    backgroundColor: AllColors.primaryColor,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.zero, // Makes it square
+    ),
+  ),
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (_) => const AddStudentMemberPage(),
+    );
+  },
+  child: Text(
+    "Add Student",
+    style: GoogleFonts.inter(
+      fontSize: 15,
+      color: AllColors.secondaryColor,
+    ),
+  ),
+),
+
                   ],
                 ),
               ],

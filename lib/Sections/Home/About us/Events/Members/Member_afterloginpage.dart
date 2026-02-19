@@ -81,25 +81,28 @@ class AddMemberPageTab extends StatelessWidget {
                   children: [
                     const Icon(Icons.search),
                     const SizedBox(width: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AddMemberPage(),
-                        );
-                      },
-                      child: Text(
-                        "Add Member",
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
-                          color: AllColors.secondaryColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
+                   ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AllColors.primaryColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero, // Makes it square
+      ),
+    ),
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (_) => const AddMemberPage(),
+      );
+    },
+    child: Text(
+      "Admin Login",
+      style: GoogleFonts.inter(
+        fontSize: 18,
+        color: AllColors.secondaryColor,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  ),
                   ],
                 ),
               ],

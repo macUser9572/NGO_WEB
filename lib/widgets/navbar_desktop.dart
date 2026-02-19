@@ -50,12 +50,9 @@ class NavbarDesktop extends StatelessWidget {
     return Row(
       children: [
         _navItem(context, 'Home', 0),
-
         _navItem(context, 'About', 1),
-
-        _navItem(context, 'Events', 3),
+       _navItem(context, 'Events', 3),
         _navItem(context, 'Student-Body', 4),
-
         _navItem(context, 'Members', 5),
         _navItem(context, "Initiatives", 6),
         _navItem(context, 'Reach us', 7),
@@ -64,18 +61,29 @@ class NavbarDesktop extends StatelessWidget {
   }
 
   // ================= MENU ITEM =================
-  
+ 
   Widget _navItem(BuildContext context, String title, int index) {
   final current = context.watch<ScrollState>().currentSection;
   final bool isActive = 
   (index == 0 && current == 0) ||
   (index == 1 && (current == 1 || current == 2)) ||
   (index == 3 && current == 3) ||
-  (index == 4 && current == 4) ||
-  (index == 5 && current == 5) ||
-  (index == 6 && current == 6) || 
-  (index == 7 && current == 7) ||
-  (index == 7 && current == 8);
+  (index == 3 && current == 4) ||
+  (index == 4 && current == 5) ||
+  (index == 5 && current == 6) ||  
+  (index == 6 && current == 7) ||
+  (index == 7 && current == 8) ;
+
+  //   final bool isActive = 
+  // (index == 0 && current == 0) ||
+  // (index == 1 && (current == 1 || current == 2)) ||
+  // (index == 3 && current == 3) ||
+  // (index == 4 && current == 4) ||
+  // (index == 5 && current == 5) ||
+  // (index == 6 && current == 6) ||  
+  // (index == 7 && current == 7) ||
+  // (index == 7 && current == 8);
+
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8),
     child: InkWell(

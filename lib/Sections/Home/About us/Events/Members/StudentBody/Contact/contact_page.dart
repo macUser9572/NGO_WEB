@@ -186,7 +186,7 @@ final width = MediaQuery.of(context).size.width;
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AllColors.primaryColor,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(3),
+                              borderRadius: BorderRadius.zero,
                             ),
                           ),
                           onPressed: isLoading ? null : _submitForm,

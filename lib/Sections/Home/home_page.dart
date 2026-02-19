@@ -101,6 +101,9 @@ class HomeDesktop extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomRight,
               child: Image.asset(
+                // "assets/image/firstpage.png",
+                // width: MediaQuery.of(context).size.width * 0.95,
+                // fit: BoxFit.contain,
                 "assets/image/homeimage.png",
                 width: MediaQuery.of(context).size.width * 0.95,
                 fit: BoxFit.contain,

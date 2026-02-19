@@ -129,7 +129,7 @@ final width = MediaQuery.of(context).size.width;
                   vertical: 10,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.zero,
                 ),
                 elevation: 0,
               ),
