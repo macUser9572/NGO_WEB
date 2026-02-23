@@ -22,9 +22,9 @@ class EventPage extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-// URL HELPER
-// ─────────────────────────────────────────────
+
+//====================== URL HELPER========================
+
 String fixFirebaseUrl(String url) {
   if (url.isEmpty) return url;
   if (url.contains('firebasestorage.googleapis.com') &&
@@ -34,9 +34,7 @@ String fixFirebaseUrl(String url) {
   return url;
 }
 
-// ─────────────────────────────────────────────
-// IMAGE CARD — with dashed border + title below
-// ─────────────────────────────────────────────
+// //======================IMAGE CARD — with dashed border + title below//======================
 Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
   final String url = fixFirebaseUrl(imageUrl?.toString() ?? "");
 
@@ -103,9 +101,7 @@ Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
   );
 }
 
-// ─────────────────────────────────────────────
-// DESKTOP LAYOUT
-// ─────────────────────────────────────────────
+// //======================DESKTOP LAYOUT//======================
 class _DesktopLayout extends StatelessWidget {
   const _DesktopLayout();
 
@@ -229,7 +225,7 @@ class _DesktopLayout extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 77),
 
                         Row(
                           children: [
