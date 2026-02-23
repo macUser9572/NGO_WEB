@@ -15,16 +15,8 @@ class Videolink extends StatefulWidget {
 
 class _VideolinkState extends State<Videolink> {
   Uint8List? _videoBytes;
-  String? _videoFileName;
+  String _videoFileName = "No file chosen";
   bool _isLoading = false;
-  String _uploadStatus = "";
-  final TextEditingController _linkController = TextEditingController();
-
-  @override
-  void dispose() {
-    _linkController.dispose();
-    super.dispose();
-  }
 
   // ===================== PICK VIDEO =====================
   Future<void> _pickVideo() async {
@@ -32,14 +24,14 @@ class _VideolinkState extends State<Videolink> {
       final FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.video,
         allowMultiple: false,
+        withData: true,
       );
       if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
         setState(() {
-          _videoBytes = result.files.first.bytes;
-          _videoFileName = result.files.first.name;
-          _linkController.clear();
+          _videoBytes = file.bytes;
+          _videoFileName = file.name;
         });
-        debugPrint("✅ Video picked: $_videoFileName");
       }
     } catch (e) {
       _showSnackBar("Failed to pick video: $e", isError: true);
@@ -48,87 +40,64 @@ class _VideolinkState extends State<Videolink> {
 
   // ===================== UPLOAD VIDEO =====================
   Future<void> _uploadVideo() async {
-    final String link = _linkController.text.trim();
-
-    if (_videoBytes == null && link.isEmpty) {
-      _showSnackBar("Please paste a link or choose a video file",
-          isError: true);
+    if (_videoBytes == null) {
+      _showSnackBar("Please choose a video file first", isError: true);
       return;
     }
 
-    // ✅ Set loading FIRST before anything else
     if (!mounted) return;
     setState(() {
       _isLoading = true;
-      _uploadStatus = "Uploading...";
     });
 
     try {
-      String videoUrl = "";
+      // ── Upload to Firebase Storage ──
+      final Reference ref = FirebaseStorage.instance
+          .ref()
+          .child("videos")
+          .child("upload_video.mp4");
 
-      if (_videoBytes != null) {
-        // ── Upload file to Firebase Storage ──
-        final Reference ref = FirebaseStorage.instance
-            .ref()
-            .child("videos")
-            .child("upload_video.mp4");
+      final UploadTask task = ref.putData(
+        _videoBytes!,
+        SettableMetadata(contentType: "video/mp4"),
+      );
 
-        final UploadTask task = ref.putData(
-          _videoBytes!,
-          SettableMetadata(contentType: "video/mp4"),
-        );
+      final TaskSnapshot snapshot = await task;
 
-        // ✅ Track progress
-        task.snapshotEvents.listen((TaskSnapshot snap) {
-          if (!mounted) return;
-          final pct =
-              (snap.bytesTransferred / snap.totalBytes * 100).toInt();
-          setState(() => _uploadStatus = "Uploading video... $pct%");
-        });
-
-        final TaskSnapshot snapshot = await task;
-
-        if (snapshot.state == TaskState.success) {
-          videoUrl = await snapshot.ref.getDownloadURL();
-          debugPrint("✅ Video URL: $videoUrl");
-        } else {
-          throw Exception("Upload failed");
-        }
-      } else {
-        // ── Use pasted link directly ──
-        videoUrl = link;
+      if (snapshot.state != TaskState.success) {
+        throw Exception("Upload did not complete successfully.");
       }
 
-      if (!mounted) return;
-      setState(() => _uploadStatus = "Saving to database...");
+      final String videoUrl = await snapshot.ref.getDownloadURL();
 
-      // ── Save to Firestore ──
+
+      // ── Save URL + metadata to Firestore ──
       await FirebaseFirestore.instance
           .collection("videos")
           .doc("upload_video")
           .set({
         "video_url": videoUrl,
-        "file_name": _videoFileName ?? "link",
+        "file_name": _videoFileName,
         "updated_at": DateTime.now().toIso8601String(),
       });
 
-      debugPrint("✅ Saved to Firestore!");
-      _showSnackBar("Video Uploaded Successfully!");
+      if (!mounted) return;
+      _showSnackBar("✅ Video uploaded successfully!");
 
+      // Small delay so user sees the success message before dialog closes
+      await Future.delayed(const Duration(milliseconds: 800));
       if (mounted) Navigator.pop(context);
-
     } on FirebaseException catch (e) {
-      debugPrint("❌ Firebase [${e.code}]: ${e.message}");
-      _showSnackBar("Firebase Error [${e.code}]: ${e.message}",
-          isError: true);
+      _showSnackBar(
+        "Firebase Error [${e.code}]: ${e.message ?? 'Unknown error'}",
+        isError: true,
+      );
     } catch (e) {
-      debugPrint("❌ Error: $e");
-      _showSnackBar("Error: $e", isError: true);
+      _showSnackBar("Unexpected error: $e", isError: true);
     } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _uploadStatus = "";
         });
       }
     }
@@ -137,188 +106,167 @@ class _VideolinkState extends State<Videolink> {
   // ===================== SNACKBAR =====================
   void _showSnackBar(String message, {bool isError = false}) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      backgroundColor: isError ? Colors.red : Colors.green,
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: isError ? 4 : 2),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red.shade700 : Colors.green.shade700,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: isError ? 5 : 2),
+      ),
+    );
   }
 
-  // ===================== MAIN UI =====================
+  // ===================== BUILD =====================
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AllColors.secondaryColor,
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
-        width: 600,
-        padding: const EdgeInsets.all(40),
+        width: 700,
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // ===== HEADER =====
+            // ── Header ──
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Video",
+                  "Upload Video",
                   style: GoogleFonts.inter(
-                    fontSize: 40,
+                    fontSize: 28,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
                 IconButton(
-                  onPressed:
-                      _isLoading ? null : () => Navigator.pop(context),
+                  onPressed: _isLoading ? null : () => Navigator.pop(context),
                   icon: const Icon(Icons.close),
+                  splashRadius: 20,
                 ),
               ],
             ),
 
             const SizedBox(height: 30),
 
-            // ===== LABEL =====
+            // ── Label ──
             Text(
-              "Video",
+              "Video File",
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,
               ),
             ),
-
             const SizedBox(height: 10),
 
-            // ===== FILE INPUT =====
+            // ── File Picker Row ──
             Container(
-              height: 55,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 60,
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
+                  // File name display
                   Expanded(
-                    child: _videoBytes != null
-                        ? Text(
-                            "✅  $_videoFileName",
-                            style: GoogleFonts.inter(
-                              color: Colors.green.shade700,
-                              fontSize: 14,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : TextField(
-                            controller: _linkController,
-                            enabled: !_isLoading,
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: Colors.black87,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Paste video link here...",
-                              hintStyle: GoogleFonts.inter(
-                                color: Colors.grey,
-                                fontSize: 14,
-                              ),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        _videoFileName,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: _videoBytes != null
+                              ? Colors.green.shade700
+                              : Colors.grey.shade600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Choose file button
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: GestureDetector(
+                      onTap: _isLoading ? null : _pickVideo,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AllColors.secondaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          "Choose file",
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AllColors.primaryColor,
                           ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
 
-            // ===== UPLOAD STATUS =====
-            if (_isLoading && _uploadStatus.isNotEmpty)
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 14,
-                    height: 14,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _uploadStatus,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
+            // // ── Progress Spinner ──
+            //   const Row(
+            //     children: [
+            //       SizedBox(
+            //         width: 14,
+            //         height: 14,
+            //         child: CircularProgressIndicator(
+            //           strokeWidth: 2,
+            //           color: Colors.grey,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
 
-            // ===== UPLOAD BUTTON =====
+            // ── Upload Button ──
             Align(
               alignment: Alignment.centerRight,
-              child: GestureDetector(
-                // ✅ Properly call async function
-                onTap: _isLoading
-                    ? null
-                    : () {
-                        _uploadVideo();
-                      },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: 50,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: _isLoading
-                        ? Colors.grey.shade400
-                        : const Color(0xFF3E6B3E),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3F6B3F),
+                  fixedSize: const Size(160, 50),
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Center(
-                    child: _isLoading
-                        ? const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                "Uploading...",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            "Upload",
-                            style: GoogleFonts.inter(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                  ),
+                  elevation: 0,
                 ),
+                onPressed: _isLoading ? null : _uploadVideo,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(
+                        "Upload",
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ],
