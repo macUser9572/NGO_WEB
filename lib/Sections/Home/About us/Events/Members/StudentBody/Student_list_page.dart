@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/Member_afterloginpage.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/studentAdminpopuppage.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/adminloginpop_memberpage.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 
 class StudentListPage extends StatelessWidget {
@@ -54,49 +55,33 @@ class StudentListPage extends StatelessWidget {
       backgroundColor: AllColors.secondaryColor,
 
       // =================== APP BAR ===================
-      appBar: AppBar(
-        backgroundColor: AllColors.secondaryColor,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, color: AllColors.thirdColor),
-          ),
-          const SizedBox(width: 10),
-           Padding(
-  padding: const EdgeInsets.only(right: 24),
-  child: ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AllColors.primaryColor,
-      elevation: 0,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero, // ✅ Square
-      ),
+appBar: AppBar(
+  backgroundColor: AllColors.secondaryColor,
+  elevation: 0,
+  leading: IconButton(
+    onPressed: () => Navigator.pop(context),
+    icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
+  ),
+  actions: [
+    IconButton(
+      onPressed: () {},
+      icon: const Icon(Icons.search, color: AllColors.thirdColor),
     ),
+    Padding(
+  padding: const EdgeInsets.only(right: 16),
+  child: CustomButton(
+    label: "Admin Login",
     onPressed: () {
       showDialog(
         context: context,
-        builder: (_) => const Studentadminpopuppage(),
+        barrierDismissible: false,
+        builder: (context) => const Studentadminpopuppage(),
       );
     },
-    child: Text(
-      "Admin Login",
-      style: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AllColors.secondaryColor,
-      ),
-    ),
   ),
 ),
-
-        ],
-      ),
+  ],
+),
 
       // =================== BODY ===================
       body: Padding(

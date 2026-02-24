@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Student_list_page.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/addstudentmemberpage.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -76,46 +77,35 @@ class AfterLoginStudentPage extends StatelessWidget {
             const SizedBox(height: 24),
 
             // HEADER
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Student Member",
-                  style: GoogleFonts.inter(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Icon(Icons.search),
-                    const SizedBox(width: 16),
-             ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: AllColors.primaryColor,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.zero, // Makes it square
+     Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Text(
+      "Student Member",
+      style: GoogleFonts.inter(
+        fontSize: 40,
+        fontWeight: FontWeight.w700,
+      ),
     ),
-  ),
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (_) => const AddStudentMemberPage(),
-    );
-  },
-  child: Text(
-    "Add Student",
-    style: GoogleFonts.inter(
-      fontSize: 15,
-      color: AllColors.secondaryColor,
-    ),
-  ),
-),
+    Row(
+      children: [
+        const Icon(Icons.search),
+        const SizedBox(width: 16),
 
-                  ],
-                ),
-              ],
-            ),
+        CustomButton(
+          label: "Add Student",
+          onPressed: () {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const AddStudentMemberPage(),
+            );
+          },
+        ),
+      ],
+    ),
+  ],
+),
 
             const SizedBox(height: 30),
 
@@ -306,34 +296,15 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                     const SizedBox(width: 24),
 
                     // Delete
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 28,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () async {
+                    Positioned(
+                      child: CustomButton(label: "Delete", 
+                      onPressed: ()async{
                         await FirebaseFirestore.instance
-                            .collection('Student_collection') // ✅ SAME as old
-                            .doc(memberId)
-                            .delete();
-
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "DELETE",
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          letterSpacing: 1,
-                          color: AllColors.secondaryColor,
-                        ),
-                      ),
-                    ),
+                        .collection('Student_collection')
+                        .doc(memberId)
+                        .delete();
+                      })
+                    )
                   ],
                 ),
               ],
@@ -558,64 +529,53 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero, // 🔥 Square corners
+                              ),
+                            ),
                             onPressed: () => Navigator.pop(context),
-                            child: const Text("Cancel"),
+                            child: Text("Cancel",
+                            style: GoogleFonts.inter(
+                              color: AllColors.primaryColor
+                            ),),
                           ),
                           const SizedBox(width: 16),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AllColors.primaryColor, // ✅ PRIMARY COLOR
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            onPressed: () async {
-                              // setState((){
-                              // _isloading = true;
-                              //});
-                                  await FirebaseFirestore.instance
-                                  .collection('Student_collection')
-                                  .doc(member.id)
-                                  .update({
-                                "name": nameController.text.trim(),
-                                "phone": phoneController.text.trim(),
-                                "Collage":CollageController.text.trim(),
-                                "Coures":CouresController.text.trim(),
-                                "state": selectedState,
-                                "gender": selectedGender,
-                                "arrivalDate": arrivalDate,
-                                "exitDate": exitDate,
-                                "updatedAt": FieldValue.serverTimestamp(),
-                              });
-                              // setState((){
-                              //   _isloading = false;
-                              // });
+                          CustomButton(
+                              label: "Update Student",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              height: 48,
+                              backgroundColor: AllColors.primaryColor,
+                              textColor: AllColors.secondaryColor,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                              onPressed: () async {
 
-                              Navigator.pop(context);
+                                await FirebaseFirestore.instance
+                                    .collection('Student_collection')
+                                    .doc(member.id)
+                                    .update({
+                                  "name": nameController.text.trim(),
+                                  "phone": phoneController.text.trim(),
+                                  "Collage": CollageController.text.trim(),
+                                  "Coures": CouresController.text.trim(),
+                                  "state": selectedState,
+                                  "gender": selectedGender,
+                                  "arrivalDate": arrivalDate,
+                                  "exitDate": exitDate,
+                                  "updatedAt": FieldValue.serverTimestamp(),
+                                });
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Student updated successfully"),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                              // setState((){
-                              //   _isloading= false;
-                              // });
+                                Navigator.pop(context);
 
-                            },
-                            child: Text(
-                              "Update Member",
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color: AllColors.secondaryColor, // text color
-                                fontWeight: FontWeight.w600,
-                              ),
-                              
-                            ),
-                            
-                          ),
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Student updated successfully"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                            )
 
                     
                         ],

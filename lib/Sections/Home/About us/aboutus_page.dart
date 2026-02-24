@@ -4,10 +4,12 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 
 class AboutusPage extends StatelessWidget {
   const AboutusPage({super.key});
@@ -206,23 +208,10 @@ class _AboutDesktop extends StatelessWidget {
             Positioned(
               left: 0,
               bottom: 170,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AllColors.primaryColor,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 28, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'Read More about BCS',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
+              child: CustomButton(
+                label:"Read More" ,
+                 onPressed: (){}),
+            )
           ],
         ),
       ),

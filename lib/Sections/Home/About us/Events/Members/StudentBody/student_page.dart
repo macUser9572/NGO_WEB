@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Student_list_page.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -143,34 +144,22 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AllColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 14,
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      elevation: 0,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const StudentListPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Student Members",
-                      style: GoogleFonts.inter(
-                        color: AllColors.secondaryColor,
-                      ),
-                    ),
-                  ),
-                ],
+                  Positioned(
+                    left: 0,
+                    bottom: 170,
+                    child: CustomButton(
+                      label: "Student Members", 
+                      onPressed: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(
+                            builder: (_)=> const StudentListPage()
+                            )
+                            );
+                      }
+                      )
+                      )
+                              ],
               ),
             ),
 

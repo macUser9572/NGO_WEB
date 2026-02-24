@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 
 class HomepageUploadPopup extends StatefulWidget {
@@ -194,7 +195,18 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
             const SizedBox(height: 40),
 
             /// 🔹 Upload Button
-            Align(
+            // Align(
+            //     alignment: Alignment.centerRight,
+            //     child: CustomButton(
+            //       label: "Upload",
+            //       fontWeight: FontWeight.w600,
+            //       isLoading: _isLoading,
+            //       // backgroundColor: const Color(0xFF3F6B3F),
+            //       // textColor: Colors.white,
+            //       onPressed: _isLoading ? null : uploadFile,
+            //     ),
+            //   ),
+                          Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(

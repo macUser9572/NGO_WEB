@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -117,29 +118,19 @@ final width = MediaQuery.of(context).size.width;
                   ),
                   const SizedBox(height: 20),
                   //=====================Button==================
-                                 Positioned(
-            left: 0,
-            bottom: 120,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AllColors.primaryColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 10,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
-                elevation: 0,
-              ),
-
-              child: const Text(
-                'Know More',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ),
+                    Positioned(
+                    child: CustomButton(
+                      label: "Know More",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 10,
+                      ),
+                      onPressed: () {
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 
 class AddMemberPage extends StatefulWidget {
@@ -296,54 +297,32 @@ class _AddMemberPageState extends State<AddMemberPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // CANCEL
-                  SizedBox(
-                    height: 48,
-                    width: 140,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AllColors.primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        "Cancel",
-                        style: GoogleFonts.inter(
-                          color: AllColors.primaryColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  // ADD MEMBER
-                  _isloading
-                      ? CircularProgressIndicator()
-                      : SizedBox(
-                          height: 48,
-                          width: 160,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AllColors.primaryColor,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
+                    OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero, // 🔥 Square corners
                               ),
                             ),
-                            onPressed: addMember,
-                            child: Text(
-                              "Add Member",
-                              style: GoogleFonts.inter(
-                                color: AllColors.secondaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Cancel",
+                            style: GoogleFonts.inter(
+                              color: AllColors.primaryColor
+                            ),),
                           ),
+          
+                  const SizedBox(width: 16),
+                       CustomButton(
+                          label: "Add Student",
+                          // width: 160,
+                          height: 48,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          isLoading: _isloading,
+                          //backgroundColor: AllColors.primaryColor,
+                          //textColor: AllColors.secondaryColor,
+                          onPressed: _isloading ? null : addMember,
                         ),
+
                 ],
               ),
             ],

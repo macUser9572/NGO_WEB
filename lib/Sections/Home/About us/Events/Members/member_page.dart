@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -126,34 +127,18 @@ class _DesktopLayout extends StatelessWidget {
                   const SizedBox(height: 40),
 
                   // ================= BUTTON =================
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AllColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 16,
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    onPressed: () {
+                  Positioned(
+                    left: 0,
+                    bottom: 170,
+                    child: CustomButton(
+                      label: "View Members",
+                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const MembersListPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "View Members",
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        color: AllColors.secondaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                         MaterialPageRoute(builder: (_)=> const MembersListPage()));
+                     }
+                     )
+                    )
                 ],
               ),
             ),

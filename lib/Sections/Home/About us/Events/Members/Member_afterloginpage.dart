@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/addmemberpage.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 
 
@@ -81,28 +82,14 @@ class AddMemberPageTab extends StatelessWidget {
                   children: [
                     const Icon(Icons.search),
                     const SizedBox(width: 16),
-                   ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AllColors.primaryColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero, // Makes it square
-      ),
-    ),
-    onPressed: () {
-      showDialog(
-        context: context,
-        builder: (_) => const AddMemberPage(),
-      );
-    },
-    child: Text(
-      "Add members",
-      style: GoogleFonts.inter(
-        fontSize: 18,
-        color: AllColors.secondaryColor,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-  ),
+                  CustomButton(
+                    label:" Add members", 
+                    onPressed: (){
+                     showDialog(
+                      context: context, 
+                      builder: (_)=> const AddMemberPage()); 
+                    })
+
                   ],
                 ),
               ],
@@ -233,34 +220,16 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                     const SizedBox(width: 24),
 
                     // Delete
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AllColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 28,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () async {
-                        await FirebaseFirestore.instance
-                            .collection('Member_collection') // ✅ SAME as old
-                            .doc(memberId)
-                            .delete();
-
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "DELETE",
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          letterSpacing: 1,
-                          color: AllColors.secondaryColor,
-                        ),
-                      ),
-                    ),
+                    Positioned(
+                      child: CustomButton(
+                        label: "Delete",
+                         onPressed: ()async{
+                          await FirebaseFirestore.instance
+                          .collection('Member_collection')
+                          .doc(memberId)
+                          .delete();
+                         }))
+                   
                   ],
                 ),
               ],
@@ -467,21 +436,28 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text("Cancel"),
-                          ),
-                          const SizedBox(width: 16),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AllColors.primaryColor, // ✅ PRIMARY COLOR
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            style: OutlinedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero, // 🔥 Square corners
                               ),
                             ),
-                            onPressed: () async {
-                         
-                                  await FirebaseFirestore.instance
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Cancel",
+                            style: GoogleFonts.inter(
+                              color: AllColors.primaryColor
+                            ),),
+                          ),
+                          const SizedBox(width: 16),
+                          CustomButton(
+                            label: "Update Member",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            height: 48,
+                            backgroundColor: AllColors.primaryColor,
+                            textColor: AllColors.secondaryColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                             onPressed: ()async{
+                               await FirebaseFirestore.instance
                                   .collection('Member_collection')
                                   .doc(member.id)
                                   .update({
@@ -492,32 +468,17 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 "arrivalDate": arrivalDate,
                                 "exitDate": exitDate,
                                 "updatedAt": FieldValue.serverTimestamp(),
-                              });
-                             
 
-                              Navigator.pop(context);
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Member updated successfully"),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-
-                            },
-                            child: Text(
-                              "Update Member",
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color: AllColors.secondaryColor, // text color
-                                fontWeight: FontWeight.w600,
-                              ),
-                              
-                            ),
-                            
-                          ),
-
-                    
+                             });
+                             Navigator.pop(context);
+                             ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                    content: Text("Student updated successfully"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                             );
+                             }
+                          )
                         ],
                       ),
                     ],

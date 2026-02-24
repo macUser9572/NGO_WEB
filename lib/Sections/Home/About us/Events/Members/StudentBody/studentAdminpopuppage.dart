@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/Member_afterloginpage.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Afterstudentloginpage.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Student_list_page.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class Studentadminpopuppage extends StatefulWidget {
   const Studentadminpopuppage({super.key});
@@ -23,17 +20,24 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
 
   static const String ADMIN_EMAIL = "admin@ngo.com";
   static const String ADMIN_PASSWORD = "123456";
+
   void loginAdmin() {
     setState(() {
       error = "";
       isLoading = true;
     });
+
     Future.delayed(const Duration(milliseconds: 500), () {
       if (emailController.text.trim() == ADMIN_EMAIL &&
           passwordController.text.trim() == ADMIN_PASSWORD) {
-        Navigator.pushReplacement(
+        
+        Navigator.pop(context); // close popup first
+        
+        Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const AfterLoginStudentPage()),
+          MaterialPageRoute(
+            builder: (_) => const AfterLoginStudentPage(),
+          ),
         );
       } else {
         setState(() {
@@ -46,21 +50,22 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Center(
-        child: Container(
-          width: 420,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          decoration: BoxDecoration(
-            color: AllColors.secondaryColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: 420,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        decoration: BoxDecoration(
+          color: AllColors.secondaryColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //====================TITLE======================
+              
+              // ================= TITLE =================
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -79,7 +84,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
               ),
 
               Text(
-                "To view member  kindly login as an Admin",
+                "To view members kindly login as an Admin",
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey.shade600,
@@ -88,7 +93,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
 
               const SizedBox(height: 32),
 
-              //=======================USER NAME==================
+              // ================= USER NAME =================
               Text(
                 "User Name",
                 style: GoogleFonts.inter(
@@ -110,7 +115,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
 
               const SizedBox(height: 20),
 
-              //=====================PASSWORD======================
+              // ================= PASSWORD =================
               Text(
                 "Password",
                 style: GoogleFonts.inter(
@@ -142,12 +147,20 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
                 ),
               ),
 
+              if (error.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  error,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ],
+
               const SizedBox(height: 30),
 
-              //========================LOGIN BUTTON===================
+              // ================= LOGIN BUTTON =================
               SizedBox(
                 height: 45,
-                width: 365,
+                width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AllColors.primaryColor,
@@ -156,14 +169,19 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
                     ),
                   ),
                   onPressed: isLoading ? null : loginAdmin,
-                  child: Text(
-                    "LOGIN",
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      color: AllColors.secondaryColor,
-                      letterSpacing: 1,
-                    ),
-                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        )
+                      : Text(
+                          "LOGIN",
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            color: AllColors.secondaryColor,
+                            letterSpacing: 1,
+                          ),
+                        ),
                 ),
               ),
             ],

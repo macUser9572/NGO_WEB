@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 
@@ -178,37 +179,47 @@ final width = MediaQuery.of(context).size.width;
                       ),
 
                       const SizedBox(height: 25),
-
-                      SizedBox(
-                        width: 100,
-                        height: 40,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AllColors.primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          ),
-                          onPressed: isLoading ? null : _submitForm,
-                          child: isLoading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : Text(
-                                  "Send",
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    color: AllColors.secondaryColor,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                        ),
+                      CustomButton(
+                        label: "Send",
+                        // width: 100,
+                        // height: 40,
+                        // backgroundColor: AllColors.primaryColor,
+                        // textColor: AllColors.secondaryColor,
+                        // fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        isLoading: isLoading,
+                        onPressed: isLoading ? null : _submitForm,
                       ),
+                      // SizedBox(
+                      //   width: 100,
+                      //   height: 40,
+                      //   child: ElevatedButton(
+                      //     style: ElevatedButton.styleFrom(
+                      //       backgroundColor: AllColors.primaryColor,
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.zero,
+                      //       ),
+                      //     ),
+                      //     onPressed: isLoading ? null : _submitForm,
+                      //     child: isLoading
+                      //         ? const SizedBox(
+                      //             width: 18,
+                      //             height: 18,
+                      //             child: CircularProgressIndicator(
+                      //               strokeWidth: 2,
+                      //               color: Colors.white,
+                      //             ),
+                      //           )
+                      //         : Text(
+                      //             "Send",
+                      //             style: GoogleFonts.inter(
+                      //               fontSize: 16,
+                      //               color: AllColors.secondaryColor,
+                      //               fontWeight: FontWeight.w800,
+                      //             ),
+                      //           ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

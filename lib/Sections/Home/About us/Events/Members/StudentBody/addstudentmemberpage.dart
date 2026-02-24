@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -305,66 +306,28 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       mainAxisAlignment:
                           MainAxisAlignment.end,
                       children: [
-                        SizedBox(
-                          height: 48,
-                          width: 140,
-                          child: OutlinedButton(
+                        OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(
-                                  color:
-                                      AllColors.primaryColor),
-                              shape:
-                                  RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(6),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero, // 🔥 Square corners
                               ),
                             ),
-                            onPressed: () =>
-                                Navigator.pop(context),
-                            child: Text(
-                              "Cancel",
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color:
-                                    AllColors.primaryColor,
-                                fontWeight:
-                                    FontWeight.w800,
-                              ),
-                            ),
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Cancel",
+                            style: GoogleFonts.inter(
+                              color: AllColors.primaryColor
+                            ),),
                           ),
-                        ),
                         const SizedBox(width: 16),
-                        SizedBox(
+                        CustomButton(
+                          label: "Add Student",
+                          // width: 160,
                           height: 48,
-                          width: 160,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  AllColors.primaryColor,
-                              elevation: 0,
-                              shape:
-                                  RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(6),
-                              ),
-                            ),
-                            onPressed:
-                                _isLoading ? null : addStudent,
-                            child: _isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white)
-                                : Text(
-                                    "Add Student",
-                                    style:
-                                        GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight:
-                                          FontWeight.w600,
-                                      color: AllColors
-                                          .secondaryColor,
-                                    ),
-                                  ),
-                          ),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          isLoading: _isLoading,
+                        
+                          onPressed: _isLoading ? null : addStudent,
                         ),
                       ],
                     ),

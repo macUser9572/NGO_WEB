@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/adminloginpop_memberpage.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -78,28 +79,13 @@ class MembersListPage extends StatelessWidget {
           const SizedBox(width: 10),
           Padding(
   padding: const EdgeInsets.only(right: 24),
-  child: ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AllColors.primaryColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero, // Makes it square
-      ),
-    ),
-    onPressed: () {
+  child: CustomButton(
+    label: "Admin Login",
+     onPressed: (){
       showDialog(
-        context: context,
-        builder: (_) => const AdminLoginPopup(),
-      );
-    },
-    child: Text(
-      "Admin Login",
-      style: GoogleFonts.inter(
-        fontSize: 18,
-        color: AllColors.secondaryColor,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-  ),
+        context: context, 
+        builder: (_)=> const AdminLoginPopup());
+     }),
 ),
 
         ],
