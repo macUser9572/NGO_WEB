@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Student_list_page.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -36,12 +37,51 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
-  final List<Map<String, dynamic>> _slides = [
-    {"image": "assets/image/photo1.png"},
-    {"image": "assets/image/photo2.png"},
-    {"image": "assets/image/photo3.png"},
-    {"image": "assets/image/photo4.png"},
-  ];
+  List<String> _imageUrls = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchImages();
+  }
+
+  // ===================== FETCH IMAGES FROM FIRESTORE =====================
+  Future<void> _fetchImages() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection("student_body")
+          .doc("images")
+          .get();
+
+      if (doc.exists) {
+        final data = doc.data()!;
+        final List<String> urls = [];
+
+        // Collect all image URLs dynamically
+        int i = 1;
+        while (data.containsKey("image_${i}_url")) {
+          final url = data["image_${i}_url"];
+          if (url != null && url.toString().isNotEmpty) {
+            urls.add(url.toString());
+          }
+          i++;
+        }
+
+        if (mounted) {
+          setState(() {
+            _imageUrls = urls;
+            _isLoading = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      debugPrint("Error fetching student body images: $e");
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +100,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
             // ================= LEFT CONTENT =================
             Expanded(
-              flex: 5, // reduced from 6
+              flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -110,7 +150,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                         horizontal: 28,
                         vertical: 14,
                       ),
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
                       ),
                       elevation: 0,
@@ -138,99 +178,138 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
             // ================= RIGHT IMAGE CAROUSEL =================
             Expanded(
-              flex: 5, // increased from 4
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-
-                  // ── Carousel ──
-                  Expanded(
-                    child: CarouselSlider(
-                      carouselController: _carouselController,
-                      options: CarouselOptions(
-                        height: 580,
-                        viewportFraction: 1.0,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 3),
-                        autoPlayAnimationDuration:
-                            const Duration(milliseconds: 600),
-                        autoPlayCurve: Curves.easeInOut,
-                        enlargeCenterPage: false,
-                        scrollDirection: Axis.vertical,
-                        onPageChanged: (index, reason) {
-                          setState(() => _currentIndex = index);
-                        },
-                      ),
-                      items: _slides.map((slide) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            slide["image"]!,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  // ── Controls OUTSIDE to the RIGHT ──
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-
-                      // Up / Prev arrow
-                      GestureDetector(
-                        onTap: () => _carouselController.previousPage(),
-                        child: Icon(
-                          Icons.keyboard_arrow_up_rounded,
-                          color: AllColors.primaryColor,
-                          size: 24,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      // Vertical dots
-                      ..._slides.asMap().entries.map((entry) {
-                        final isActive = entry.key == _currentIndex;
-                        return GestureDetector(
-                          onTap: () =>
-                              _carouselController.animateToPage(entry.key),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            width: 8,
-                            height: isActive ? 24 : 8,
-                            decoration: BoxDecoration(
-                              color: isActive
-                                  ? AllColors.primaryColor
-                                  : AllColors.primaryColor.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(4),
+              flex: 5,
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _imageUrls.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No images available",
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              color: AllColors.thirdColor,
                             ),
                           ),
-                        );
-                      }),
+                        )
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
 
-                      const SizedBox(height: 10),
+                            // ── Carousel ──
+                            Expanded(
+                              child: CarouselSlider(
+                                carouselController: _carouselController,
+                                options: CarouselOptions(
+                                  height: 580,
+                                  viewportFraction: 1.0,
+                                  autoPlay: true,
+                                  autoPlayInterval: const Duration(seconds: 3),
+                                  autoPlayAnimationDuration:
+                                      const Duration(milliseconds: 600),
+                                  autoPlayCurve: Curves.easeInOut,
+                                  enlargeCenterPage: false,
+                                  scrollDirection: Axis.vertical,
+                                  onPageChanged: (index, reason) {
+                                    setState(() => _currentIndex = index);
+                                  },
+                                ),
+                                items: _imageUrls.map((url) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      url,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (context, child, progress) {
+                                        if (progress == null) return child;
+                                        return Container(
+                                          color: Colors.grey.shade200,
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder: (context, error, stack) {
+                                        return Container(
+                                          color: Colors.grey.shade200,
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.broken_image_outlined,
+                                              color: Colors.grey,
+                                              size: 40,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
 
-                      // Down / Next arrow
-                      GestureDetector(
-                        onTap: () => _carouselController.nextPage(),
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: AllColors.primaryColor,
-                          size: 24,
+                            const SizedBox(width: 12),
+
+                            // ── Controls OUTSIDE to the RIGHT ──
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+
+                                // Up / Prev arrow
+                                GestureDetector(
+                                  onTap: () =>
+                                      _carouselController.previousPage(),
+                                  child: Icon(
+                                    Icons.keyboard_arrow_up_rounded,
+                                    color: AllColors.primaryColor,
+                                    size: 24,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                // Vertical dots
+                                ..._imageUrls.asMap().entries.map((entry) {
+                                  final isActive = entry.key == _currentIndex;
+                                  return GestureDetector(
+                                    onTap: () => _carouselController
+                                        .animateToPage(entry.key),
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 4),
+                                      width: 8,
+                                      height: isActive ? 24 : 8,
+                                      decoration: BoxDecoration(
+                                        color: isActive
+                                            ? AllColors.primaryColor
+                                            : AllColors.primaryColor
+                                                .withOpacity(0.3),
+                                        borderRadius:
+                                            BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                  );
+                                }),
+
+                                const SizedBox(height: 10),
+
+                                // Down / Next arrow
+                                GestureDetector(
+                                  onTap: () => _carouselController.nextPage(),
+                                  child: Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: AllColors.primaryColor,
+                                    size: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
-
           ],
         ),
       ),

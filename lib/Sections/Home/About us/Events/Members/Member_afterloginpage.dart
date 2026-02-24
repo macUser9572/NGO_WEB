@@ -95,7 +95,7 @@ class AddMemberPageTab extends StatelessWidget {
       );
     },
     child: Text(
-      "Admin Login",
+      "Add members",
       style: GoogleFonts.inter(
         fontSize: 18,
         color: AllColors.secondaryColor,
