@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -175,6 +176,7 @@ class _VideolinkState extends State<Videolink> {
               ),
             ),
             const SizedBox(height: 10),
+
             Container(
               height: 60,
               decoration: BoxDecoration(
@@ -184,6 +186,7 @@ class _VideolinkState extends State<Videolink> {
               ),
               child: Row(
                 children: [
+                  // File Name
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -191,36 +194,22 @@ class _VideolinkState extends State<Videolink> {
                         _videoFileName,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
-                          fontSize: 14,
+                          fontSize: 15,
                           color: _videoBytes != null
                               ? Colors.green.shade700
-                              : Colors.grey.shade600,
+                              : Colors.grey.shade700,
                         ),
                       ),
                     ),
                   ),
+
+                  // Choose File Button
                   Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: GestureDetector(
-                      onTap: _isLoading ? null : _pickVideo,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AllColors.secondaryColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          "Choose file",
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: AllColors.primaryColor,
-                          ),
-                        ),
-                      ),
+                    padding: const EdgeInsets.only(right: 8),
+                    child: CustomButton(
+                      label: "Choose file",
+                      fontWeight: FontWeight.w600,
+                      onPressed: _isLoading ? null : _pickVideo,
                     ),
                   ),
                 ],
@@ -300,33 +289,11 @@ class _VideolinkState extends State<Videolink> {
             // ── Upload Button ──
             Align(
               alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3F6B3F),
-                  fixedSize: const Size(160, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
+              child: CustomButton(
+                label: "Upload",
+                fontWeight: FontWeight.w600,
+                isLoading: _isLoading,
                 onPressed: _isLoading ? null : _uploadVideo,
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        "Upload",
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
               ),
             ),
           ],

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,13 +17,12 @@ class Studentimagebackend extends StatefulWidget {
 class _StudentimagebackendState extends State<Studentimagebackend> {
   final int _requiredCount = 4;
 
-  // ✅ Growable lists
   final List<Uint8List?> _imageBytes = [null, null, null, null];
   final List<String> _imageFileNames = [
-    "No file choosen",
-    "No file choosen",
-    "No file choosen",
-    "No file choosen",
+    "No file chosen",
+    "No file chosen",
+    "No file chosen",
+    "No file chosen",
   ];
 
   bool _isLoading = false;
@@ -31,7 +31,7 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
   void _addMoreRow() {
     setState(() {
       _imageBytes.add(null);
-      _imageFileNames.add("No file choosen");
+      _imageFileNames.add("No file chosen");
     });
   }
 
@@ -57,7 +57,6 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
 
   // ===================== UPLOAD IMAGES =====================
   Future<void> _uploadImages() async {
-    // Validate first 4 required images
     for (int i = 0; i < _requiredCount; i++) {
       if (_imageBytes[i] == null) {
         _showSnackBar(
@@ -201,26 +200,10 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
               // Choose file button
               Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: GestureDetector(
-                  onTap: _isLoading ? null : () => _pickImage(index),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AllColors.secondaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      "Choose file",
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: AllColors.primaryColor,
-                      ),
-                    ),
-                  ),
+                child: CustomButton(
+                  label: "Choose file",
+                  fontWeight: FontWeight.w600,
+                  onPressed: _isLoading ? null : () => _pickImage(index),
                 ),
               ),
             ],
@@ -245,7 +228,7 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Header (FIXED) ──
+            // ── Header ──
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -273,7 +256,6 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Dynamic image rows
                     ...List.generate(
                       _imageBytes.length,
                       (index) => _buildImagePicker(index),
@@ -293,11 +275,7 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.add,
-                              size: 18,
-                              color: Colors.grey.shade600,
-                            ),
+                            Icon(Icons.add, size: 18, color: Colors.grey.shade600),
                             const SizedBox(width: 6),
                             Text(
                               "Add More",
@@ -320,36 +298,14 @@ class _StudentimagebackendState extends State<Studentimagebackend> {
 
             const SizedBox(height: 12),
 
-            // ── Upload Button (FIXED) ──
+            // ── Upload Button ──
             Align(
               alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3F6B3F),
-                  fixedSize: const Size(140, 48),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
+              child: CustomButton(
+                label: "Upload",
+                fontWeight: FontWeight.w600,
+                isLoading: _isLoading,
                 onPressed: _isLoading ? null : _uploadImages,
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        "Upload",
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
               ),
             ),
           ],

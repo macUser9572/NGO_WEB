@@ -19,7 +19,7 @@ class _AdminLoginPopupState extends State<AdminLoginPopup> {
   bool isLoading = false;
 
   static const String ADMIN_EMAIL = "admin@ngo.com";
-  static const String ADMIN_PASSWORD = "123456";
+  static const String ADMIN_PASSWORD = "changma@2026";
 
   Future<void> loginAdmin() async {
     setState(() {

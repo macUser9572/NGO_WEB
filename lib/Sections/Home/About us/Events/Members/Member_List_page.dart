@@ -1,22 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/adminloginpop_memberpage.dart';
 import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-// Assume these already exist in your project
-// import 'all_colors.dart';
-// import 'admin_login_popup.dart';
+import 'package:ngo_web/constraints/custom_text.dart';
 
 class MembersListPage extends StatelessWidget {
   const MembersListPage({super.key});
@@ -25,7 +14,7 @@ class MembersListPage extends StatelessWidget {
   Widget membersStream() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('Member_collection') // ✅ correct collection
+          .collection('Member_collection')
           .where('createdAt', isNull: false)
           .orderBy('createdAt', descending: true)
           .snapshots(),
@@ -48,7 +37,6 @@ class MembersListPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final data =
                 snapshot.data!.docs[index].data() as Map<String, dynamic>;
-
             final member = Member.fromMap(data);
             return _memberRow(member);
           },
@@ -62,8 +50,6 @@ class MembersListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AllColors.secondaryColor,
-
-      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: AllColors.secondaryColor,
         elevation: 0,
@@ -78,20 +64,19 @@ class MembersListPage extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Padding(
-  padding: const EdgeInsets.only(right: 24),
-  child: CustomButton(
-    label: "Admin Login",
-     onPressed: (){
-      showDialog(
-        context: context, 
-        builder: (_)=> const AdminLoginPopup());
-     }),
-),
-
+            padding: const EdgeInsets.only(right: 24),
+            child: CustomButton(
+              label: "Admin Login",
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => const AdminLoginPopup(),
+                );
+              },
+            ),
+          ),
         ],
       ),
-
-      // ================= BODY =================
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Column(
@@ -105,8 +90,6 @@ class MembersListPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-
-            /// 🔥 FIREBASE DATA
             Expanded(child: membersStream()),
           ],
         ),
@@ -120,36 +103,72 @@ class MembersListPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundImage: member.image.isNotEmpty
-                ? NetworkImage(member.image)
-                : null,
-            child: member.image.isEmpty ? const Icon(Icons.person) : null,
+          // ── Avatar with SVG fallback ──
+          member.image.isNotEmpty
+              ? CircleAvatar(
+                  radius: 22,
+                  backgroundImage: NetworkImage(member.image),
+                )
+              : SvgPicture.asset(
+                  "assets/icons/user.svg",
+                  width: 32,
+                  height: 32,
+                ),
+
+          const SizedBox(width: 12),
+
+          // ── Name ──
+          Expanded(flex: 3, child: Text(member.name , style: GoogleFonts.inter(fontSize: 16,fontWeight:FontWeight.w500,color: Colors.black))),
+
+          // ── Phone (masked) ──
+          Expanded(
+            flex: 3,
+            child: Row(
+              children:  [
+                SvgPicture.asset("assets/icons/PhoneCall.svg", height: 32,width: 32,),
+                SizedBox(width: 6),
+                Expanded(child: Text("***********" , style: CustomText.memberBodyColor,)),
+              ],
+            ),
           ),
-          const SizedBox(width: 20),
 
-          SizedBox(width: 120, child: Text(member.name)),
-          const SizedBox(width: 10),
+          // ── Place ──
+          Expanded(
+            flex: 4,
+            child: Row(
+              children: [
+                SvgPicture.asset("assets/icons/place.svg", height: 32,width: 32,),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(member.place, overflow: TextOverflow.ellipsis, style: CustomText.memberBodyColor,),
+                ),
+              ],
+            ),
+          ),
 
-          const Icon(Icons.phone, size: 18),
-          const SizedBox(width: 6),
-          SizedBox(width: 110, child: Text("***********")),
+          // ── Check In ──
+          Expanded(
+            flex: 3,
+            child: Row(
+              children: [
+               SvgPicture.asset("assets/icons/SignIn.svg", height: 32,width: 32,),
+                const SizedBox(width: 6),
+                Expanded(child: Text(member.checkIn, style: CustomText.memberBodyColor,)),
+              ],
+            ),
+          ),
 
-          const SizedBox(width: 20),
-          const Icon(Icons.public, size: 18),
-          const SizedBox(width: 6),
-          SizedBox(width: 120, child: Text(member.place)),
-
-          const SizedBox(width: 20),
-          const Icon(Icons.login, size: 18),
-          const SizedBox(width: 6),
-          Text(member.checkIn),
-
-          const SizedBox(width: 30),
-          const Icon(Icons.logout, size: 18),
-          const SizedBox(width: 6),
-          Text(member.checkOut),
+          // ── Check Out ──
+          Expanded(
+            flex: 3,
+            child: Row(
+              children: [
+                SvgPicture.asset("assets/icons/SignOut.svg", height: 32,width: 32,),
+                const SizedBox(width: 6),
+                Expanded(child: Text(member.checkOut, style: CustomText.memberBodyColor,)),
+              ],
+            ),
+          ),
         ],
       ),
     );

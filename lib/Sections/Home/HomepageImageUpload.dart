@@ -15,7 +15,6 @@ class HomepageUploadPopup extends StatefulWidget {
 }
 
 class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
-
   String fileName = "No file chosen";
   Uint8List? fileBytes;
   bool _isLoading = false;
@@ -45,7 +44,6 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. Upload image to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('homepage_images/${DateTime.now().millisecondsSinceEpoch}_$fileName');
@@ -55,10 +53,8 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
         SettableMetadata(contentType: 'image/jpeg'),
       );
 
-      // 2. Get the download URL
       final downloadURL = await uploadTask.ref.getDownloadURL();
 
-      // 3. Save URL to Firestore
       await FirebaseFirestore.instance
           .collection('homepage')
           .doc('banner_image')
@@ -74,7 +70,6 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
         );
         Navigator.pop(context);
       }
-
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -90,9 +85,7 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         width: 700,
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
@@ -100,13 +93,11 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            /// 🔹 Header Row (Title + Close Icon)
+            /// Header Row (Title + Close Icon)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   "Homepage",
                   style: GoogleFonts.inter(
@@ -115,7 +106,6 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
                     color: Colors.black,
                   ),
                 ),
-
                 IconButton(
                   onPressed: _isLoading ? null : () => Navigator.pop(context),
                   icon: const Icon(Icons.close),
@@ -126,7 +116,7 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
 
             const SizedBox(height: 30),
 
-            /// 🔹 Image Label
+            /// Image Label
             Text(
               "Image",
               style: GoogleFonts.inter(
@@ -137,7 +127,7 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
 
             const SizedBox(height: 10),
 
-            /// 🔹 File Picker Field
+            /// File Picker Field — original big container UI
             Container(
               height: 60,
               decoration: BoxDecoration(
@@ -147,7 +137,6 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
               ),
               child: Row(
                 children: [
-
                   /// File Name
                   Expanded(
                     child: Padding(
@@ -163,29 +152,13 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
                     ),
                   ),
 
-                  /// Choose File Button
+                  /// Choose File Button — same size as Upload button
                   Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: GestureDetector(
-                      onTap: _isLoading ? null : pickFile,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AllColors.secondaryColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          "Choose file",
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: AllColors.primaryColor,
-                          ),
-                        ),
-                      ),
+                    padding: const EdgeInsets.only(right: 8),
+                    child: CustomButton(
+                      label: "Choose file",
+                      fontWeight: FontWeight.w600,
+                      onPressed: _isLoading ? null : pickFile,
                     ),
                   ),
                 ],
@@ -194,49 +167,16 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
 
             const SizedBox(height: 40),
 
-            /// 🔹 Upload Button
-            // Align(
-            //     alignment: Alignment.centerRight,
-            //     child: CustomButton(
-            //       label: "Upload",
-            //       fontWeight: FontWeight.w600,
-            //       isLoading: _isLoading,
-            //       // backgroundColor: const Color(0xFF3F6B3F),
-            //       // textColor: Colors.white,
-            //       onPressed: _isLoading ? null : uploadFile,
-            //     ),
-            //   ),
-                          Align(
+            /// Upload Button
+            Align(
               alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3F6B3F),
-                  fixedSize: const Size(160, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+              child: CustomButton(
+                label: "Upload",
+                fontWeight: FontWeight.w600,
+                isLoading: _isLoading,
                 onPressed: _isLoading ? null : uploadFile,
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        "Upload",
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
               ),
             ),
-
           ],
         ),
       ),

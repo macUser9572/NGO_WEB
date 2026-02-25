@@ -1,7 +1,7 @@
-
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -31,9 +31,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
 
   // ================= PICK IMAGE =================
   Future<Uint8List?> pickImage() async {
-    final XFile? file =
-        await _picker.pickImage(source: ImageSource.gallery);
-
+    final XFile? file = await _picker.pickImage(source: ImageSource.gallery);
     if (file != null) {
       return await file.readAsBytes();
     }
@@ -46,7 +44,6 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
         .ref()
         .child("events")
         .child("$name.jpg");
-
     await ref.putData(file);
     return await ref.getDownloadURL();
   }
@@ -88,7 +85,10 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
       String imageUrl3 = await uploadImage(image3!, "image3_$time");
       String imageUrl4 = await uploadImage(image4!, "image4_$time");
 
-      await FirebaseFirestore.instance.collection("events").doc("upload_events").set({
+      await FirebaseFirestore.instance
+          .collection("events")
+          .doc("upload_events")
+          .set({
         "title1": title1Controller.text.trim(),
         "title2": title2Controller.text.trim(),
         "title3": title3Controller.text.trim(),
@@ -141,8 +141,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
             controller: controller,
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16),
             ),
           ),
         ),
@@ -151,8 +150,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
   }
 
   // ================= IMAGE UPLOAD FIELD =================
-  Widget buildUploadField(
-      Uint8List? image, Function(Uint8List) onSelected) {
+  Widget buildUploadField(Uint8List? image, Function(Uint8List) onSelected) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -162,7 +160,6 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
         const SizedBox(height: 8),
         Container(
           height: 55,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.grey.shade100,
             borderRadius: BorderRadius.circular(10),
@@ -171,34 +168,30 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  image == null
-                      ? "No file chosen"
-                      : "Image Selected",
-                  style:
-                      GoogleFonts.inter(color: Colors.grey),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    image == null ? "No file chosen" : "Image Selected",
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      color: image != null
+                          ? Colors.green.shade700
+                          : Colors.grey.shade600,
+                    ),
+                  ),
                 ),
               ),
-              GestureDetector(
-                onTap: () async {
-                  Uint8List? file = await pickImage();
-                  if (file != null) {
-                    onSelected(file);
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AllColors.secondaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    "Choose file",
-                    style: GoogleFonts.inter(
-                        color: AllColors.primaryColor,
-                        fontWeight: FontWeight.w700),
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: CustomButton(
+                  label: "Choose file",
+                  fontWeight: FontWeight.w600,
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          Uint8List? file = await pickImage();
+                          if (file != null) onSelected(file);
+                        },
                 ),
               ),
             ],
@@ -209,10 +202,11 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
   }
 
   Widget buildRow(
-      String label,
-      TextEditingController controller,
-      Uint8List? image,
-      Function(Uint8List) onSelected) {
+    String label,
+    TextEditingController controller,
+    Uint8List? image,
+    Function(Uint8List) onSelected,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25),
       child: Row(
@@ -236,8 +230,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
-
-            // ===== HEADER (FIXED) =====
+            // ===== HEADER =====
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -262,7 +255,6 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-
                     buildRow("Image 1 Title", title1Controller, image1,
                         (file) => setState(() => image1 = file)),
 
@@ -285,33 +277,14 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
               ),
             ),
 
-            // ===== FOOTER (FIXED) =====
+            // ===== FOOTER =====
             Align(
               alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: _isLoading ? null : uploadEvent,
-                child: Container(
-                  height: 50,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: AllColors.primaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: _isLoading
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          )
-                        : const Text(
-                            "Upload",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                  ),
-                ),
+              child: CustomButton(
+                label: "Upload",
+                fontWeight: FontWeight.w600,
+                isLoading: _isLoading,
+                onPressed: _isLoading ? null : uploadEvent,
               ),
             ),
           ],

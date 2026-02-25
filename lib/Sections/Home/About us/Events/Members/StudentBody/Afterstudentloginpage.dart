@@ -4,13 +4,7 @@ import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/adds
 import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/addstudentmemberpage.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
 
 class AfterLoginStudentPage extends StatelessWidget {
   const AfterLoginStudentPage({super.key});
@@ -77,35 +71,34 @@ class AfterLoginStudentPage extends StatelessWidget {
             const SizedBox(height: 24),
 
             // HEADER
-     Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Text(
-      "Student Member",
-      style: GoogleFonts.inter(
-        fontSize: 40,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-    Row(
-      children: [
-        const Icon(Icons.search),
-        const SizedBox(width: 16),
-
-        CustomButton(
-          label: "Add Student",
-          onPressed: () {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => const AddStudentMemberPage(),
-            );
-          },
-        ),
-      ],
-    ),
-  ],
-),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Student Member",
+                  style: GoogleFonts.inter(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.search),
+                    const SizedBox(width: 16),
+                    CustomButton(
+                      label: "Add Student",
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => const AddStudentMemberPage(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
 
             const SizedBox(height: 30),
 
@@ -123,68 +116,71 @@ class AfterLoginStudentPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
+          // ── Avatar ──
           CircleAvatar(
             radius: 22,
             backgroundImage:
                 member.image.isNotEmpty ? NetworkImage(member.image) : null,
-            child: member.image.isEmpty
-                ? const Icon(Icons.person)
-                : null,
+            child: member.image.isEmpty ? const Icon(Icons.person) : null,
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 32),
 
-          SizedBox(width: 120, child: Text(member.name)),
-          const SizedBox(width: 10),
+          // ── Name ──
+          SizedBox(width: 130, child: Text(member.name)),
+          const SizedBox(width: 40),
 
+          // ── Phone ──
           const Icon(Icons.phone, size: 18),
           const SizedBox(width: 6),
           SizedBox(width: 110, child: Text(member.phone)),
+          const SizedBox(width: 40),
 
-          const SizedBox(width: 20),
-          const Icon(Icons.place, size: 18),
+          // ── College ──
+          const Icon(Icons.school, size: 18),
           const SizedBox(width: 6),
-          SizedBox(width: 120, child: Text(member.collage)),
+          SizedBox(width: 140, child: Text(member.collage)),
+          const SizedBox(width: 40),
 
-          const SizedBox(width: 20),
-          const Icon(Icons.place, size: 18),
+          // ── Course ──
+          const Icon(Icons.menu_book, size: 18),
           const SizedBox(width: 6),
-          SizedBox(width: 120, child: Text(member.course)),
+          SizedBox(width: 130, child: Text(member.course)),
+          const SizedBox(width: 40),
 
-
-          const SizedBox(width: 20),
+          // ── Place ──
           const Icon(Icons.place, size: 18),
           const SizedBox(width: 6),
           SizedBox(width: 120, child: Text(member.place)),
+          const SizedBox(width: 40),
 
-          const SizedBox(width: 20),
+          // ── Check In ──
           const Icon(Icons.login, size: 18),
           const SizedBox(width: 6),
-          Text(member.checkIn),
+          SizedBox(width: 90, child: Text(member.checkIn)),
+          const SizedBox(width: 40),
 
-          const SizedBox(width: 30),
+          // ── Check Out ──
           const Icon(Icons.logout, size: 18),
           const SizedBox(width: 6),
-          Text(member.checkOut),
+          SizedBox(width: 90, child: Text(member.checkOut)),
 
           const Spacer(),
 
+          // ── Actions ──
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            onPressed: () {
-              _showEditMemberDialog(context, member);
-            },
+            onPressed: () => _showEditMemberDialog(context, member),
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            onPressed: () {
-              _showDeleteDialog(context, member.id);
-            },
+            onPressed: () => _showDeleteDialog(context, member.id),
           ),
         ],
       ),
     );
   }
 }
+
 // ================= MEMBER MODEL =================
 class Member {
   final String id;
@@ -234,8 +230,7 @@ class Member {
   }
 }
 
-
-  //Delete
+// ==================== DELETE DIALOG ====================
 void _showDeleteDialog(BuildContext context, String memberId) {
   showDialog(
     context: context,
@@ -253,11 +248,8 @@ void _showDeleteDialog(BuildContext context, String memberId) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon / Image
                 Image.asset("assets/image/dustbin.png", height: 120),
                 const SizedBox(height: 20),
-
-                // Title
                 Text(
                   "Delete Student",
                   style: GoogleFonts.inter(
@@ -266,8 +258,6 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Content
                 Text(
                   "Are you sure you want to delete this member?",
                   textAlign: TextAlign.center,
@@ -277,12 +267,9 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                   ),
                 ),
                 const SizedBox(height: 28),
-
-                // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Cancel
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
@@ -294,17 +281,16 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                       ),
                     ),
                     const SizedBox(width: 24),
-
-                    // Delete
-                    Positioned(
-                      child: CustomButton(label: "Delete", 
-                      onPressed: ()async{
+                    CustomButton(
+                      label: "Delete",
+                      onPressed: () async {
                         await FirebaseFirestore.instance
-                        .collection('Student_collection')
-                        .doc(memberId)
-                        .delete();
-                      })
-                    )
+                            .collection('Student_collection')
+                            .doc(memberId)
+                            .delete();
+                        Navigator.pop(context);
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -315,20 +301,17 @@ void _showDeleteDialog(BuildContext context, String memberId) {
     },
   );
 }
-//===================EDIT DIALOG=================
+
+// ==================== EDIT DIALOG ====================
 void _showEditMemberDialog(BuildContext context, Member member) {
-  // controllers (pre-filled)
   final nameController = TextEditingController(text: member.name);
   final phoneController = TextEditingController(text: member.phone);
-  final CollageController = TextEditingController(text: member.collage);
-  final CouresController = TextEditingController(text: member.course);
-
+  final collageController = TextEditingController(text: member.collage);
+  final courseController = TextEditingController(text: member.course);
   final descriptionController = TextEditingController();
 
   String? selectedGender;
   String? selectedState = member.place;
-  //loading
- // bool _isloading =false;
 
   DateTime? arrivalDate =
       member.checkIn.isNotEmpty ? DateTime.parse(member.checkIn) : null;
@@ -365,7 +348,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Edit Studend",
+                        "Edit Student",
                         style: GoogleFonts.inter(
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
@@ -382,95 +365,80 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       const SizedBox(height: 28),
 
                       _label("Student Name"),
-                      _textField(
-                        "Edit Student name",
-                        controller: nameController,
-                      ),
-
+                      _textField("Edit Student name", controller: nameController),
                       const SizedBox(height: 20),
 
                       _label("Student Phone Number"),
                       _textField(
-                        "Edit Studemt phone number",
+                        "Edit Student phone number",
                         keyboardType: TextInputType.phone,
                         controller: phoneController,
                       ),
                       const SizedBox(height: 20),
 
-                      _label("Student Collage"),
-                      _textField(
-                        "Edit Studemt collage",
-                        keyboardType: TextInputType.phone,
-                        controller: CollageController,
-                      ),
+                      _label("Student College"),
+                      _textField("Edit Student college", controller: collageController),
                       const SizedBox(height: 20),
 
                       _label("Student Course"),
-                      _textField(
-                        "Edit Studemt Course",
-                        keyboardType: TextInputType.phone,
-                        controller: CouresController,
-                      ),
+                      _textField("Edit Student Course", controller: courseController),
                       const SizedBox(height: 20),
 
                       Row(
                         children: [
                           Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label("Gender"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _inputDecoration().copyWith(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                          ),
-                          hint: const Text("Select Gender"),
-                          items: const [
-                            DropdownMenuItem(value: "Male", child: Text("Male")),
-                            DropdownMenuItem(value: "Female", child: Text("Female")),
-                            DropdownMenuItem(value: "Children",child: Text("Childern")),
-                            DropdownMenuItem(value: "Others", child: Text("Others")),
-                          ],
-                          onChanged: (value) {
-                            setState(() => selectedGender = value);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),         
-                  const SizedBox(width: 16),
-                        Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label("State / Hometown"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _inputDecoration().copyWith(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            floatingLabelBehavior: FloatingLabelBehavior.never
-                          ),
-                          hint: const Text("Select State"),
-                          items: states
-                              .map(
-                                (s) => DropdownMenuItem(
-                                  value: s,
-                                  child: Text(s),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _label("Gender"),
+                                DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  dropdownColor: Colors.grey[100],
+                                  decoration: _inputDecoration().copyWith(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                  ),
+                                  hint: const Text("Select Gender"),
+                                  items: const [
+                                    DropdownMenuItem(value: "Male", child: Text("Male")),
+                                    DropdownMenuItem(value: "Female", child: Text("Female")),
+                                    DropdownMenuItem(value: "Children", child: Text("Children")),
+                                    DropdownMenuItem(value: "Others", child: Text("Others")),
+                                  ],
+                                  onChanged: (value) =>
+                                      setState(() => selectedGender = value),
                                 ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() => selectedState = value);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _label("State / Hometown"),
+                                DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  dropdownColor: Colors.grey[100],
+                                  decoration: _inputDecoration().copyWith(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  ),
+                                  hint: const Text("Select State"),
+                                  value: selectedState,
+                                  items: states
+                                      .map((s) => DropdownMenuItem(
+                                            value: s,
+                                            child: Text(s),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) =>
+                                      setState(() => selectedState = value),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
 
@@ -484,11 +452,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               children: [
                                 _label("Arrival Date"),
                                 _dateBox(arrivalDate, () {
-                                  _openCalendar(
-                                    context,
-                                    arrivalDate,
-                                    (d) => setState(() => arrivalDate = d),
-                                  );
+                                  _openCalendar(context, arrivalDate,
+                                      (d) => setState(() => arrivalDate = d));
                                 }),
                               ],
                             ),
@@ -500,11 +465,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               children: [
                                 _label("Exit Date"),
                                 _dateBox(exitDate, () {
-                                  _openCalendar(
-                                    context,
-                                    exitDate,
-                                    (d) => setState(() => exitDate = d),
-                                  );
+                                  _openCalendar(context, exitDate,
+                                      (d) => setState(() => exitDate = d));
                                 }),
                               ],
                             ),
@@ -518,9 +480,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       TextField(
                         controller: descriptionController,
                         maxLines: 4,
-                        decoration: _inputDecoration(
-                          hint: "Enter a brief description",
-                        ),
+                        decoration:
+                            _inputDecoration(hint: "Enter a brief description"),
                       ),
 
                       const SizedBox(height: 32),
@@ -531,53 +492,52 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                           OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero, // 🔥 Square corners
+                                borderRadius: BorderRadius.zero,
                               ),
                             ),
                             onPressed: () => Navigator.pop(context),
-                            child: Text("Cancel",
-                            style: GoogleFonts.inter(
-                              color: AllColors.primaryColor
-                            ),),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                  color: AllColors.primaryColor),
+                            ),
                           ),
                           const SizedBox(width: 16),
                           CustomButton(
-                              label: "Update Student",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              height: 48,
-                              backgroundColor: AllColors.primaryColor,
-                              textColor: AllColors.secondaryColor,
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                              onPressed: () async {
+                            label: "Update Student",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            height: 48,
+                            backgroundColor: AllColors.primaryColor,
+                            textColor: AllColors.secondaryColor,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 10),
+                            onPressed: () async {
+                              await FirebaseFirestore.instance
+                                  .collection('Student_collection')
+                                  .doc(member.id)
+                                  .update({
+                                "name": nameController.text.trim(),
+                                "phone": phoneController.text.trim(),
+                                "collage": collageController.text.trim(),
+                                "course": courseController.text.trim(),
+                                "state": selectedState,
+                                "gender": selectedGender,
+                                "arrivalDate": arrivalDate,
+                                "exitDate": exitDate,
+                                "updatedAt": FieldValue.serverTimestamp(),
+                              });
 
-                                await FirebaseFirestore.instance
-                                    .collection('Student_collection')
-                                    .doc(member.id)
-                                    .update({
-                                  "name": nameController.text.trim(),
-                                  "phone": phoneController.text.trim(),
-                                  "Collage": CollageController.text.trim(),
-                                  "Coures": CouresController.text.trim(),
-                                  "state": selectedState,
-                                  "gender": selectedGender,
-                                  "arrivalDate": arrivalDate,
-                                  "exitDate": exitDate,
-                                  "updatedAt": FieldValue.serverTimestamp(),
-                                });
+                              Navigator.pop(context);
 
-                                Navigator.pop(context);
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Student updated successfully"),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              },
-                            )
-
-                    
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Student updated successfully"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],
@@ -592,14 +552,16 @@ void _showEditMemberDialog(BuildContext context, Member member) {
   );
 }
 
+// ==================== SHARED HELPERS ====================
 
 Widget _label(String text) => Padding(
-  padding: const EdgeInsets.only(bottom: 8),
-  child: Text(
-    text,
-    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
-  ),
-);
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    );
+
 Widget _textField(
   String hint, {
   TextInputType keyboardType = TextInputType.text,
@@ -611,15 +573,17 @@ Widget _textField(
     decoration: _inputDecoration(hint: hint),
   );
 }
+
 InputDecoration _inputDecoration({String? hint}) => InputDecoration(
-  hintText: hint,
-  filled: true,
-  fillColor: Colors.grey[100],
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(4),
-    borderSide: BorderSide.none,
-  ),
-);
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.grey[100],
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(4),
+        borderSide: BorderSide.none,
+      ),
+    );
+
 Widget _dateBox(DateTime? date, VoidCallback onTap) {
   return InkWell(
     onTap: onTap,
@@ -635,14 +599,14 @@ Widget _dateBox(DateTime? date, VoidCallback onTap) {
         date == null
             ? "Select date"
             : "${date.day.toString().padLeft(2, '0')}-"
-                  "${date.month.toString().padLeft(2, '0')}-"
-                  "${date.year}",
+                "${date.month.toString().padLeft(2, '0')}-"
+                "${date.year}",
       ),
     ),
   );
 }
-//==========================CALENDER ONLY=========================
 
+// ==================== CALENDAR ====================
 void _openCalendar(
   BuildContext context,
   DateTime? initialDate,
@@ -695,7 +659,7 @@ void _openCalendar(
   );
 }
 
-// PAGINATION (UNCHANGED)
+// ==================== PAGINATION ====================
 Widget _pagination() {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -732,7 +696,7 @@ Widget _pagination() {
   );
 }
 
-// ===================== MEMBER MODEL =====================
+// ==================== STUDENT MODEL ====================
 class Student {
   final String id;
   final String name;
@@ -763,24 +727,20 @@ class Student {
       phone: data['phone']?.toString() ?? '',
       collage: data['collage']?.toString() ?? '',
       course: data['course']?.toString() ?? '',
-      place: data['state']?.toString() ??
-          data['place']?.toString() ??
-          '',
+      place: data['state']?.toString() ?? data['place']?.toString() ?? '',
       checkIn: data['arrivalDate'] is Timestamp
           ? _formatDate(data['arrivalDate'])
           : '',
-      checkOut: data['exitDate'] is Timestamp
-          ? _formatDate(data['exitDate'])
-          : '',
+      checkOut:
+          data['exitDate'] is Timestamp ? _formatDate(data['exitDate']) : '',
       image: data['image']?.toString() ?? '',
     );
   }
 
-  // ================= HELPER =================
   static String _formatDate(Timestamp timestamp) {
     final date = timestamp.toDate();
     return "${date.day.toString().padLeft(2, '0')}-"
-           "${date.month.toString().padLeft(2, '0')}-"
-           "${date.year}";
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
   }
 }

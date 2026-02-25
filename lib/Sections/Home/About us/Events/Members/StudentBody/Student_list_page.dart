@@ -1,18 +1,18 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/Member_afterloginpage.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/studentAdminpopuppage.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/adminloginpop_memberpage.dart';
 import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:ngo_web/constraints/custom_text.dart';
 
 class StudentListPage extends StatelessWidget {
   const StudentListPage({super.key});
 
-  // ================== Firebase stream ======================
+  // ================== FIREBASE STREAM ======================
   Widget memberStream() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -55,33 +55,33 @@ class StudentListPage extends StatelessWidget {
       backgroundColor: AllColors.secondaryColor,
 
       // =================== APP BAR ===================
-appBar: AppBar(
-  backgroundColor: AllColors.secondaryColor,
-  elevation: 0,
-  leading: IconButton(
-    onPressed: () => Navigator.pop(context),
-    icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
-  ),
-  actions: [
-    IconButton(
-      onPressed: () {},
-      icon: const Icon(Icons.search, color: AllColors.thirdColor),
-    ),
-    Padding(
-  padding: const EdgeInsets.only(right: 16),
-  child: CustomButton(
-    label: "Admin Login",
-    onPressed: () {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Studentadminpopuppage(),
-      );
-    },
-  ),
-),
-  ],
-),
+      appBar: AppBar(
+        backgroundColor: AllColors.secondaryColor,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search, color: AllColors.thirdColor),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: CustomButton(
+              label: "Admin Login",
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => const Studentadminpopuppage(),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
 
       // =================== BODY ===================
       body: Padding(
@@ -102,7 +102,6 @@ appBar: AppBar(
             ),
             const SizedBox(height: 30),
 
-            // FIREBASE DATA
             Expanded(child: memberStream()),
           ],
         ),
@@ -111,51 +110,130 @@ appBar: AppBar(
   }
 }
 
-//==================== MEMBER ROW =====================
+// ================= MEMBER ROW =================
 Widget _memberRow(Member member) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 16),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CircleAvatar(
-          radius: 22,
-          backgroundImage:
-              member.image.isNotEmpty ? NetworkImage(member.image) : null,
-          child: member.image.isEmpty ? const Icon(Icons.person) : null,
+        // ── Avatar with SVG fallback ──
+        member.image.isNotEmpty
+            ? CircleAvatar(
+                radius: 22,
+                backgroundImage: NetworkImage(member.image),
+              )
+            : SvgPicture.asset(
+                    'assets/icons/user.svg',
+                    width: 32,
+                    height: 32,
+                  
+                  ),
+
+        const SizedBox(width: 32),
+
+        // ── Name ──
+        Expanded(
+          child: Text(member.name, style: GoogleFonts.inter(fontSize: 16,fontWeight:FontWeight.w500,color: Colors.black),),
         ),
-        const SizedBox(width: 20),
 
-        SizedBox(width: 120, child: Text(member.name)),
-        const SizedBox(width: 10),
+        // ── Phone ──
+        Expanded(
+          child: Row(
+            children: [
+              SvgPicture.asset("assets/icons/PhoneCall.svg",height: 32,width: 32,),
+              SizedBox(width: 6),
+              Text("***********",style: CustomText.memberBodyColor,),
+            ],
+          ),
+        ),
 
-        const Icon(Icons.phone, size: 18),
-        const SizedBox(width: 6),
-        const SizedBox(width: 110, child: Text("***********")),
+        // ── College ──
+        Expanded(
+          child: Row(
+            children: [
+              SvgPicture.asset("assets/icons/collageicon.svg", height: 32,width: 32),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  member.collage,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomText.memberBodyColor,
+                ),
+              ),
+            ],
+          ),
+        ),
 
-        const SizedBox(width: 20),
-        const Icon(Icons.school, size: 18),
-        const SizedBox(width: 6),
-        SizedBox(width: 120, child: Text(member.collage)),
+        // ── Course ──
+        Expanded(
+          child: Row(
+            children: [
+              SvgPicture.asset("assets/icons/couseicon.svg", height: 32,width: 32,),
 
-        const SizedBox(width: 20),
-        const Icon(Icons.book, size: 18),
-        const SizedBox(width: 6),
-        SizedBox(width: 120, child: Text(member.course)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  member.course,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomText.memberBodyColor,
+                ),
+              ),
+            ],
+          ),
+        ),
 
-        const SizedBox(width: 20),
-        const Icon(Icons.place, size: 18),
-        const SizedBox(width: 6),
-        SizedBox(width: 120, child: Text(member.place)),
+        // ── Place ──
+        Expanded(
+          child: Row(
+            children: [
+              SvgPicture.asset("assets/icons/place.svg", height: 32,width: 32,),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  member.place,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomText.memberBodyColor,
+                ),
+              ),
+            ],
+          ),
+        ),
 
-        const SizedBox(width: 20),
-        const Icon(Icons.login, size: 18),
-        const SizedBox(width: 6),
-        Text(member.checkIn),
+        // ── Check In ──
+        Expanded(
+          child: Row(
+            children: [
+               SvgPicture.asset("assets/icons/SignIn.svg", height: 32,width: 32,),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  member.checkIn,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomText.memberBodyColor,
 
-        const SizedBox(width: 30),
-        const Icon(Icons.logout, size: 18),
-        const SizedBox(width: 6),
-        Text(member.checkOut),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // ── Check Out ──
+        Expanded(
+          child: Row(
+            children: [
+                SvgPicture.asset("assets/icons/SignOut.svg", height: 32,width: 32,),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  member.checkOut,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomText.memberBodyColor,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     ),
   );

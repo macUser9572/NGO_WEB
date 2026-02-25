@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +22,9 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// ===================== DESKTOP =====================
+//////////////////////////////////////////////////////
+/// ================= DESKTOP ===================== ///
+//////////////////////////////////////////////////////
 
 class HomeDesktop extends StatelessWidget {
   const HomeDesktop({super.key});
@@ -42,13 +43,14 @@ class HomeDesktop extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          // ================= LEFT COLUMN (Text) =================
+          /// ================= LEFT SIDE =================
           Expanded(
             flex: 6,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 120),
+
                 Text(
                   'Ju Ju !',
                   style: GoogleFonts.inter(
@@ -58,7 +60,9 @@ class HomeDesktop extends StatelessWidget {
                     height: 1,
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
                 Text(
                   "Jawdaw Re Jaat togai, Hangarai Gat Togai !",
                   style: GoogleFonts.inter(
@@ -67,11 +71,18 @@ class HomeDesktop extends StatelessWidget {
                     color: AllColors.primaryColor,
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
                 SizedBox(
                   width: width > 900 ? 828 : width * 0.9,
                   child: Text(
-                    "Bangalore Chakma Society (BCS) is a collective of individuals from the Chakma community living in Bangalore. Every Chakma residing in the city is considered a part of this community group. Although not a formal organization with a fixed hierarchy, BCS operates through mutual understanding, cooperation, and respect among its members.\n",
+                    "Bangalore Chakma Society (BCS) is a collective of individuals "
+                    "from the Chakma community living in Bangalore. Every Chakma "
+                    "residing in the city is considered a part of this community group. "
+                    "Although not a formal organization with a fixed hierarchy, "
+                    "BCS operates through mutual understanding, cooperation, and respect "
+                    "among its members.\n",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
                       fontSize: 16,
@@ -80,11 +91,19 @@ class HomeDesktop extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
                 SizedBox(
                   width: width > 900 ? 828 : width * 0.9,
                   child: Text(
-                    "Most members are professionals working in corporate or government sectors, contributing their skills and experience to support the community's growth. The primary objective of BCS is to preserve, promote, and celebrate Chakma culture and traditions within the urban environment of Bangalore. The community also guides and supports the student body, encouraging their active participation in various events and initiatives organized by BCS.",
+                    "Most members are professionals working in corporate or government "
+                    "sectors, contributing their skills and experience to support the "
+                    "community's growth. The primary objective of BCS is to preserve, "
+                    "promote, and celebrate Chakma culture and traditions within the "
+                    "urban environment of Bangalore. The community also guides and "
+                    "supports the student body, encouraging their active participation "
+                    "in various events and initiatives organized by BCS.",
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
                       fontSize: 14,
@@ -97,81 +116,46 @@ class HomeDesktop extends StatelessWidget {
             ),
           ),
 
-          // ================= RIGHT COLUMN (Firebase Image) =================
+          /// ================= RIGHT SIDE =================
           Expanded(
             flex: 4,
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('homepage')
-                    .doc('banner_image')
-                    .snapshots(),
-                builder: (context, snapshot) {
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
 
-                  /// Loading
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox(
-                      height: 400,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
+                /// Align with "Ju Ju !"
+                const SizedBox(height: 150),
 
-                  /// No image uploaded yet
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return SizedBox(
-                      height: 400,
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.image_outlined,
-                                size: 60, color: Colors.grey.shade400),
-                            const SizedBox(height: 8),
-                            Text(
-                              "No image uploaded yet",
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: Colors.grey.shade400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('homepage')
+                      .doc('banner_image')
+                      .snapshots(),
+                  builder: (context, snapshot) {
 
-                  /// Image fetched successfully
-                  final data = snapshot.data!.data() as Map<String, dynamic>;
-                  final imageUrl = data['imageUrl'] as String;
-
-                  return Image.network(
-                    imageUrl,
-                    width: double.infinity,
-                    fit: BoxFit.contain,
-
-                    /// Show progress while loading
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
                       return const SizedBox(
                         height: 400,
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       );
-                    },
+                    }
 
-                    /// Show error if URL is broken
-                    errorBuilder: (context, error, stackTrace) {
+                    if (!snapshot.hasData || !snapshot.data!.exists) {
                       return SizedBox(
                         height: 400,
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.broken_image_outlined,
-                                  size: 60, color: Colors.grey.shade400),
+                              Icon(Icons.image_outlined,
+                                  size: 60,
+                                  color: Colors.grey.shade400),
                               const SizedBox(height: 8),
                               Text(
-                                "Could not load image",
+                                "No image uploaded yet",
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   color: Colors.grey.shade400,
@@ -181,20 +165,53 @@ class HomeDesktop extends StatelessWidget {
                           ),
                         ),
                       );
-                    },
-                  );
-                },
-              ),
+                    }
+
+                    final data =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    final imageUrl = data['imageUrl'] as String;
+
+                    return Image.network(
+                      imageUrl,
+                      width: width * 0.35,
+                      fit: BoxFit.contain,
+                      loadingBuilder:
+                          (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const SizedBox(
+                          height: 400,
+                          child: Center(
+                              child: CircularProgressIndicator()),
+                        );
+                      },
+                      errorBuilder:
+                          (context, error, stackTrace) {
+                        return SizedBox(
+                          height: 400,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image_outlined,
+                              size: 60,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           ),
-
         ],
       ),
     );
   }
 }
 
-// ===================== MOBILE =====================
+//////////////////////////////////////////////////////
+/// ================= MOBILE ====================== ///
+//////////////////////////////////////////////////////
 
 class HomeMobile extends StatelessWidget {
   const HomeMobile({super.key});
@@ -206,33 +223,22 @@ class HomeMobile extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AllColors.primaryColor,
         elevation: 0,
-        title: Row(
-          children: [
-            const SizedBox(width: 6),
-            Text(
-              "BCS",
-              style: GoogleFonts.poppins(
-                color: AllColors.primaryColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+        title: Text(
+          "BCS",
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.menu, color: Colors.black),
-          )
-        ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 20, vertical: 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment:
+              CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
 
-            /// Title
             Text(
               "Ju Ju !",
               style: GoogleFonts.poppins(
@@ -240,14 +246,12 @@ class HomeMobile extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: Colors.green.shade800,
               ),
-              textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
 
-            /// Subtitle
             Text(
-              "Jadwar Re Jaat Cogi, Hangarai Gat Togi !",
+              "Jawdaw Re Jaat togai, Hangarai Gat Togai !",
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -258,33 +262,6 @@ class HomeMobile extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            /// Description
-            Text(
-              "Bangalore Chakma Society (BCS) is a collective of individuals "
-              "from the Chakma community living in Bangalore. Every Chakma "
-              "residing in the city is considered a part of this community. "
-              "Although not a formal organization with a fixed hierarchy, "
-              "BCS operates through mutual understanding, cooperation, "
-              "and respect among its members.\n\n"
-              "Most members are professionals working in corporate or "
-              "government sectors, contributing their skills and experience "
-              "to support the community's growth. The primary objective of "
-              "BCS is to preserve, promote, and celebrate Chakma culture and "
-              "traditions within the urban environment of Bangalore. "
-              "The community also guides and supports students, encouraging "
-              "their active participation in various events and initiatives "
-              "organized by BCS.",
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                height: 1.6,
-                color: Colors.black87,
-              ),
-              textAlign: TextAlign.justify,
-            ),
-
-            const SizedBox(height: 30),
-
-            /// Firebase Image for Mobile
             StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('homepage')
@@ -292,33 +269,19 @@ class HomeMobile extends StatelessWidget {
                   .snapshots(),
               builder: (context, snapshot) {
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
-                    height: 200,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (!snapshot.hasData || !snapshot.data!.exists) {
+                if (!snapshot.hasData ||
+                    !snapshot.data!.exists) {
                   return const SizedBox.shrink();
                 }
 
-                final data = snapshot.data!.data() as Map<String, dynamic>;
-                final imageUrl = data['imageUrl'] as String;
+                final data =
+                    snapshot.data!.data() as Map<String, dynamic>;
+                final imageUrl =
+                    data['imageUrl'] as String;
 
                 return Image.network(
                   imageUrl,
                   fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const SizedBox(
-                      height: 200,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return const SizedBox.shrink();
-                  },
                 );
               },
             ),

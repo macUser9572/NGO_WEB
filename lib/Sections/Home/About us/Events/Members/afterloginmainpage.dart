@@ -9,12 +9,23 @@ class AfterLoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Number of tabs
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AllColors.fourthColor,
-          centerTitle: true,
+
+          // ✅ Back Icon Added Here
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: AllColors.thirdColor,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+
           bottom: const TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
             indicatorColor: AllColors.primaryColor,
             labelColor: AllColors.primaryColor,
             unselectedLabelColor: AllColors.thirdColor,
@@ -26,8 +37,8 @@ class AfterLoginPage extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            AddMemberPageTab(),      
-            ContentUploadPageTab(),  
+            AddMemberPageTab(),
+            ContentUploadPageTab(),
           ],
         ),
       ),

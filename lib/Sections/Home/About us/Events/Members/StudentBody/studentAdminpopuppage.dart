@@ -19,7 +19,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
   bool isLoading = false;
 
   static const String ADMIN_EMAIL = "admin@ngo.com";
-  static const String ADMIN_PASSWORD = "123456";
+  static const String ADMIN_PASSWORD =  "changma@2026";
 
   void loginAdmin() {
     setState(() {
@@ -73,7 +73,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
                     "Student Admin Login",
                     style: GoogleFonts.inter(
                       fontSize: 28,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   IconButton(
@@ -87,7 +87,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
                 "To view members kindly login as an Admin",
                 style: GoogleFonts.inter(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: Colors.black,
                 ),
               ),
 

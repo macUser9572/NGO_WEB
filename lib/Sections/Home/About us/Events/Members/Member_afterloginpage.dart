@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/addmemberpage.dart';
 import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
-
+import 'package:ngo_web/constraints/custom_text.dart';
 
 class AddMemberPageTab extends StatelessWidget {
   const AddMemberPageTab({super.key});
@@ -30,9 +32,8 @@ class AddMemberPageTab extends StatelessWidget {
             return const Center(child: Text("No members found"));
           }
 
-          return ListView.separated(
+          return ListView.builder(
             itemCount: snapshot.data!.docs.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final doc = snapshot.data!.docs[index];
               final member = Member.fromFirestore(
@@ -52,20 +53,13 @@ class AddMemberPageTab extends StatelessWidget {
     return Scaffold(
       backgroundColor: AllColors.secondaryColor,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
               onTap: () => Navigator.pop(context),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                // children: [
-                //   Icon(Icons.arrow_back),
-                //   SizedBox(width: 6),
-                //   Text("Back"),
-                // ],
-              ),
+              child: const Row(mainAxisSize: MainAxisSize.min),
             ),
             const SizedBox(height: 24),
             Row(
@@ -82,14 +76,15 @@ class AddMemberPageTab extends StatelessWidget {
                   children: [
                     const Icon(Icons.search),
                     const SizedBox(width: 16),
-                  CustomButton(
-                    label:" Add members", 
-                    onPressed: (){
-                     showDialog(
-                      context: context, 
-                      builder: (_)=> const AddMemberPage()); 
-                    })
-
+                    CustomButton(
+                      label: "Add members",
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => const AddMemberPage(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -104,71 +99,133 @@ class AddMemberPageTab extends StatelessWidget {
 
   // ===================== MEMBER ROW =====================
   Widget _memberRow(BuildContext context, Member member) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundImage: member.image.isNotEmpty
-                ? NetworkImage(member.image)
-                : null,
-            child: member.image.isEmpty ? const Icon(Icons.person) : null,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          child: Row(
+            children: [
+              // ── Avatar ──
+            member.image.isEmpty
+            ? CircleAvatar(
+              radius: 22,
+              backgroundImage: NetworkImage(member.image),
+            )
+            // :SvgPicture.asset("assets/icons/user.svg",
+            //       width: 32,
+            //       height: 32,),
+            : Icon(Icons.abc_outlined),
+              const SizedBox(width: 12),
+
+              // ── Name ──
+              Expanded(
+                flex: 3,
+                child: Text(
+                  member.name,
+                  style: CustomText.memberBodyColor,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+
+              // ── Phone ──
+              Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                SvgPicture.asset("assets/icons/PhoneCall.svg", height: 32,width: 32,),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        member.phone,
+                        overflow: TextOverflow.ellipsis,
+                        style: CustomText.memberBodyColor
+                        ,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Place ──
+              Expanded(
+                flex: 4,
+                child: Row(
+                  children: [
+                     SvgPicture.asset("assets/icons/place.svg", height: 32,width: 32,),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        member.place,
+                        overflow: TextOverflow.ellipsis,
+                        style: CustomText.memberBodyColor
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Check In ──
+              Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                    SvgPicture.asset("assets/icons/SignIn.svg", height: 32,width: 32,),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        member.checkIn,
+                        overflow: TextOverflow.ellipsis,
+                        style: CustomText.memberBodyColor
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Check Out ──
+              Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                     SvgPicture.asset("assets/icons/SignOut.svg", height: 32,width: 32,),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        member.checkOut,
+                        overflow: TextOverflow.ellipsis,
+                        style: CustomText.memberBodyColor
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Actions ──
+              IconButton(
+                icon: SvgPicture.asset("assets/icons/edit.svg"),
+                onPressed: () => _showEditMemberDialog(context, member),
+              ),
+              IconButton(
+                icon: SvgPicture.asset("assets/icons/Trash.svg"),
+                onPressed: () => _showDeleteDialog(context, member.id),
+              ),
+            ],
           ),
-          const SizedBox(width: 20),
-          SizedBox(width: 120, child: Text(member.name)),
-          const SizedBox(width: 10),
-
-          const Icon(Icons.phone, size: 18),
-          const SizedBox(width: 6),
-          SizedBox(width: 110, child: Text(member.phone)),
-
-          const SizedBox(width: 20),
-          const Icon(Icons.public, size: 18),
-          const SizedBox(width: 6),
-          SizedBox(width: 120, child: Text(member.place)),
-
-          const SizedBox(width: 20),
-          const Icon(Icons.login, size: 18),
-          const SizedBox(width: 6),
-          Text(member.checkIn),
-
-          const SizedBox(width: 30),
-          const Icon(Icons.logout, size: 18),
-          const SizedBox(width: 6),
-          Text(member.checkOut),
-
-          const Spacer(),
-
-          IconButton(
-  icon: const Icon(Icons.edit_outlined),
-  onPressed: () {
-_showEditMemberDialog(context, member);
-  },
-),
-
-           IconButton(
-  icon: const Icon(Icons.delete_outline),
-  onPressed: () {
-    _showDeleteDialog(context, member.id);
-  },
-),
-        ]
-          ),
-      );
+        ),
+        const Divider(height: 1, color: Colors.grey),
+      ],
+    );
   }
 }
 
-  //Delete
+// ==================== DELETE DIALOG ====================
 void _showDeleteDialog(BuildContext context, String memberId) {
   showDialog(
     context: context,
     barrierDismissible: true,
     builder: (_) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         backgroundColor: AllColors.secondaryColor,
         child: SizedBox(
           width: 420,
@@ -177,11 +234,8 @@ void _showDeleteDialog(BuildContext context, String memberId) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon / Image
                 Image.asset("assets/image/dustbin.png", height: 120),
                 const SizedBox(height: 20),
-
-                // Title
                 Text(
                   "Delete Member",
                   style: GoogleFonts.inter(
@@ -190,8 +244,6 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Content
                 Text(
                   "Are you sure you want to delete this member?",
                   textAlign: TextAlign.center,
@@ -201,12 +253,9 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                   ),
                 ),
                 const SizedBox(height: 28),
-
-                // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Cancel
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
@@ -218,18 +267,16 @@ void _showDeleteDialog(BuildContext context, String memberId) {
                       ),
                     ),
                     const SizedBox(width: 24),
-
-                    // Delete
-                    Positioned(
-                      child: CustomButton(
-                        label: "Delete",
-                         onPressed: ()async{
-                          await FirebaseFirestore.instance
-                          .collection('Member_collection')
-                          .doc(memberId)
-                          .delete();
-                         }))
-                   
+                    CustomButton(
+                      label: "Delete",
+                      onPressed: () async {
+                        await FirebaseFirestore.instance
+                            .collection('Member_collection')
+                            .doc(memberId)
+                            .delete();
+                        Navigator.pop(context);
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -240,17 +287,15 @@ void _showDeleteDialog(BuildContext context, String memberId) {
     },
   );
 }
-//===================EDIT DIALOG=================
+
+// ==================== EDIT DIALOG ====================
 void _showEditMemberDialog(BuildContext context, Member member) {
-  // controllers (pre-filled)
   final nameController = TextEditingController(text: member.name);
   final phoneController = TextEditingController(text: member.phone);
   final descriptionController = TextEditingController();
 
   String? selectedGender;
   String? selectedState = member.place;
-  //loading
- // bool _isloading =false;
 
   DateTime? arrivalDate =
       member.checkIn.isNotEmpty ? DateTime.parse(member.checkIn) : null;
@@ -273,9 +318,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
     builder: (context) {
       return Dialog(
         backgroundColor: AllColors.secondaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: StatefulBuilder(
           builder: (context, setState) {
             return SizedBox(
@@ -304,11 +347,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       const SizedBox(height: 28),
 
                       _label("Member Name"),
-                      _textField(
-                        "Edit Member name",
-                        controller: nameController,
-                      ),
-
+                      _textField("Edit Member name", controller: nameController),
                       const SizedBox(height: 20),
 
                       _label("Member Phone Number"),
@@ -317,67 +356,63 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         keyboardType: TextInputType.phone,
                         controller: phoneController,
                       ),
-
                       const SizedBox(height: 20),
 
                       Row(
                         children: [
                           Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label("Gender"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _inputDecoration().copyWith(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                          ),
-                          hint: const Text("Select Gender"),
-                          items: const [
-                            DropdownMenuItem(value: "Male", child: Text("Male")),
-                            DropdownMenuItem(value: "Female", child: Text("Female")),
-                            DropdownMenuItem(value: "Children",child: Text("Childern")),
-                            DropdownMenuItem(value: "Others", child: Text("Others")),
-                          ],
-                          onChanged: (value) {
-                            setState(() => selectedGender = value);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),   
-                          const SizedBox(width: 16),
-                                 Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _label("State / Hometown"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _inputDecoration().copyWith(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            floatingLabelBehavior: FloatingLabelBehavior.never
-                          ),
-                          hint: const Text("Select State"),
-                          items: states
-                              .map(
-                                (s) => DropdownMenuItem(
-                                  value: s,
-                                  child: Text(s),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _label("Gender"),
+                                DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  dropdownColor: Colors.grey[100],
+                                  decoration: _inputDecoration().copyWith(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                  ),
+                                  hint: const Text("Select Gender"),
+                                  items: const [
+                                    DropdownMenuItem(value: "Male", child: Text("Male")),
+                                    DropdownMenuItem(value: "Female", child: Text("Female")),
+                                    DropdownMenuItem(value: "Children", child: Text("Children")),
+                                    DropdownMenuItem(value: "Others", child: Text("Others")),
+                                  ],
+                                  onChanged: (value) =>
+                                      setState(() => selectedGender = value),
                                 ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() => selectedState = value);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _label("State / Hometown"),
+                                DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  dropdownColor: Colors.grey[100],
+                                  decoration: _inputDecoration().copyWith(
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                  ),
+                                  hint: const Text("Select State"),
+                                  value: selectedState,
+                                  items: states
+                                      .map((s) => DropdownMenuItem(
+                                            value: s,
+                                            child: Text(s),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) =>
+                                      setState(() => selectedState = value),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
 
@@ -391,11 +426,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               children: [
                                 _label("Arrival Date"),
                                 _dateBox(arrivalDate, () {
-                                  _openCalendar(
-                                    context,
-                                    arrivalDate,
-                                    (d) => setState(() => arrivalDate = d),
-                                  );
+                                  _openCalendar(context, arrivalDate,
+                                      (d) => setState(() => arrivalDate = d));
                                 }),
                               ],
                             ),
@@ -407,11 +439,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               children: [
                                 _label("Exit Date"),
                                 _dateBox(exitDate, () {
-                                  _openCalendar(
-                                    context,
-                                    exitDate,
-                                    (d) => setState(() => exitDate = d),
-                                  );
+                                  _openCalendar(context, exitDate,
+                                      (d) => setState(() => exitDate = d));
                                 }),
                               ],
                             ),
@@ -425,9 +454,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       TextField(
                         controller: descriptionController,
                         maxLines: 4,
-                        decoration: _inputDecoration(
-                          hint: "Enter a brief description",
-                        ),
+                        decoration:
+                            _inputDecoration(hint: "Enter a brief description"),
                       ),
 
                       const SizedBox(height: 32),
@@ -438,14 +466,15 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                           OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero, // 🔥 Square corners
+                                borderRadius: BorderRadius.zero,
                               ),
                             ),
                             onPressed: () => Navigator.pop(context),
-                            child: Text("Cancel",
-                            style: GoogleFonts.inter(
-                              color: AllColors.primaryColor
-                            ),),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                  color: AllColors.primaryColor),
+                            ),
                           ),
                           const SizedBox(width: 16),
                           CustomButton(
@@ -455,9 +484,10 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                             height: 48,
                             backgroundColor: AllColors.primaryColor,
                             textColor: AllColors.secondaryColor,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                             onPressed: ()async{
-                               await FirebaseFirestore.instance
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 10),
+                            onPressed: () async {
+                              await FirebaseFirestore.instance
                                   .collection('Member_collection')
                                   .doc(member.id)
                                   .update({
@@ -468,17 +498,16 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 "arrivalDate": arrivalDate,
                                 "exitDate": exitDate,
                                 "updatedAt": FieldValue.serverTimestamp(),
-
-                             });
-                             Navigator.pop(context);
-                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                    content: Text("Student updated successfully"),
-                                    backgroundColor: Colors.green,
-                                  ),
-                             );
-                             }
-                          )
+                              });
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Member updated successfully"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],
@@ -493,14 +522,16 @@ void _showEditMemberDialog(BuildContext context, Member member) {
   );
 }
 
+// ==================== SHARED HELPERS ====================
 
 Widget _label(String text) => Padding(
-  padding: const EdgeInsets.only(bottom: 8),
-  child: Text(
-    text,
-    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
-  ),
-);
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    );
+
 Widget _textField(
   String hint, {
   TextInputType keyboardType = TextInputType.text,
@@ -512,15 +543,17 @@ Widget _textField(
     decoration: _inputDecoration(hint: hint),
   );
 }
+
 InputDecoration _inputDecoration({String? hint}) => InputDecoration(
-  hintText: hint,
-  filled: true,
-  fillColor: Colors.grey[100],
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(4),
-    borderSide: BorderSide.none,
-  ),
-);
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.grey[100],
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(4),
+        borderSide: BorderSide.none,
+      ),
+    );
+
 Widget _dateBox(DateTime? date, VoidCallback onTap) {
   return InkWell(
     onTap: onTap,
@@ -536,14 +569,14 @@ Widget _dateBox(DateTime? date, VoidCallback onTap) {
         date == null
             ? "Select date"
             : "${date.day.toString().padLeft(2, '0')}-"
-                  "${date.month.toString().padLeft(2, '0')}-"
-                  "${date.year}",
+                "${date.month.toString().padLeft(2, '0')}-"
+                "${date.year}",
       ),
     ),
   );
 }
-//==========================CALENDER ONLY=========================
 
+// ==================== CALENDAR ====================
 void _openCalendar(
   BuildContext context,
   DateTime? initialDate,
@@ -596,7 +629,7 @@ void _openCalendar(
   );
 }
 
-// PAGINATION (UNCHANGED)
+// ==================== PAGINATION ====================
 Widget _pagination() {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -633,7 +666,7 @@ Widget _pagination() {
   );
 }
 
-// ===================== MEMBER MODEL =====================
+// ==================== MEMBER MODEL ====================
 class Member {
   final String id;
   final String name;
@@ -660,10 +693,16 @@ class Member {
       phone: data['phone'] ?? '',
       place: data['state'] ?? data['place'] ?? '',
       checkIn: data['arrivalDate'] != null
-          ? (data['arrivalDate'] as Timestamp).toDate().toString().split(' ')[0]
+          ? (data['arrivalDate'] as Timestamp)
+              .toDate()
+              .toString()
+              .split(' ')[0]
           : '',
       checkOut: data['exitDate'] != null
-          ? (data['exitDate'] as Timestamp).toDate().toString().split(' ')[0]
+          ? (data['exitDate'] as Timestamp)
+              .toDate()
+              .toString()
+              .split(' ')[0]
           : '',
       image: data['image'] ?? '',
     );
