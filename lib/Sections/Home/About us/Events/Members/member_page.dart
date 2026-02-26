@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/constraints/CustomButton.dart';
@@ -32,141 +31,156 @@ class _DesktopLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
-    return Container(
-      width: double.infinity,
-      height: height,
-      color: AllColors.secondaryColor,
-      padding: const EdgeInsets.symmetric(horizontal: 80),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ================= LEFT CONTENT =================
-          Expanded(
-            flex: 6,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 120),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Members",
-                    style: GoogleFonts.inter(
-                      color: AllColors.primaryColor,
-                      fontSize: 80,
-                      fontWeight: FontWeight.w800,
-                      height: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "The Headcount",
-                    style: GoogleFonts.inter(
-                      color: AllColors.thirdColor,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: 446,
-                    child: Text(
-                      "The number of participants is growing exponentially each year. Here’s a breakdown of the BCS community members in Bangalore.",
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        height: height,
+        color: AllColors.secondaryColor,
+        padding: const EdgeInsets.symmetric(horizontal: 80),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ================= LEFT CONTENT =================
+            Expanded(
+              flex: 6,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Members",
                       style: GoogleFonts.inter(
-                        color: AllColors.thirdColor,
-                        fontSize: 16,
+                        color: AllColors.primaryColor,
+                        fontSize: 80,
+                        fontWeight: FontWeight.w800,
+                        height: 1,
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "The Headcount",
+                      style: GoogleFonts.inter(
+                        color: AllColors.thirdColor,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 446,
+                      child: Text(
+                        "The number of participants is growing exponentially each year. Here’s a breakdown of the BCS community members in Bangalore.",
+                        style: GoogleFonts.inter(
+                          color: AllColors.thirdColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
 
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
-                  // ================= FIRESTORE COUNTS =================
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("Member_collection")
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-
-                      if (!snapshot.hasData ||
-                          snapshot.data!.docs.isEmpty) {
-                        return _buildStats(0, 0, 0, 0, 0);
-                      }
-
-                      int total = snapshot.data!.docs.length;
-                      int male = 0;
-                      int female = 0;
-                      int children = 0;
-                      int others = 0;
-
-                      for (var doc in snapshot.data!.docs) {
-                        final data =
-                            doc.data() as Map<String, dynamic>;
-                        final gender =
-                            (data['gender'] ?? '').toString().toLowerCase();
-
-                        if (gender == 'male') {
-                          male++;
-                        } else if (gender == 'female') {
-                          female++;
-                        } else if (gender == 'children') {
-                          children++;
-                        } else {
-                          others++;
+                    // ================= FIRESTORE COUNTS =================
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("Member_collection")
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
                         }
-                      }
 
-                      return _buildStats(
-                          total, male, female, children, others);
-                    },
-                  ),
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return _buildStats(0, 0, 0, 0, 0);
+                        }
 
-                  const SizedBox(height: 40),
+                        int total = snapshot.data!.docs.length;
+                        int male = 0;
+                        int female = 0;
+                        int children = 0;
+                        int others = 0;
 
-                  // ================= BUTTON =================
-                  Positioned(
-                    left: 0,
-                    bottom: 170,
-                    child: CustomButton(
+                        for (var doc in snapshot.data!.docs) {
+                          final raw = doc.data();
+
+                          if (raw == null) continue;
+
+                          final Map<String, dynamic> data =
+                              Map<String, dynamic>.from(raw as Map);
+                          final gender = (data['gender'] ?? '')
+                              .toString()
+                              .toLowerCase();
+
+                          if (gender == 'male') {
+                            male++;
+                          } else if (gender == 'female') {
+                            female++;
+                          } else if (gender == 'children') {
+                            children++;
+                          } else {
+                            others++;
+                          }
+                        }
+
+                        return _buildStats(
+                          total,
+                          male,
+                          female,
+                          children,
+                          others,
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // ================= BUTTON =================
+                    CustomButton(
                       label: "View Members",
-                     onPressed: (){
-                      Navigator.push(
-                        context,
-                         MaterialPageRoute(builder: (_)=> const MembersListPage()));
-                     }
-                     )
-                    )
-                ],
-              ),
-            ),
-          ),
-
-          // ================= RIGHT IMAGE =================
-          Expanded(
-            flex: 5,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Transform.translate(
-                offset: const Offset(30, 90),
-                child: Image.asset(
-                  "assets/image/Memberpage.png",
-                  width: 780,
-                  fit: BoxFit.contain,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const MembersListPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
+
+            // ================= RIGHT IMAGE =================
+            Expanded(
+              flex: 5,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Transform.translate(
+                  offset: const Offset(30, 90),
+                  child: Image.asset(
+                    "assets/image/Memberpage.png",
+                    width: 780,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   // ================= STATS BUILDER =================
   Widget _buildStats(
-      int total, int male, int female, int children, int others) {
+    int total,
+    int male,
+    int female,
+    int children,
+    int others,
+  ) {
     return Row(
       children: [
         _StatItem(label: "Total", value: total.toString()),
@@ -216,9 +230,6 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Mobile Layout Coming Soon"),
-    );
+    return const Center(child: Text("Mobile Layout Coming Soon"));
   }
 }
-

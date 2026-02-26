@@ -39,6 +39,7 @@ dependencies:
   cached_network_image: ^3.4.1
   file_picker: ^10.3.10
   youtube_player_iframe: ^5.2.2
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

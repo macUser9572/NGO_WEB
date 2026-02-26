@@ -1,6 +1,7 @@
 import 'dart:ui_web' as ui;
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -258,7 +259,7 @@ class _YoutubeInBoxPlayerState extends State<_YoutubeInBoxPlayer> {
         'yt-inbox-${widget.youtubeId ?? widget.videoUrl.hashCode}';
 
     // Pre-register the iframe so it's ready when the user taps play
-    final html.IFrameElement iframe = html.IFrameElement()
+    final web.HTMLIFrameElement iframe = web.HTMLIFrameElement()
       ..src =
           'https://www.youtube.com/embed/${widget.youtubeId}?autoplay=1&rel=0&controls=1&modestbranding=1'
       ..style.border = 'none'
@@ -378,7 +379,7 @@ class _FirebaseVideoPlayerState extends State<_FirebaseVideoPlayer> {
     super.initState();
     _viewId = 'firebase-video-${widget.videoUrl.hashCode}';
 
-    final html.VideoElement video = html.VideoElement()
+    final web.HTMLVideoElement video = web.HTMLVideoElement()
       ..src = widget.videoUrl
       ..controls = true
       ..style.width = '100%'

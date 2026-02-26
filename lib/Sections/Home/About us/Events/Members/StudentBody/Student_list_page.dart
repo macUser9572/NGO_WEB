@@ -97,7 +97,7 @@ class StudentListPage extends StatelessWidget {
               ),
             ),
             Text(
-              "To give the phone number login as an admin",
+              "Phone numbers are hidden. Admin login required to view them.",
               style: GoogleFonts.inter(fontSize: 14),
             ),
             const SizedBox(height: 30),
@@ -113,46 +113,67 @@ class StudentListPage extends StatelessWidget {
 // ================= MEMBER ROW =================
 Widget _memberRow(Member member) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 16),
+    padding: const EdgeInsets.symmetric(vertical: 12),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // ── Avatar with SVG fallback ──
-        member.image.isNotEmpty
-            ? CircleAvatar(
-                radius: 22,
-                backgroundImage: NetworkImage(member.image),
-              )
-            : SvgPicture.asset(
-                    'assets/icons/user.svg',
-                    width: 32,
-                    height: 32,
-                  
-                  ),
 
-        const SizedBox(width: 32),
+        // ── Avatar — fetches photoUrl from Firebase ──
+        CircleAvatar(
+          radius: 22,
+          backgroundColor: AllColors.fourthColor,
+          backgroundImage: member.photoUrl.isNotEmpty
+              ? NetworkImage(member.photoUrl)
+              : null,
+          child: member.photoUrl.isEmpty
+              ? Text(
+                  member.name.isNotEmpty
+                      ? member.name[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AllColors.primaryColor,
+                  ),
+                )
+              : null,
+        ),
+
+        const SizedBox(width: 16),
 
         // ── Name ──
         Expanded(
-          child: Text(member.name, style: GoogleFonts.inter(fontSize: 16,fontWeight:FontWeight.w500,color: Colors.black),),
+          flex: 3,
+          child: Text(
+            member.name,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
 
-        // ── Phone ──
+        // ── Phone (masked) ──
         Expanded(
+          flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/PhoneCall.svg",height: 32,width: 32,),
-              SizedBox(width: 6),
-              Text("***********",style: CustomText.memberBodyColor,),
+              SvgPicture.asset("assets/icons/PhoneCall.svg",
+                  height: 20, width: 20),
+              const SizedBox(width: 6),
+              Text("***********", style: CustomText.memberBodyColor),
             ],
           ),
         ),
 
         // ── College ──
         Expanded(
+          flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/collageicon.svg", height: 32,width: 32),
+              SvgPicture.asset("assets/icons/collageicon.svg",
+                  height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -167,10 +188,11 @@ Widget _memberRow(Member member) {
 
         // ── Course ──
         Expanded(
+          flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/couseicon.svg", height: 32,width: 32,),
-
+              SvgPicture.asset("assets/icons/couseicon.svg",
+                  height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -185,9 +207,11 @@ Widget _memberRow(Member member) {
 
         // ── Place ──
         Expanded(
+          flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/place.svg", height: 32,width: 32,),
+              SvgPicture.asset("assets/icons/place.svg",
+                  height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -202,16 +226,17 @@ Widget _memberRow(Member member) {
 
         // ── Check In ──
         Expanded(
+          flex: 3,
           child: Row(
             children: [
-               SvgPicture.asset("assets/icons/SignIn.svg", height: 32,width: 32,),
+              SvgPicture.asset("assets/icons/SignIn.svg",
+                  height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   member.checkIn,
                   overflow: TextOverflow.ellipsis,
                   style: CustomText.memberBodyColor,
-
                 ),
               ),
             ],
@@ -220,9 +245,11 @@ Widget _memberRow(Member member) {
 
         // ── Check Out ──
         Expanded(
+          flex: 3,
           child: Row(
             children: [
-                SvgPicture.asset("assets/icons/SignOut.svg", height: 32,width: 32,),
+              SvgPicture.asset("assets/icons/SignOut.svg",
+                  height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -249,7 +276,7 @@ class Member {
   final String place;
   final String checkIn;
   final String checkOut;
-  final String image;
+  final String photoUrl; // ✅ renamed from 'image'
 
   Member({
     required this.id,
@@ -260,30 +287,31 @@ class Member {
     required this.place,
     required this.checkIn,
     required this.checkOut,
-    required this.image,
+    required this.photoUrl,
   });
 
   factory Member.fromFirestore(String id, Map<String, dynamic> data) {
     return Member(
       id: id,
-      name: data['name'] ?? '',
-      phone: data['phone'] ?? '',
-      collage: data['collage'] ?? '',
-      course: data['course'] ?? '',
-      place: data['state'] ?? data['place'] ?? '',
-      checkIn: data['arrivalDate'] != null
-          ? (data['arrivalDate'] as Timestamp)
-              .toDate()
-              .toString()
-              .split(' ')[0]
+      name: data['name']?.toString() ?? '',
+      phone: data['phone']?.toString() ?? '',
+      collage: data['collage']?.toString() ?? '',
+      course: data['course']?.toString() ?? '',
+      place: data['state']?.toString() ?? data['place']?.toString() ?? '',
+      checkIn: data['arrivalDate'] is Timestamp
+          ? _formatDate(data['arrivalDate'])
           : '',
-      checkOut: data['exitDate'] != null
-          ? (data['exitDate'] as Timestamp)
-              .toDate()
-              .toString()
-              .split(' ')[0]
+      checkOut: data['exitDate'] is Timestamp
+          ? _formatDate(data['exitDate'])
           : '',
-      image: data['image'] ?? '',
+      photoUrl: data['photoUrl']?.toString() ?? '', // ✅ correct field name
     );
+  }
+
+  static String _formatDate(Timestamp timestamp) {
+    final date = timestamp.toDate();
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
   }
 }

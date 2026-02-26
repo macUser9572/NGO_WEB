@@ -3,6 +3,9 @@ import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 
 class AddStudentMemberPage extends StatefulWidget {
   const AddStudentMemberPage({super.key});
@@ -19,12 +22,15 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
   final descriptionController = TextEditingController();
 
   bool _isLoading = false;
-
   String? selectedGender;
   String? selectedState;
-
   DateTime? arrivalDate;
   DateTime? exitDate;
+
+  // ── Photo ──
+  Uint8List? _selectedImageBytes;
+  String? _selectedImageName;
+  bool _isImageHovered = false;
 
   final List<String> states = [
     'Arunachal Pradesh',
@@ -36,29 +42,66 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
     'Telangana',
   ];
 
+  // ── Pick image from gallery (web-safe) ──
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+    if (picked != null) {
+      final bytes = await picked.readAsBytes();
+      setState(() {
+        _selectedImageBytes = bytes;
+        _selectedImageName = picked.name;
+      });
+    }
+  }
+
+  // ── Upload to Firebase Storage, return download URL ──
+  Future<String?> _uploadImageToStorage() async {
+    if (_selectedImageBytes == null) return null;
+    try {
+      final fileName =
+          'students/${DateTime.now().millisecondsSinceEpoch}_$_selectedImageName';
+      final ref = FirebaseStorage.instance.ref().child(fileName);
+      final snapshot = await ref.putData(
+        _selectedImageBytes!,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      debugPrint("Image upload error: $e");
+      return null;
+    }
+  }
+
+  // ── Save student to Firestore ──
   Future<void> addStudent() async {
     setState(() => _isLoading = true);
-
     try {
-      await FirebaseFirestore.instance
-          .collection('Student_collection')
-          .add({
+      final String? photoUrl = await _uploadImageToStorage();
+
+      await FirebaseFirestore.instance.collection('Student_collection').add({
         'name': nameController.text.trim(),
         'phone': phoneController.text.trim(),
         'collage': collageController.text.trim(),
         'course': courseController.text.trim(),
         'gender': selectedGender,
         'state': selectedState,
-        'arrivalDate':
-            arrivalDate != null ? Timestamp.fromDate(arrivalDate!) : null,
-        'exitDate':
-            exitDate != null ? Timestamp.fromDate(exitDate!) : null,
+        'arrivalDate': arrivalDate != null
+            ? Timestamp.fromDate(arrivalDate!)
+            : null,
+        'exitDate': exitDate != null ? Timestamp.fromDate(exitDate!) : null,
         'description': descriptionController.text.trim(),
+        'photoUrl': photoUrl ?? '',
         'createdAt': FieldValue.serverTimestamp(),
       });
 
+      if (!mounted) return;
       Navigator.pop(context);
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Member added successfully"),
@@ -67,10 +110,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error: $e"),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -89,42 +129,39 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // ================= FIXED HEADER =================
-    Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Expanded(
-      child: Text(
-        "Add New Student",
-        style: GoogleFonts.inter(
-          fontSize: 40,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-    ),
-
-    // 🔥 Rounded Close Button
-    InkWell(
-      onTap: () => Navigator.pop(context),
-      borderRadius: BorderRadius.circular(50),
-      child: Container(
-        height: 36,
-        width: 36,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.close,
-          size: 20,
-          color: Colors.black87,
-        ),
-      ),
-    ),
-  ],
-),
+            // ── Header ──
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Add New Student",
+                    style: GoogleFonts.inter(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    height: 36,
+                    width: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
 
             const SizedBox(height: 6),
             Text(
@@ -136,53 +173,214 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
             ),
             const SizedBox(height: 20),
 
-            // ================= SCROLLABLE BODY =================
+            // ── Scrollable body ──
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ════════════ PROFILE PHOTO UPLOAD ════════════
+                    _label("Upload Photo"),
+                    Center(
+                      child: Column(
+                        children: [
+                          MouseRegion(
+                            onEnter: (_) =>
+                                setState(() => _isImageHovered = true),
+                            onExit: (_) =>
+                                setState(() => _isImageHovered = false),
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  // ── Circle avatar ──
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    width: 110,
+                                    height: 110,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey[200],
+                                      border: Border.all(
+                                        color: _isImageHovered
+                                            ? AllColors.primaryColor
+                                            : Colors.grey.shade300,
+                                        width: 2,
+                                      ),
+                                      // ✅ Show selected image as background
+                                      image: _selectedImageBytes != null
+                                          ? DecorationImage(
+                                              image: MemoryImage(
+                                                _selectedImageBytes!,
+                                              ),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    ),
+                                    child: ClipOval(
+                                      child: _selectedImageBytes == null
+                                          // Empty state
+                                          ? Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.cloud_upload_outlined,
+                                                  size: 30,
+                                                  color: Colors.grey[500],
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  "Upload\nPhoto",
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 11,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          // Hover overlay on selected image
+                                          : _isImageHovered
+                                          ? Container(
+                                              color: Colors.black.withOpacity(
+                                                0.45,
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.edit,
+                                                    color: Colors.white,
+                                                    size: 26,
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    "Change",
+                                                    style: GoogleFonts.inter(
+                                                      color: Colors.white,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          : const SizedBox.shrink(),
+                                    ),
+                                  ),
 
-                    _label("Student Name"),
+                                  // ── Red ✕ remove button (bottom-right) ──
+                                  if (_selectedImageBytes != null)
+                                    Positioned(
+                                      bottom: 2,
+                                      right: 2,
+                                      child: GestureDetector(
+                                        onTap: () => setState(() {
+                                          _selectedImageBytes = null;
+                                          _selectedImageName = null;
+                                        }),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          padding: const EdgeInsets.all(4),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                  // ── Camera badge (bottom-left) ──
+                                  Positioned(
+                                    bottom: 2,
+                                    left: 2,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AllColors.primaryColor,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      padding: const EdgeInsets.all(5),
+                                      child: const Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.white,
+                                        size: 13,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          // ── Caption ──
+                          Text(
+                            _selectedImageBytes != null
+                                ? (_selectedImageName ?? "Photo selected ✓")
+                                : "Tap to choose a profile photo",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: _selectedImageBytes != null
+                                  ? Colors.green
+                                  : Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // ═════════════════════════════════════════════
+                    const SizedBox(height: 24),
+
+                    _label("Name"),
                     TextField(
                       controller: nameController,
-                      decoration:
-                          _inputDecoration(hint: "Enter Student name"),
+                      decoration: _inputDecoration(hint: "Enter Name"),
                     ),
                     const SizedBox(height: 20),
 
-                    _label("Student Phone Number"),
+                    _label("Phone Number"),
                     TextField(
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
-                      decoration: _inputDecoration(
-                          hint: "Enter Student Phone number"),
+                      decoration: _inputDecoration(hint: "Enter Phone number"),
                     ),
                     const SizedBox(height: 20),
 
                     _label("College Name"),
                     TextField(
                       controller: collageController,
-                      decoration:
-                          _inputDecoration(hint: "Enter College Name"),
+                      decoration: _inputDecoration(hint: "Enter College Name"),
                     ),
                     const SizedBox(height: 20),
 
-                    _label("Course Name"),
+                    _label("Degree Name"),
                     TextField(
                       controller: courseController,
-                      decoration:
-                          _inputDecoration(hint: "Enter Course Name"),
+                      decoration: _inputDecoration(hint: "Enter Degree Name"),
                     ),
                     const SizedBox(height: 20),
 
-                    // ================= DROPDOWNS =================
+                    // ── Dropdowns ──
                     Row(
                       children: [
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _label("Gender"),
                               DropdownButtonFormField<String>(
@@ -190,26 +388,28 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                 dropdownColor: Colors.white,
                                 decoration: _inputDecoration().copyWith(
                                   filled: true,
-                                  // fillColor: Colors.white,
                                 ),
                                 hint: const Text("Select Gender"),
                                 items: const [
                                   DropdownMenuItem(
-                                      value: "Male",
-                                      child: Text("Male")),
+                                    value: "Male",
+                                    child: Text("Male"),
+                                  ),
                                   DropdownMenuItem(
-                                      value: "Female",
-                                      child: Text("Female")),
+                                    value: "Female",
+                                    child: Text("Female"),
+                                  ),
                                   DropdownMenuItem(
-                                      value: "Children",
-                                      child: Text("Children")),
+                                    value: "Children",
+                                    child: Text("Children"),
+                                  ),
                                   DropdownMenuItem(
-                                      value: "Others",
-                                      child: Text("Others")),
+                                    value: "Others",
+                                    child: Text("Others"),
+                                  ),
                                 ],
                                 onChanged: (value) =>
-                                    setState(() =>
-                                        selectedGender = value),
+                                    setState(() => selectedGender = value),
                               ),
                             ],
                           ),
@@ -217,8 +417,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _label("State / Hometown"),
                               DropdownButtonFormField<String>(
@@ -226,19 +425,18 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                 dropdownColor: Colors.white,
                                 decoration: _inputDecoration().copyWith(
                                   filled: true,
-                                  // fillColor: Colors.white,
                                 ),
                                 hint: const Text("Select State"),
                                 items: states
-                                    .map((s) =>
-                                        DropdownMenuItem(
-                                          value: s,
-                                          child: Text(s),
-                                        ))
+                                    .map(
+                                      (s) => DropdownMenuItem(
+                                        value: s,
+                                        child: Text(s),
+                                      ),
+                                    )
                                     .toList(),
                                 onChanged: (value) =>
-                                    setState(() =>
-                                        selectedState = value),
+                                    setState(() => selectedState = value),
                               ),
                             ],
                           ),
@@ -248,21 +446,19 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
 
                     const SizedBox(height: 20),
 
-                    // ================= DATES =================
+                    // ── Dates ──
                     Row(
                       children: [
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _label("Arrival Date"),
                               _dateBox(arrivalDate, () {
                                 _openCalendar(
                                   context,
                                   arrivalDate,
-                                  (d) => setState(() =>
-                                      arrivalDate = d),
+                                  (d) => setState(() => arrivalDate = d),
                                 );
                               }),
                             ],
@@ -271,16 +467,14 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _label("Exit Date"),
                               _dateBox(exitDate, () {
                                 _openCalendar(
                                   context,
                                   exitDate,
-                                  (d) => setState(() =>
-                                      exitDate = d),
+                                  (d) => setState(() => exitDate = d),
                                 );
                               }),
                             ],
@@ -296,37 +490,40 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       controller: descriptionController,
                       maxLines: 4,
                       decoration: _inputDecoration(
-                          hint: "Enter a brief description"),
+                        hint: "Enter a brief description",
+                      ),
                     ),
 
                     const SizedBox(height: 32),
 
-                    // ================= BUTTONS =================
+                    // ── Buttons ──
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero, // 🔥 Square corners
-                              ),
+                          style: OutlinedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
                             ),
-                            onPressed: () => Navigator.pop(context),
-                            child: Text("Cancel",
-                            style: GoogleFonts.inter(
-                              color: AllColors.primaryColor
-                            ),),
+                            side: const BorderSide(
+                              color: AllColors.primaryColor,
+                            ), 
                           ),
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            "Cancel",
+                            style: GoogleFonts.inter(
+                              color: AllColors.primaryColor,
+                            ),
+                          ),
+                        ),
                         const SizedBox(width: 16),
                         CustomButton(
                           label: "Add Student",
-                          // width: 160,
                           height: 48,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           isLoading: _isLoading,
-                        
                           onPressed: _isLoading ? null : addStudent,
                         ),
                       ],
@@ -342,33 +539,29 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
   }
 
   Widget _label(String text) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(
-          text,
-          style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600),
-        ),
-      );
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(
+      text,
+      style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+    ),
+  );
 
-  InputDecoration _inputDecoration({String? hint}) =>
-      InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: Colors.grey[100],
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide.none,
-        ),
-      );
+  InputDecoration _inputDecoration({String? hint}) => InputDecoration(
+    hintText: hint,
+    filled: true,
+    fillColor: Colors.grey[100],
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(4),
+      borderSide: BorderSide.none,
+    ),
+  );
 
   Widget _dateBox(DateTime? date, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Container(
         height: 48,
-        padding:
-            const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(4),
@@ -378,8 +571,8 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
           date == null
               ? "Select date"
               : "${date.day.toString().padLeft(2, '0')}-"
-                "${date.month.toString().padLeft(2, '0')}-"
-                "${date.year}",
+                    "${date.month.toString().padLeft(2, '0')}-"
+                    "${date.year}",
         ),
       ),
     );
@@ -393,11 +586,9 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
     showDialog(
       context: context,
       builder: (_) {
-        DateTime tempDate =
-            initialDate ?? DateTime.now();
+        DateTime tempDate = initialDate ?? DateTime.now();
         return Dialog(
-          backgroundColor:
-              AllColors.secondaryColor,
+          backgroundColor: AllColors.secondaryColor,
           child: SizedBox(
             width: 350,
             height: 420,
@@ -408,23 +599,17 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                     initialDate: tempDate,
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    onDateChanged: (d) =>
-                        tempDate = d,
+                    onDateChanged: (d) => tempDate = d,
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: () =>
-                            Navigator.pop(context),
-                        child: Text("Cancel",
-                            style:
-                                GoogleFonts.inter()),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("Cancel", style: GoogleFonts.inter()),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
@@ -432,9 +617,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                           onSelected(tempDate);
                           Navigator.pop(context);
                         },
-                        child: Text("OK",
-                            style:
-                                GoogleFonts.inter()),
+                        child: Text("OK", style: GoogleFonts.inter()),
                       ),
                     ],
                   ),

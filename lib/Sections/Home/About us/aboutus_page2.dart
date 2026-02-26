@@ -48,7 +48,7 @@ class AboutusPage2 extends StatelessWidget {
           Container(
             height: 600,
             width: 1,
-            color: Colors.grey.shade400,
+            color: Colors.grey.shade300,
           ),
 
           // ================= RIGHT SIDE (Values) =================

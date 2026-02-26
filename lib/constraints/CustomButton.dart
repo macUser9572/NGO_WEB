@@ -27,7 +27,7 @@ class CustomButton extends StatelessWidget {
     this.height = 48,
     this.fontSize = 14,
     this.fontWeight = FontWeight.w600,
-    this.padding,
+    this.padding, SizedBox? child,
   });
 
   @override
