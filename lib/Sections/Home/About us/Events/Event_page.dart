@@ -22,9 +22,7 @@ class EventPage extends StatelessWidget {
   }
 }
 
-
-//====================== URL HELPER========================
-
+// ====================== URL HELPER ========================
 String fixFirebaseUrl(String url) {
   if (url.isEmpty) return url;
   if (url.contains('firebasestorage.googleapis.com') &&
@@ -34,20 +32,30 @@ String fixFirebaseUrl(String url) {
   return url;
 }
 
-// //======================IMAGE CARD — with dashed border + title below//======================
+// ====================== IMAGE CARD ========================
 Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
   final String url = fixFirebaseUrl(imageUrl?.toString() ?? "");
 
   return Container(
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(4),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.08),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // IMAGE
         ClipRRect(
-          borderRadius: BorderRadius.zero,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(4),
+            topRight: Radius.circular(4),
+          ),
           child: url.isNotEmpty
               ? CachedNetworkImage(
                   imageUrl: url,
@@ -84,7 +92,10 @@ Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           decoration: BoxDecoration(
             color: AllColors.fourthColor,
-            borderRadius: BorderRadius.zero,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(4),
+              bottomRight: Radius.circular(4),
+            ),
           ),
           child: Text(
             title?.toString() ?? "",
@@ -101,7 +112,7 @@ Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
   );
 }
 
-// //======================DESKTOP LAYOUT//======================
+// ====================== DESKTOP LAYOUT ========================
 class _DesktopLayout extends StatelessWidget {
   const _DesktopLayout();
 
@@ -150,100 +161,97 @@ class _DesktopLayout extends StatelessWidget {
 
               final data = snapshot.data!.data() as Map<String, dynamic>;
 
-              return Row(
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── LEFT COLUMN ──────────────────────────
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _imageCard(
-                                  data["image1"], data["title1"],
-                                  height: 220),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _imageCard(
-                                  data["image2"], data["title2"],
-                                  height: 220),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 30),
-
-                        // Key Information
-                        Text(
-                          "Key Information",
-                          style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: AllColors.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          data["key_information"] ?? "",
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            height: 1.7,
-                            color: AllColors.primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                  // ── TOP ROW: all 4 images ──
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _imageCard(data["image1"], data["title1"],
+                            height: 220),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _imageCard(data["image2"], data["title2"],
+                            height: 220),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _imageCard(data["image3"], data["title3"],
+                            height: 220),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _imageCard(data["image4"], data["title4"],
+                            height: 220),
+                      ),
+                    ],
                   ),
 
-                  const SizedBox(width: 50),
+                  const SizedBox(height: 50),
 
-                  // ── RIGHT COLUMN ─────────────────────────
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Events",
-                          style: GoogleFonts.inter(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: AllColors.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Discover our diverse range of activities and events designed to enrich our community",
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            color: AllColors.primaryColor,
-                            height: 1.5,
-                          ),
-                        ),
-
-                        const SizedBox(height: 77),
-
-                        Row(
+                  // ── BOTTOM ROW: Key Info + Events ──
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // LEFT — Key Information
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: _imageCard(
-                                  data["image3"], data["title3"],
-                                  height: 220),
+                            Text(
+                              "Key Information",
+                              style: GoogleFonts.inter(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: AllColors.primaryColor,
+                              ),
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _imageCard(
-                                  data["image4"], data["title4"],
-                                  height: 220),
+                            const SizedBox(height: 10),
+                            Text(
+                              data["key_information"] ?? "",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                height: 1.7,
+                                color: AllColors.primaryColor,
+                              ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+
+                      const SizedBox(width: 50),
+
+                      // RIGHT — Events
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Events",
+                              style: GoogleFonts.inter(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                color: AllColors.primaryColor,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Discover our diverse range of activities and events designed to enrich our community",
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: AllColors.primaryColor,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               );
@@ -255,9 +263,7 @@ class _DesktopLayout extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-// MOBILE LAYOUT
-// ─────────────────────────────────────────────
+// ====================== MOBILE LAYOUT ========================
 class _MobileLayout extends StatelessWidget {
   const _MobileLayout();
 
@@ -303,6 +309,7 @@ class _MobileLayout extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Row 1
                   Row(
                     children: [
                       Expanded(
@@ -311,6 +318,21 @@ class _MobileLayout extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                           child: _imageCard(data["image2"], data["title2"],
+                              height: 140)),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Row 2
+                  Row(
+                    children: [
+                      Expanded(
+                          child: _imageCard(data["image3"], data["title3"],
+                              height: 140)),
+                      const SizedBox(width: 12),
+                      Expanded(
+                          child: _imageCard(data["image4"], data["title4"],
                               height: 140)),
                     ],
                   ),
@@ -351,20 +373,6 @@ class _MobileLayout extends StatelessWidget {
                         fontSize: 13,
                         color: Colors.grey.shade600,
                         height: 1.5),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  Row(
-                    children: [
-                      Expanded(
-                          child: _imageCard(data["image3"], data["title3"],
-                              height: 140)),
-                      const SizedBox(width: 12),
-                      Expanded(
-                          child: _imageCard(data["image4"], data["title4"],
-                              height: 140)),
-                    ],
                   ),
                 ],
               );

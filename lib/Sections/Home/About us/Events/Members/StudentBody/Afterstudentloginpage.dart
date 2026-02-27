@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -121,9 +120,7 @@ class AfterLoginStudentPage extends StatelessWidget {
                 : null,
             child: member.photoUrl.isEmpty
                 ? Text(
-                    member.name.isNotEmpty
-                        ? member.name[0].toUpperCase()
-                        : '?',
+                    member.name.isNotEmpty ? member.name[0].toUpperCase() : '?',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AllColors.primaryColor,
@@ -135,22 +132,29 @@ class AfterLoginStudentPage extends StatelessWidget {
 
           Expanded(
             flex: 3,
-            child: Text(member.name,
-                style: CustomText.memberBodyColor,
-                overflow: TextOverflow.ellipsis),
+            child: Text(
+              member.name,
+              style: CustomText.memberBodyColor,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
 
           Expanded(
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/PhoneCall.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset(
+                  "assets/icons/PhoneCall.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(member.phone,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomText.memberBodyColor),
+                  child: Text(
+                    member.phone,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
                 ),
               ],
             ),
@@ -160,13 +164,18 @@ class AfterLoginStudentPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/collageicon.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset(
+                  "assets/icons/collageicon.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(member.collage,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomText.memberBodyColor),
+                  child: Text(
+                    member.collage,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
                 ),
               ],
             ),
@@ -176,13 +185,18 @@ class AfterLoginStudentPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/couseicon.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset(
+                  "assets/icons/couseicon.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(member.course,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomText.memberBodyColor),
+                  child: Text(
+                    member.course,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
                 ),
               ],
             ),
@@ -192,13 +206,18 @@ class AfterLoginStudentPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/place.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset(
+                  "assets/icons/place.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(member.place,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomText.memberBodyColor),
+                  child: Text(
+                    member.place,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
                 ),
               ],
             ),
@@ -208,13 +227,18 @@ class AfterLoginStudentPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/SignIn.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset(
+                  "assets/icons/SignIn.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(member.checkIn,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomText.memberBodyColor),
+                  child: Text(
+                    member.checkIn,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
                 ),
               ],
             ),
@@ -224,13 +248,18 @@ class AfterLoginStudentPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/SignOut.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset(
+                  "assets/icons/SignOut.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(member.checkOut,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomText.memberBodyColor),
+                  child: Text(
+                    member.checkOut,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
                 ),
               ],
             ),
@@ -240,13 +269,19 @@ class AfterLoginStudentPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: SvgPicture.asset("assets/icons/edit.svg",
-                    height: 20, width: 20),
+                icon: SvgPicture.asset(
+                  "assets/icons/edit.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 onPressed: () => _showEditMemberDialog(context, member),
               ),
               IconButton(
-                icon: SvgPicture.asset("assets/icons/Trash.svg",
-                    height: 20, width: 20),
+                icon: SvgPicture.asset(
+                  "assets/icons/Trash.svg",
+                  height: 20,
+                  width: 20,
+                ),
                 onPressed: () => _showDeleteDialog(context, member),
               ),
             ],
@@ -292,8 +327,9 @@ class Member {
       checkIn: data['arrivalDate'] is Timestamp
           ? _formatDate(data['arrivalDate'])
           : '',
-      checkOut:
-          data['exitDate'] is Timestamp ? _formatDate(data['exitDate']) : '',
+      checkOut: data['exitDate'] is Timestamp
+          ? _formatDate(data['exitDate'])
+          : '',
       photoUrl: data['photoUrl']?.toString() ?? '',
     );
   }
@@ -322,50 +358,52 @@ void _showDeleteDialog(BuildContext context, Member member) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
-                // ✅ Show student photo if exists, else dustbin image
                 member.photoUrl.isNotEmpty
                     ? CircleAvatar(
                         radius: 60,
                         backgroundImage: NetworkImage(member.photoUrl),
                       )
                     : Image.asset("assets/image/dustbin.png", height: 120),
-
                 const SizedBox(height: 20),
-
                 Text(
                   "Delete Student",
                   style: GoogleFonts.inter(
-                      fontSize: 22, fontWeight: FontWeight.w700),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "Are you sure you want to delete this member?",
                   textAlign: TextAlign.center,
-                  style:
-                      GoogleFonts.inter(fontSize: 15, color: Colors.grey[600]),
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    color: Colors.grey[600],
+                  ),
                 ),
                 const SizedBox(height: 28),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero),
-                        side: const BorderSide(color: Color.fromARGB(255, 240, 26, 11)),
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 240, 26, 11),
+                        ),
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         "Cancel",
                         style: GoogleFonts.inter(
-                            fontSize: 14, color: Color.fromARGB(255, 240, 26, 11)),
+                          fontSize: 14,
+                          color: Color.fromARGB(255, 240, 26, 11),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 24),
-
-                    // ✅ Red delete button
                     CustomButton(
                       label: "Delete",
                       backgroundColor: const Color.fromARGB(255, 240, 26, 11),
@@ -388,6 +426,7 @@ void _showDeleteDialog(BuildContext context, Member member) {
     },
   );
 }
+
 // ==================== EDIT DIALOG ====================
 void _showEditMemberDialog(BuildContext context, Member member) {
   final nameController = TextEditingController(text: member.name);
@@ -406,6 +445,13 @@ void _showEditMemberDialog(BuildContext context, Member member) {
       ? DateTime.tryParse(member.checkOut.split('-').reversed.join('-'))
       : null;
 
+  // ✅ ALL state declared OUTSIDE StatefulBuilder
+  Uint8List? editImageBytes;
+  String? editImageName;
+  bool isEditHovered = false;
+  String currentPhotoUrl = member.photoUrl;
+  bool isUpdating = false; // ✅ loading state
+
   final List<String> states = [
     'Arunachal Pradesh',
     'Assam',
@@ -422,17 +468,10 @@ void _showEditMemberDialog(BuildContext context, Member member) {
     builder: (context) {
       return Dialog(
         backgroundColor: AllColors.secondaryColor,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: StatefulBuilder(
           builder: (context, setState) {
-            // ✅ ALL photo state lives INSIDE StatefulBuilder so setState works correctly
-            Uint8List? editImageBytes;
-            String? editImageName;
-            bool isEditHovered = false;
-            // ✅ Tracks the currently saved Firebase URL — updates after successful upload
-            String currentPhotoUrl = member.photoUrl;
-
+            // ── Pick image ──
             Future<void> pickEditImage() async {
               final picker = ImagePicker();
               final XFile? picked = await picker.pickImage(
@@ -450,15 +489,78 @@ void _showEditMemberDialog(BuildContext context, Member member) {
               }
             }
 
-            // ✅ Determine what to show in the avatar
+            // ── Avatar image provider ──
             ImageProvider? avatarImage() {
-              if (editImageBytes != null) {
-                return MemoryImage(editImageBytes!); // newly picked, not yet uploaded
-              }
-              if (currentPhotoUrl.isNotEmpty) {
-                return NetworkImage(currentPhotoUrl); // existing Firebase photo
-              }
+              if (editImageBytes != null) return MemoryImage(editImageBytes!);
+              if (currentPhotoUrl.isNotEmpty)
+                return NetworkImage(currentPhotoUrl);
               return null;
+            }
+
+            // ── Handle update ──
+            Future<void> handleUpdate() async {
+              setState(() => isUpdating = true);
+
+              try {
+                String? newPhotoUrl;
+
+                // Upload new image if picked
+                if (editImageBytes != null) {
+                  final fileName =
+                      'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+                  final ref = FirebaseStorage.instance.ref().child(fileName);
+                  final snapshot = await ref.putData(
+                    editImageBytes!,
+                    SettableMetadata(contentType: 'image/jpeg'),
+                  );
+                  newPhotoUrl = await snapshot.ref.getDownloadURL();
+                  setState(() {
+                    currentPhotoUrl = newPhotoUrl!;
+                    editImageBytes = null;
+                  });
+                }
+
+                // Save to Firestore
+                await FirebaseFirestore.instance
+                    .collection('Student_collection')
+                    .doc(member.id)
+                    .update({
+                      "name": nameController.text.trim(),
+                      "phone": phoneController.text.trim(),
+                      "collage": collageController.text.trim(),
+                      "course": courseController.text.trim(),
+                      "state": selectedState,
+                      "gender": selectedGender,
+                      "arrivalDate": arrivalDate != null
+                          ? Timestamp.fromDate(arrivalDate!)
+                          : null,
+                      "exitDate": exitDate != null
+                          ? Timestamp.fromDate(exitDate!)
+                          : null,
+                      "photoUrl": newPhotoUrl ?? currentPhotoUrl,
+                      "updatedAt": FieldValue.serverTimestamp(),
+                    });
+
+                if (!context.mounted) return;
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Student updated successfully ✅"),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } catch (e) {
+                debugPrint("Update error: $e");
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Failed to update ❌ $e"),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } finally {
+                if (context.mounted) setState(() => isUpdating = false);
+              }
             }
 
             return SizedBox(
@@ -469,29 +571,34 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Edit Student",
-                          style: GoogleFonts.inter(
-                              fontSize: 26, fontWeight: FontWeight.w700)),
+                      Text(
+                        "Edit Student",
+                        style: GoogleFonts.inter(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       const SizedBox(height: 6),
-                      Text("Fill in the details to edit a student.",
-                          style: GoogleFonts.inter(
-                              fontSize: 16, color: AllColors.thirdColor)),
+                      Text(
+                        "Fill in the details to edit a student.",
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: AllColors.thirdColor,
+                        ),
+                      ),
                       const SizedBox(height: 24),
 
                       // ── Profile photo ──
                       _label("Profile Photo"),
                       Center(
                         child: MouseRegion(
-                          onEnter: (_) =>
-                              setState(() => isEditHovered = true),
-                          onExit: (_) =>
-                              setState(() => isEditHovered = false),
+                          onEnter: (_) => setState(() => isEditHovered = true),
+                          onExit: (_) => setState(() => isEditHovered = false),
                           child: GestureDetector(
-                            onTap: pickEditImage,
+                            onTap: isUpdating ? null : pickEditImage,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
-                                // ── Circle with image ──
                                 AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
                                   width: 100,
@@ -505,7 +612,6 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                           : Colors.grey.shade300,
                                       width: 2,
                                     ),
-                                    // ✅ Uses avatarImage() — shows picked OR Firebase photo
                                     image: avatarImage() != null
                                         ? DecorationImage(
                                             image: avatarImage()!,
@@ -515,31 +621,30 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                   ),
                                   child: ClipOval(
                                     child: avatarImage() == null
-                                        // ── No photo at all ──
                                         ? Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              Icon(Icons.cloud_upload_outlined,
-                                                  size: 28,
-                                                  color: Colors.grey[500]),
+                                              Icon(
+                                                Icons.cloud_upload_outlined,
+                                                size: 28,
+                                                color: Colors.grey[500],
+                                              ),
                                               const SizedBox(height: 4),
                                               Text(
                                                 "Upload\nPhoto",
                                                 textAlign: TextAlign.center,
                                                 style: GoogleFonts.inter(
-                                                    fontSize: 10,
-                                                    color:
-                                                        AllColors.fourthColor),
+                                                  fontSize: 10,
+                                                  color: AllColors.fourthColor,
+                                                ),
                                               ),
                                             ],
                                           )
-                                        // ── Has photo — hover overlay ──
                                         : const SizedBox.shrink(),
                                   ),
                                 ),
 
-                                // ── Camera badge ──
                                 Positioned(
                                   bottom: 2,
                                   left: 2,
@@ -548,15 +653,19 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                       color: AllColors.primaryColor,
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                          color: Colors.white, width: 2),
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
                                     ),
                                     padding: const EdgeInsets.all(4),
-                                    child: const Icon(Icons.camera_alt,
-                                        color: Colors.white, size: 12),
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white,
+                                      size: 12,
+                                    ),
                                   ),
                                 ),
 
-                                // ── Remove button (only when new image picked) ──
                                 if (editImageBytes != null)
                                   Positioned(
                                     bottom: 2,
@@ -568,11 +677,15 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                       }),
                                       child: Container(
                                         decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle),
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
                                         padding: const EdgeInsets.all(4),
-                                        child: const Icon(Icons.close,
-                                            color: Colors.white, size: 13),
+                                        child: const Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                          size: 13,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -588,11 +701,12 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                           editImageBytes != null
                               ? "${editImageName ?? 'New photo selected'} ✓"
                               : currentPhotoUrl.isNotEmpty
-                                  ? "Current photo loaded ✓"
-                                  : "Tap to upload a photo",
+                              ? "Current photo loaded ✓"
+                              : "Tap to upload a photo",
                           style: GoogleFonts.inter(
                             fontSize: 11,
-                            color: editImageBytes != null ||
+                            color:
+                                editImageBytes != null ||
                                     currentPhotoUrl.isNotEmpty
                                 ? Colors.green
                                 : Colors.grey[500],
@@ -603,24 +717,29 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       const SizedBox(height: 24),
 
                       _label("Name"),
-                      _textField("Edit Student name",
-                          controller: nameController),
+                      _textField(
+                        "Edit Student name",
+                        controller: nameController,
+                      ),
                       const SizedBox(height: 20),
 
                       _label("Phone Number"),
-                      _textField("Edit phone number",
-                          keyboardType: TextInputType.phone,
-                          controller: phoneController),
+                      _textField(
+                        "Edit phone number",
+                        keyboardType: TextInputType.phone,
+                        controller: phoneController,
+                      ),
                       const SizedBox(height: 20),
 
                       _label("College"),
-                      _textField("Edit Student college",
-                          controller: collageController),
+                      _textField(
+                        "Edit Student college",
+                        controller: collageController,
+                      ),
                       const SizedBox(height: 20),
 
                       _label("Degree"),
-                      _textField("Edit Degree",
-                          controller: courseController),
+                      _textField("Edit Degree", controller: courseController),
                       const SizedBox(height: 20),
 
                       Row(
@@ -634,24 +753,33 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                   isExpanded: true,
                                   dropdownColor: Colors.grey[100],
                                   decoration: _inputDecoration().copyWith(
-                                      filled: true,
-                                      fillColor: Colors.grey[100]),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                  ),
                                   hint: const Text("Select Gender"),
                                   items: const [
                                     DropdownMenuItem(
-                                        value: "Male", child: Text("Male")),
+                                      value: "Male",
+                                      child: Text("Male"),
+                                    ),
                                     DropdownMenuItem(
-                                        value: "Female",
-                                        child: Text("Female")),
+                                      value: "Female",
+                                      child: Text("Female"),
+                                    ),
                                     DropdownMenuItem(
-                                        value: "Children",
-                                        child: Text("Children")),
+                                      value: "Children",
+                                      child: Text("Children"),
+                                    ),
                                     DropdownMenuItem(
-                                        value: "Others",
-                                        child: Text("Others")),
+                                      value: "Others",
+                                      child: Text("Others"),
+                                    ),
                                   ],
-                                  onChanged: (value) =>
-                                      setState(() => selectedGender = value),
+                                  onChanged: isUpdating
+                                      ? null
+                                      : (value) => setState(
+                                          () => selectedGender = value,
+                                        ),
                                 ),
                               ],
                             ),
@@ -666,16 +794,24 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                   isExpanded: true,
                                   dropdownColor: Colors.grey[100],
                                   decoration: _inputDecoration().copyWith(
-                                      filled: true,
-                                      fillColor: Colors.grey[100]),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                  ),
                                   hint: const Text("Select State"),
                                   value: selectedState,
                                   items: states
-                                      .map((s) => DropdownMenuItem(
-                                          value: s, child: Text(s)))
+                                      .map(
+                                        (s) => DropdownMenuItem(
+                                          value: s,
+                                          child: Text(s),
+                                        ),
+                                      )
                                       .toList(),
-                                  onChanged: (value) =>
-                                      setState(() => selectedState = value),
+                                  onChanged: isUpdating
+                                      ? null
+                                      : (value) => setState(
+                                          () => selectedState = value,
+                                        ),
                                 ),
                               ],
                             ),
@@ -693,8 +829,12 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               children: [
                                 _label("Arrival Date"),
                                 _dateBox(arrivalDate, () {
-                                  _openCalendar(context, arrivalDate,
-                                      (d) => setState(() => arrivalDate = d));
+                                  if (isUpdating) return;
+                                  _openCalendar(
+                                    context,
+                                    arrivalDate,
+                                    (d) => setState(() => arrivalDate = d),
+                                  );
                                 }),
                               ],
                             ),
@@ -706,8 +846,12 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               children: [
                                 _label("Exit Date"),
                                 _dateBox(exitDate, () {
-                                  _openCalendar(context, exitDate,
-                                      (d) => setState(() => exitDate = d));
+                                  if (isUpdating) return;
+                                  _openCalendar(
+                                    context,
+                                    exitDate,
+                                    (d) => setState(() => exitDate = d),
+                                  );
                                 }),
                               ],
                             ),
@@ -722,99 +866,142 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         controller: descriptionController,
                         maxLines: 4,
                         decoration: _inputDecoration(
-                            hint: "Enter a brief description"),
+                          hint: "Enter a brief description",
+                        ),
                       ),
 
                       const SizedBox(height: 32),
 
+                      // ✅ Buttons row with inline loading spinner
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                            OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
+                          // Cancel button
+                          OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero,
+                              ),
+                              side: BorderSide(
+                                color: isUpdating
+                                    ? Colors.grey
+                                    : AllColors.primaryColor,
+                              ),
                             ),
-                            side: const BorderSide(
-                              color: AllColors.primaryColor,
-                            ), 
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(
-                            "Cancel",
-                            style: GoogleFonts.inter(
-                              color: AllColors.primaryColor,
+                            onPressed: isUpdating
+                                ? null
+                                : () => Navigator.pop(context),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                color: isUpdating
+                                    ? Colors.grey
+                                    : AllColors.primaryColor,
+                              ),
                             ),
                           ),
-                        ),
                           const SizedBox(width: 16),
+
+                          // ✅ Update button with built-in spinner
                           CustomButton(
-                            label: "Update Student",
+                            label: isUpdating ? "Saving..." : "Update Student",
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             height: 48,
-                            backgroundColor: AllColors.primaryColor,
+                            backgroundColor: isUpdating
+                                ? AllColors.fifthColor.withOpacity(0.7)
+                                : AllColors.fifthColor,
                             textColor: AllColors.secondaryColor,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 10),
-                            onPressed: () async {
-                              // ✅ Upload new image if picked, update currentPhotoUrl
-                              String? newPhotoUrl;
-                              if (editImageBytes != null) {
-                                try {
-                                  final fileName =
-                                      'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
-                                  final ref = FirebaseStorage.instance
-                                      .ref()
-                                      .child(fileName);
-                                  final snapshot = await ref.putData(
-                                    editImageBytes!,
-                                    SettableMetadata(
-                                        contentType: 'image/jpeg'),
-                                  );
-                                  newPhotoUrl =
-                                      await snapshot.ref.getDownloadURL();
-                                  // ✅ Update local display URL immediately
-                                  setState(() {
-                                    currentPhotoUrl = newPhotoUrl!;
-                                    editImageBytes = null;
-                                  });
-                                } catch (e) {
-                                  debugPrint("Upload error: $e");
-                                }
-                              }
+                              horizontal: 24,
+                              vertical: 10,
+                            ),
+                            isLoading: isUpdating,
+                            onPressed: isUpdating
+                                ? null
+                                : () async {
+                                    setState(() => isUpdating = true);
 
-                              await FirebaseFirestore.instance
-                                  .collection('Student_collection')
-                                  .doc(member.id)
-                                  .update({
-                                "name": nameController.text.trim(),
-                                "phone": phoneController.text.trim(),
-                                "collage": collageController.text.trim(),
-                                "course": courseController.text.trim(),
-                                "state": selectedState,
-                                "gender": selectedGender,
-                                "arrivalDate": arrivalDate != null
-                                    ? Timestamp.fromDate(arrivalDate!)
-                                    : null,
-                                "exitDate": exitDate != null
-                                    ? Timestamp.fromDate(exitDate!)
-                                    : null,
-                                // ✅ Always write photoUrl (new or existing)
-                                "photoUrl": newPhotoUrl ?? currentPhotoUrl,
-                                "updatedAt": FieldValue.serverTimestamp(),
-                              });
+                                    try {
+                                      String? newPhotoUrl;
 
-                              if (!context.mounted) return;
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text("Student updated successfully"),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                            },
+                                      if (editImageBytes != null) {
+                                        final fileName =
+                                            'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+                                        final ref = FirebaseStorage.instance
+                                            .ref()
+                                            .child(fileName);
+                                        final snapshot = await ref.putData(
+                                          editImageBytes!,
+                                          SettableMetadata(
+                                            contentType: 'image/jpeg',
+                                          ),
+                                        );
+                                        newPhotoUrl = await snapshot.ref
+                                            .getDownloadURL();
+                                        setState(() {
+                                          currentPhotoUrl = newPhotoUrl!;
+                                          editImageBytes = null;
+                                        });
+                                      }
+
+                                      await FirebaseFirestore.instance
+                                          .collection('Student_collection')
+                                          .doc(member.id)
+                                          .update({
+                                            "name": nameController.text.trim(),
+                                            "phone": phoneController.text
+                                                .trim(),
+                                            "collage": collageController.text
+                                                .trim(),
+                                            "course": courseController.text
+                                                .trim(),
+                                            "state": selectedState,
+                                            "gender": selectedGender,
+                                            "arrivalDate": arrivalDate != null
+                                                ? Timestamp.fromDate(
+                                                    arrivalDate!,
+                                                  )
+                                                : null,
+                                            "exitDate": exitDate != null
+                                                ? Timestamp.fromDate(exitDate!)
+                                                : null,
+                                            "photoUrl":
+                                                newPhotoUrl ?? currentPhotoUrl,
+                                            "updatedAt":
+                                                FieldValue.serverTimestamp(),
+                                          });
+
+                                      if (!context.mounted) return;
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            "Student updated successfully ✅",
+                                          ),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      debugPrint("Update error: $e");
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Failed to update ❌ $e",
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    } finally {
+                                      if (context.mounted)
+                                        setState(() => isUpdating = false);
+                                    }
+                                  },
                           ),
                         ],
                       ),
@@ -833,11 +1020,12 @@ void _showEditMemberDialog(BuildContext context, Member member) {
 // ==================== SHARED HELPERS ====================
 
 Widget _label(String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(text,
-          style: GoogleFonts.inter(
-              fontSize: 16, fontWeight: FontWeight.w600)),
-    );
+  padding: const EdgeInsets.only(bottom: 8),
+  child: Text(
+    text,
+    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
+  ),
+);
 
 Widget _textField(
   String hint, {
@@ -852,14 +1040,14 @@ Widget _textField(
 }
 
 InputDecoration _inputDecoration({String? hint}) => InputDecoration(
-      hintText: hint,
-      filled: true,
-      fillColor: Colors.grey[100],
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
-        borderSide: BorderSide.none,
-      ),
-    );
+  hintText: hint,
+  filled: true,
+  fillColor: Colors.grey[100],
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(4),
+    borderSide: BorderSide.none,
+  ),
+);
 
 Widget _dateBox(DateTime? date, VoidCallback onTap) {
   return InkWell(
@@ -876,8 +1064,8 @@ Widget _dateBox(DateTime? date, VoidCallback onTap) {
         date == null
             ? "Select date"
             : "${date.day.toString().padLeft(2, '0')}-"
-                "${date.month.toString().padLeft(2, '0')}-"
-                "${date.year}",
+                  "${date.month.toString().padLeft(2, '0')}-"
+                  "${date.year}",
       ),
     ),
   );

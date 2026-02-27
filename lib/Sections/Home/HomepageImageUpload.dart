@@ -66,14 +66,14 @@ class _HomepageUploadPopupState extends State<HomepageUploadPopup> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Image uploaded successfully!")),
+          const SnackBar(content: Text("Image uploaded successfully!"),backgroundColor: Colors.green,),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Upload failed: $e")),
+          SnackBar(content: Text("Upload failed: $e"),backgroundColor: Colors.red,),
         );
       }
     } finally {

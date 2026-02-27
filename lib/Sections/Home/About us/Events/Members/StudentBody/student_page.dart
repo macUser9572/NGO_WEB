@@ -155,21 +155,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // Positioned(
-                    //   left: 0,
-                    //   bottom: 170,
-                    //   child: CustomButton(
-                    //     label: "Student Members",
-                    //     onPressed: (){
-                    //       Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //           builder: (_)=> const StudentListPage()
-                    //           )
-                    //           );
-                    //     }
-                    //     )
-                    //     )
                     CustomButton(
                       label: "Student Members",
                       onPressed: () {

@@ -23,15 +23,17 @@ class NavbarDesktop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final double navHeight = (width * 0.06).clamp(64, 80);
-    final double horizontalPadding = (width * 0.05).clamp(20, 40);
 
     return Container(
-      height: navHeight,
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: 20), // 🔥 Less spacing
       color: AllColors.fourthColor,
       child: Row(
-        children: [_buildLogo(context), const Spacer(), _buildMenu(context)],
+        children: [
+          _buildLogo(context),
+          const Spacer(),
+          _buildMenu(context),
+        ],
       ),
     );
   }
@@ -42,14 +44,18 @@ class NavbarDesktop extends StatelessWidget {
       onTap: () => scrollToSection(context, 0),
       child: Row(
         children: [
-          SizedBox(height: 32, width: 32, child: AllImages.greenlogo()),
-          const SizedBox(width: 8),
+          SizedBox(
+            height: 30,
+            width: 30,
+            child: AllImages.greenlogo(),
+          ),
+          const SizedBox(width: 6),
           Text(
             'BCS',
             style: GoogleFonts.inter(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.w600,
-              color: AllColors.primaryColor,
+              color: AllColors.fifthColor,
             ),
           ),
         ],
@@ -78,23 +84,30 @@ class NavbarDesktop extends StatelessWidget {
     final bool isActive = _sectionToNav[current] == index;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 4), // 🔥 Reduced gap
       child: InkWell(
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(30),
         onTap: () => scrollToSection(context, index),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 8,
+          ),
           decoration: BoxDecoration(
-            color: isActive ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(40),
+            color: isActive
+                ? AllColors.fifthColor
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(30),
           ),
           child: Text(
             title,
             style: GoogleFonts.inter(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: AllColors.primaryColor,
+              color: isActive
+                  ? Colors.white
+                  : AllColors.primaryColor.withOpacity(0.75), 
             ),
           ),
         ),

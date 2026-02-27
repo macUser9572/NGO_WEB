@@ -32,7 +32,7 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = backgroundColor ?? AllColors.primaryColor;
+    final bg = backgroundColor ?? AllColors.fifthColor;
     final fg = textColor ?? AllColors.secondaryColor;
 
     final child = isLoading

@@ -12,7 +12,7 @@ class AboutusPage2 extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: height,
-      color: const Color(0xFFEFFAF4),
+      color: AllColors.fourthColor,
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

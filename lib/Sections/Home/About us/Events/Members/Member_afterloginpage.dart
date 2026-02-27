@@ -721,7 +721,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             height: 48,
-                            backgroundColor: AllColors.primaryColor,
+                            backgroundColor: AllColors.fifthColor,
                             textColor: AllColors.secondaryColor,
                             isLoading: isUpdating, // ✅ spinner
                             padding: const EdgeInsets.symmetric(

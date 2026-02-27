@@ -163,7 +163,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AllColors.primaryColor,
+                    backgroundColor: AllColors.fifthColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

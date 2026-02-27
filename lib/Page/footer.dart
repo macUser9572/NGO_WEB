@@ -26,7 +26,7 @@ class Footer extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      color: AllColors.secondaryColor,
+      color: AllColors.fourthColor,
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       child: Center(
         child: ConstrainedBox(
@@ -62,7 +62,6 @@ class Footer extends StatelessWidget {
         Row(
           children: [
             Container(
-              color: AllColors.secondaryColor,
               height: 48,
               width: 48,
               child: AllImages.greenlogo(),
