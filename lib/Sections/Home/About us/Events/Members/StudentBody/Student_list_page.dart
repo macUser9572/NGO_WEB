@@ -91,13 +91,10 @@ class StudentListPage extends StatelessWidget {
           children: [
             Text(
               "Student Members",
-              style: GoogleFonts.inter(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-              ),
+              style: GoogleFonts.inter(fontSize: 48, fontWeight: FontWeight.bold),
             ),
             Text(
-              "Phone numbers are hidden. Admin login required to view them.",
+              "Phone numbers and emails are hidden. Admin login required to view them.",
               style: GoogleFonts.inter(fontSize: 14),
             ),
             const SizedBox(height: 30),
@@ -118,22 +115,15 @@ Widget _memberRow(Member member) {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
-        // ── Avatar — fetches photoUrl from Firebase ──
+        // ── Avatar ──
         CircleAvatar(
           radius: 22,
           backgroundColor: AllColors.fourthColor,
-          backgroundImage: member.photoUrl.isNotEmpty
-              ? NetworkImage(member.photoUrl)
-              : null,
+          backgroundImage: member.photoUrl.isNotEmpty ? NetworkImage(member.photoUrl) : null,
           child: member.photoUrl.isEmpty
               ? Text(
-                  member.name.isNotEmpty
-                      ? member.name[0].toUpperCase()
-                      : '?',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AllColors.primaryColor,
-                  ),
+                  member.name.isNotEmpty ? member.name[0].toUpperCase() : '?',
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AllColors.primaryColor),
                 )
               : null,
         ),
@@ -145,11 +135,7 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Text(
             member.name,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
+            style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -159,8 +145,19 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/PhoneCall.svg",
-                  height: 20, width: 20),
+              SvgPicture.asset("assets/icons/PhoneCall.svg", height: 20, width: 20),
+              const SizedBox(width: 6),
+              Text("***********", style: CustomText.memberBodyColor),
+            ],
+          ),
+        ),
+
+        // ── Email (masked) ── (NEW)
+        Expanded(
+          flex: 4,
+          child: Row(
+            children: [
+              SvgPicture.asset("assets/icons/mail.svg",height: 20,width: 20),
               const SizedBox(width: 6),
               Text("***********", style: CustomText.memberBodyColor),
             ],
@@ -172,15 +169,10 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/collageicon.svg",
-                  height: 20, width: 20),
+              SvgPicture.asset("assets/icons/collageicon.svg", height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(
-                  member.collage,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomText.memberBodyColor,
-                ),
+                child: Text(member.collage, overflow: TextOverflow.ellipsis, style: CustomText.memberBodyColor),
               ),
             ],
           ),
@@ -191,15 +183,10 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/couseicon.svg",
-                  height: 20, width: 20),
+              SvgPicture.asset("assets/icons/couseicon.svg", height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(
-                  member.course,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomText.memberBodyColor,
-                ),
+                child: Text(member.course, overflow: TextOverflow.ellipsis, style: CustomText.memberBodyColor),
               ),
             ],
           ),
@@ -210,15 +197,10 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/place.svg",
-                  height: 20, width: 20),
+              SvgPicture.asset("assets/icons/place.svg", height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(
-                  member.place,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomText.memberBodyColor,
-                ),
+                child: Text(member.place, overflow: TextOverflow.ellipsis, style: CustomText.memberBodyColor),
               ),
             ],
           ),
@@ -229,15 +211,10 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/SignIn.svg",
-                  height: 20, width: 20),
+              SvgPicture.asset("assets/icons/SignIn.svg", height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(
-                  member.checkIn,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomText.memberBodyColor,
-                ),
+                child: Text(member.checkIn, overflow: TextOverflow.ellipsis, style: CustomText.memberBodyColor),
               ),
             ],
           ),
@@ -248,15 +225,10 @@ Widget _memberRow(Member member) {
           flex: 3,
           child: Row(
             children: [
-              SvgPicture.asset("assets/icons/SignOut.svg",
-                  height: 20, width: 20),
+              SvgPicture.asset("assets/icons/SignOut.svg", height: 20, width: 20),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(
-                  member.checkOut,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomText.memberBodyColor,
-                ),
+                child: Text(member.checkOut, overflow: TextOverflow.ellipsis, style: CustomText.memberBodyColor),
               ),
             ],
           ),
@@ -271,17 +243,19 @@ class Member {
   final String id;
   final String name;
   final String phone;
+  final String email; // ← NEW
   final String collage;
   final String course;
   final String place;
   final String checkIn;
   final String checkOut;
-  final String photoUrl; // ✅ renamed from 'image'
+  final String photoUrl;
 
   Member({
     required this.id,
     required this.name,
     required this.phone,
+    required this.email, // ← NEW
     required this.collage,
     required this.course,
     required this.place,
@@ -295,16 +269,13 @@ class Member {
       id: id,
       name: data['name']?.toString() ?? '',
       phone: data['phone']?.toString() ?? '',
+      email: data['email']?.toString() ?? '', // ← NEW
       collage: data['collage']?.toString() ?? '',
       course: data['course']?.toString() ?? '',
       place: data['state']?.toString() ?? data['place']?.toString() ?? '',
-      checkIn: data['arrivalDate'] is Timestamp
-          ? _formatDate(data['arrivalDate'])
-          : '',
-      checkOut: data['exitDate'] is Timestamp
-          ? _formatDate(data['exitDate'])
-          : '',
-      photoUrl: data['photoUrl']?.toString() ?? '', // ✅ correct field name
+      checkIn: data['arrivalDate'] is Timestamp ? _formatDate(data['arrivalDate']) : '',
+      checkOut: data['exitDate'] is Timestamp ? _formatDate(data['exitDate']) : '',
+      photoUrl: data['photoUrl']?.toString() ?? '',
     );
   }
 

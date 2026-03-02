@@ -61,10 +61,9 @@ class Footer extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
-              height: 48,
-              width: 48,
-              child: AllImages.greenlogo(),
+            SvgPicture.asset("assets/icons/CompanyLogo.svg",
+            height: 24,
+            width: 24,
             ),
             const SizedBox(width: 10),
 

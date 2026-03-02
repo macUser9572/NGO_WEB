@@ -33,12 +33,13 @@ String fixFirebaseUrl(String url) {
 }
 
 // ====================== IMAGE CARD ========================
-Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
+Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 220}) {
   final String url = fixFirebaseUrl(imageUrl?.toString() ?? "");
 
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(4),
+      color: AllColors.fourthColor,
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.08),
@@ -56,40 +57,40 @@ Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
             topLeft: Radius.circular(4),
             topRight: Radius.circular(4),
           ),
-          child: url.isNotEmpty
-              ? CachedNetworkImage(
-                  imageUrl: url,
-                  height: height,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    height: height,
-                    color: Colors.grey.shade100,
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: height,
-                    color: Colors.grey.shade100,
+          child: SizedBox(
+            width: double.infinity,
+            height: height,
+            child: url.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: url,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    placeholder: (context, url) => Container(
+                      color: AllColors.fourthColor,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: AllColors.fourthColor,
+                      child: const Center(
+                        child: Icon(Icons.broken_image_outlined,
+                            size: 40, color: Colors.grey),
+                      ),
+                    ),
+                  )
+                : Container(
+                    color: AllColors.fourthColor,
                     child: const Center(
-                      child: Icon(Icons.broken_image_outlined,
+                      child: Icon(Icons.image_outlined,
                           size: 40, color: Colors.grey),
                     ),
                   ),
-                )
-              : Container(
-                  height: height,
-                  color: Colors.grey.shade100,
-                  child: const Center(
-                    child: Icon(Icons.image_outlined,
-                        size: 40, color: Colors.grey),
-                  ),
-                ),
+          ),
         ),
 
         // TITLE
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(
             color: AllColors.fourthColor,
             borderRadius: const BorderRadius.only(
@@ -101,7 +102,7 @@ Widget _imageCard(dynamic imageUrl, dynamic title, {double height = 200}) {
             title?.toString() ?? "",
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-              fontSize: 15,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: AllColors.primaryColor,
             ),
@@ -125,7 +126,6 @@ class _DesktopLayout extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // PAGE TITLE
           Text(
             "What We Do",
             style: GoogleFonts.inter(
@@ -135,7 +135,7 @@ class _DesktopLayout extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 50),
+          const SizedBox(height: 24),
 
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
@@ -170,33 +170,32 @@ class _DesktopLayout extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _imageCard(data["image1"], data["title1"],
-                            height: 220),
+                            height: 290),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _imageCard(data["image2"], data["title2"],
-                            height: 220),
+                            height: 290),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _imageCard(data["image3"], data["title3"],
-                            height: 220),
+                            height: 290),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _imageCard(data["image4"], data["title4"],
-                            height: 220),
+                            height: 290),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 24),
 
                   // ── BOTTOM ROW: Key Info + Events ──
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // LEFT — Key Information
                       Expanded(
                         flex: 5,
                         child: Column(
@@ -223,9 +222,8 @@ class _DesktopLayout extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(width: 50),
+                      const SizedBox(width: 24),
 
-                      // RIGHT — Events
                       Expanded(
                         flex: 5,
                         child: Column(
@@ -309,31 +307,29 @@ class _MobileLayout extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Row 1
                   Row(
                     children: [
                       Expanded(
                           child: _imageCard(data["image1"], data["title1"],
-                              height: 140)),
+                              height: 300)),
                       const SizedBox(width: 12),
                       Expanded(
                           child: _imageCard(data["image2"], data["title2"],
-                              height: 140)),
+                              height: 300)),
                     ],
                   ),
 
                   const SizedBox(height: 12),
 
-                  // Row 2
                   Row(
                     children: [
                       Expanded(
                           child: _imageCard(data["image3"], data["title3"],
-                              height: 140)),
+                              height: 340)),
                       const SizedBox(width: 12),
                       Expanded(
                           child: _imageCard(data["image4"], data["title4"],
-                              height: 140)),
+                              height: 340)),
                     ],
                   ),
 

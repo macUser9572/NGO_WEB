@@ -17,6 +17,7 @@ class AddStudentMemberPage extends StatefulWidget {
 class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
+  final emailController = TextEditingController(); // ← NEW
   final collageController = TextEditingController();
   final courseController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -87,6 +88,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
       await FirebaseFirestore.instance.collection('Student_collection').add({
         'name': nameController.text.trim(),
         'phone': phoneController.text.trim(),
+        'email': emailController.text.trim(), // ← NEW
         'collage': collageController.text.trim(),
         'course': courseController.text.trim(),
         'gender': selectedGender,
@@ -194,7 +196,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                               child: Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  // ── Circle avatar ──
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     width: 110,
@@ -208,7 +209,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                             : Colors.grey.shade300,
                                         width: 2,
                                       ),
-                                      // ✅ Show selected image as background
                                       image: _selectedImageBytes != null
                                           ? DecorationImage(
                                               image: MemoryImage(
@@ -220,7 +220,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                     ),
                                     child: ClipOval(
                                       child: _selectedImageBytes == null
-                                          // Empty state
                                           ? Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -241,7 +240,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                                 ),
                                               ],
                                             )
-                                          // Hover overlay on selected image
                                           : _isImageHovered
                                           ? Container(
                                               color: Colors.black.withOpacity(
@@ -274,7 +272,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                     ),
                                   ),
 
-                                  // ── Red ✕ remove button (bottom-right) ──
                                   if (_selectedImageBytes != null)
                                     Positioned(
                                       bottom: 2,
@@ -299,7 +296,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                                       ),
                                     ),
 
-                                  // ── Camera badge (bottom-left) ──
                                   Positioned(
                                     bottom: 2,
                                     left: 2,
@@ -327,7 +323,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
 
                           const SizedBox(height: 8),
 
-                          // ── Caption ──
                           Text(
                             _selectedImageBytes != null
                                 ? (_selectedImageName ?? "Photo selected ✓")
@@ -343,7 +338,6 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       ),
                     ),
 
-                    // ═════════════════════════════════════════════
                     const SizedBox(height: 24),
 
                     _label("Name"),
@@ -358,6 +352,15 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: _inputDecoration(hint: "Enter Phone number"),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ── Email ── (NEW)
+                    _label("Email"),
+                    TextField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: _inputDecoration(hint: "Enter Email "),
                     ),
                     const SizedBox(height: 20),
 
@@ -507,7 +510,7 @@ class _AddStudentMemberPageState extends State<AddStudentMemberPage> {
                             ),
                             side: const BorderSide(
                               color: AllColors.primaryColor,
-                            ), 
+                            ),
                           ),
                           onPressed: () => Navigator.pop(context),
                           child: Text(

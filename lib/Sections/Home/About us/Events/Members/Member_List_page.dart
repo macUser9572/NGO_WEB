@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -68,11 +67,8 @@ class MembersListPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AllColors.fifthColor,
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 18, vertical: 10),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
               ),
               onPressed: () {
                 showDialog(
@@ -82,11 +78,7 @@ class MembersListPage extends StatelessWidget {
               },
               child: Text(
                 "Admin Login",
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AllColors.secondaryColor,
-                ),
+                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: AllColors.secondaryColor),
               ),
             ),
           ),
@@ -99,19 +91,10 @@ class MembersListPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text("BCS Members", style: GoogleFonts.inter(fontSize: 48, fontWeight: FontWeight.bold)),
             Text(
-              "BCS Members",
-              style: GoogleFonts.inter(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "Phone numbers are hidden. Admin login required to view them.",
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: AllColors.thirdColor,
-              ),
+              "Phone numbers and emails are hidden. Admin login required to view them.",
+              style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor),
             ),
             const SizedBox(height: 30),
             Expanded(child: membersStream()),
@@ -129,8 +112,7 @@ class MembersListPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
 
-          // ✅ Avatar — shows Firebase photo, falls back to initial letter only
-          // No person icon at all
+          // ── Avatar ──
           CircleAvatar(
             radius: 22,
             backgroundColor: AllColors.fourthColor,
@@ -141,39 +123,23 @@ class MembersListPage extends StatelessWidget {
                       width: 44,
                       height: 44,
                       fit: BoxFit.cover,
-                      // ✅ Shows spinner while photo loads from Firebase
                       loadingBuilder: (context, child, progress) {
                         if (progress == null) return child;
                         return const SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AllColors.primaryColor,
-                          ),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AllColors.primaryColor),
                         );
                       },
-                      // ✅ Falls back to initial letter if URL is broken
                       errorBuilder: (context, error, stackTrace) => Text(
-                        member.name.isNotEmpty
-                            ? member.name[0].toUpperCase()
-                            : '?',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AllColors.primaryColor,
-                        ),
+                        member.name.isNotEmpty ? member.name[0].toUpperCase() : '?',
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: AllColors.primaryColor),
                       ),
                     ),
                   )
-                // ✅ No photo uploaded — show initial letter, no icon
                 : Text(
-                    member.name.isNotEmpty
-                        ? member.name[0].toUpperCase()
-                        : '?',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AllColors.primaryColor,
-                    ),
+                    member.name.isNotEmpty ? member.name[0].toUpperCase() : '?',
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: AllColors.primaryColor),
                   ),
           ),
           const SizedBox(width: 16),
@@ -184,8 +150,7 @@ class MembersListPage extends StatelessWidget {
             child: Text(
               member.name,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                  fontSize: 15, fontWeight: FontWeight.w500),
+              style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ),
 
@@ -194,14 +159,21 @@ class MembersListPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/PhoneCall.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset("assets/icons/PhoneCall.svg", height: 20, width: 20),
                 const SizedBox(width: 6),
-                Text(
-                  "***********",
-                  style: GoogleFonts.inter(
-                      fontSize: 14, color: AllColors.thirdColor),
-                ),
+                Text("***********", style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor)),
+              ],
+            ),
+          ),
+
+          // ── Email (masked) ── (NEW)
+          Expanded(
+            flex: 4,
+            child: Row(
+              children: [
+                 SvgPicture.asset("assets/icons/mail.svg",height: 20,width: 20),
+                const SizedBox(width: 6),
+                Text("***********", style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor)),
               ],
             ),
           ),
@@ -211,16 +183,10 @@ class MembersListPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/place.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset("assets/icons/place.svg", height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.place,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                        fontSize: 14, color: AllColors.thirdColor),
-                  ),
+                  child: Text(member.place, overflow: TextOverflow.ellipsis, style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor)),
                 ),
               ],
             ),
@@ -231,16 +197,10 @@ class MembersListPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/SignIn.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset("assets/icons/SignIn.svg", height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.checkIn,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                        fontSize: 14, color: AllColors.thirdColor),
-                  ),
+                  child: Text(member.checkIn, overflow: TextOverflow.ellipsis, style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor)),
                 ),
               ],
             ),
@@ -251,16 +211,10 @@ class MembersListPage extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset("assets/icons/SignOut.svg",
-                    height: 20, width: 20),
+                SvgPicture.asset("assets/icons/SignOut.svg", height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.checkOut,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                        fontSize: 14, color: AllColors.thirdColor),
-                  ),
+                  child: Text(member.checkOut, overflow: TextOverflow.ellipsis, style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor)),
                 ),
               ],
             ),
@@ -276,6 +230,7 @@ class Member {
   final String id;
   final String name;
   final String phone;
+  final String email; // ← NEW
   final String place;
   final String checkIn;
   final String checkOut;
@@ -285,6 +240,7 @@ class Member {
     required this.id,
     required this.name,
     required this.phone,
+    required this.email, // ← NEW
     required this.place,
     required this.checkIn,
     required this.checkOut,
@@ -296,13 +252,10 @@ class Member {
       id: id,
       name: data['name']?.toString() ?? '',
       phone: data['phone']?.toString() ?? '',
+      email: data['email']?.toString() ?? '', // ← NEW
       place: data['state']?.toString() ?? data['place']?.toString() ?? '',
-      checkIn: data['arrivalDate'] is Timestamp
-          ? _formatDate(data['arrivalDate'])
-          : '',
-      checkOut: data['exitDate'] is Timestamp
-          ? _formatDate(data['exitDate'])
-          : '',
+      checkIn: data['arrivalDate'] is Timestamp ? _formatDate(data['arrivalDate']) : '',
+      checkOut: data['exitDate'] is Timestamp ? _formatDate(data['exitDate']) : '',
       photoUrl: data['photoUrl']?.toString() ?? '',
     );
   }

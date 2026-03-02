@@ -4,6 +4,8 @@ import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:ngo_web/constraints/all_images.dart';
 import 'package:ngo_web/widgets/scroll_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 class NavbarDesktop extends StatelessWidget {
   const NavbarDesktop({super.key});
@@ -44,10 +46,9 @@ class NavbarDesktop extends StatelessWidget {
       onTap: () => scrollToSection(context, 0),
       child: Row(
         children: [
-          SizedBox(
-            height: 30,
-            width: 30,
-            child: AllImages.greenlogo(),
+          SvgPicture.asset("assets/icons/CompanyLogo.svg",
+          height: 32,
+          width: 32,
           ),
           const SizedBox(width: 6),
           Text(
