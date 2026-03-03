@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ngo_web/Sections/Home/Be%20a%20contributor.dart';
 import 'package:ngo_web/Sections/Home/joinAsMember.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -136,7 +137,13 @@ class HomeDesktop extends StatelessWidget {
                           vertical: 14,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => const ComingSoonDialog(),
+                        );
+                      },
                       child: Text(
                         "Be a contributor",
                         style: GoogleFonts.inter(

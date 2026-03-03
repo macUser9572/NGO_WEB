@@ -165,7 +165,7 @@ class _AdminLoginPopupState extends State<Studentadminpopuppage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AllColors.fifthColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.zero,
                     ),
                   ),
                   onPressed: isLoading ? null : loginAdmin,

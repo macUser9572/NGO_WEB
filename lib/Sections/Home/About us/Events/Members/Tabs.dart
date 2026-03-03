@@ -44,7 +44,7 @@ class AfterLoginPage extends StatelessWidget {
             tabs: [
               Tab(text: "Add Member"),
               Tab(text: "Content Upload"),
-              Tab(text:"RequestMembership"),
+              Tab(text:"Request Membership"),
             ],
           ),
         ),

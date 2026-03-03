@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/TwoTabs.dart';
+import 'package:ngo_web/Sections/Home/About%20us/Events/Members/Tabs.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 
 class AdminLoginPopup extends StatefulWidget {
@@ -167,7 +167,7 @@ class _AdminLoginPopupState extends State<AdminLoginPopup> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AllColors.fifthColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.zero,
                     ),
                   ),
                   onPressed: isLoading ? null : loginAdmin,

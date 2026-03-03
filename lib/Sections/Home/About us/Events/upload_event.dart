@@ -21,10 +21,17 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
   final TextEditingController title4Controller = TextEditingController();
   final TextEditingController keyInfoController = TextEditingController();
 
+  // New images picked by user (null = not changed)
   Uint8List? image1;
   Uint8List? image2;
   Uint8List? image3;
   Uint8List? image4;
+
+  // ✅ Existing URLs loaded from Firestore
+  String? existingUrl1;
+  String? existingUrl2;
+  String? existingUrl3;
+  String? existingUrl4;
 
   bool _isLoading = false;
   final ImagePicker _picker = ImagePicker();
@@ -56,6 +63,12 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
         title3Controller.text = data["title3"] ?? "";
         title4Controller.text = data["title4"] ?? "";
         keyInfoController.text = data["key_information"] ?? "";
+
+        // ✅ Store existing URLs
+        existingUrl1 = data["image1"]?.toString() ?? "";
+        existingUrl2 = data["image2"]?.toString() ?? "";
+        existingUrl3 = data["image3"]?.toString() ?? "";
+        existingUrl4 = data["image4"]?.toString() ?? "";
 
         for (int i = 1; i <= 4; i++) {
           final url = data["image$i"]?.toString() ?? "";
@@ -94,16 +107,22 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
   }
 
   // ================= VALIDATION =================
+  // ✅ Now validates: either a new image is picked OR an existing URL exists
   bool validateFields() {
+    final bool img1Ok = image1 != null || (existingUrl1?.isNotEmpty ?? false);
+    final bool img2Ok = image2 != null || (existingUrl2?.isNotEmpty ?? false);
+    final bool img3Ok = image3 != null || (existingUrl3?.isNotEmpty ?? false);
+    final bool img4Ok = image4 != null || (existingUrl4?.isNotEmpty ?? false);
+
     if (title1Controller.text.isEmpty ||
         title2Controller.text.isEmpty ||
         title3Controller.text.isEmpty ||
         title4Controller.text.isEmpty ||
         keyInfoController.text.isEmpty ||
-        image1 == null ||
-        image2 == null ||
-        image3 == null ||
-        image4 == null) {
+        !img1Ok ||
+        !img2Ok ||
+        !img3Ok ||
+        !img4Ok) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please fill all fields & select images"),
@@ -125,10 +144,22 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
     try {
       final time = DateTime.now().millisecondsSinceEpoch;
 
-      String imageUrl1 = await uploadImage(image1!, "image1_$time");
-      String imageUrl2 = await uploadImage(image2!, "image2_$time");
-      String imageUrl3 = await uploadImage(image3!, "image3_$time");
-      String imageUrl4 = await uploadImage(image4!, "image4_$time");
+      // ✅ Only upload if a new image was picked, otherwise keep existing URL
+      final String imageUrl1 = image1 != null
+          ? await uploadImage(image1!, "image1_$time")
+          : existingUrl1 ?? "";
+
+      final String imageUrl2 = image2 != null
+          ? await uploadImage(image2!, "image2_$time")
+          : existingUrl2 ?? "";
+
+      final String imageUrl3 = image3 != null
+          ? await uploadImage(image3!, "image3_$time")
+          : existingUrl3 ?? "";
+
+      final String imageUrl4 = image4 != null
+          ? await uploadImage(image4!, "image4_$time")
+          : existingUrl4 ?? "";
 
       await FirebaseFirestore.instance
           .collection("events")
@@ -195,7 +226,24 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
   }
 
   // ================= IMAGE UPLOAD FIELD =================
-  Widget buildUploadField(Uint8List? image, Function(Uint8List) onSelected) {
+  // ✅ Now shows "Using existing" when no new image is picked but URL exists
+  Widget buildUploadField(
+    Uint8List? image,
+    String? existingUrl,
+    Function(Uint8List) onSelected,
+  ) {
+    final bool hasExisting = existingUrl != null && existingUrl.isNotEmpty;
+    final String statusText = image != null
+        ? "New image selected ✓"
+        : hasExisting
+            ? "Uploaded"
+            : "No file chosen";
+    final Color statusColor = image != null
+        ? Colors.green.shade700
+        : hasExisting
+            ? Colors.blue.shade700
+            : Colors.grey.shade600;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -216,20 +264,16 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    image == null ? "No file chosen" : "Image Selected",
+                    statusText,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      color: image != null
-                          ? Colors.green.shade700
-                          : Colors.grey.shade600,
-                    ),
+                    style: GoogleFonts.inter(color: statusColor),
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: CustomButton(
-                  label: "Choose file",
+                  label: hasExisting ? "Change" : "Choose file",
                   fontWeight: FontWeight.w600,
                   onPressed: _isLoading
                       ? null
@@ -250,6 +294,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
     String label,
     TextEditingController controller,
     Uint8List? image,
+    String? existingUrl,
     Function(Uint8List) onSelected,
   ) {
     return Padding(
@@ -258,7 +303,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
         children: [
           Expanded(child: buildTitleField(label, controller)),
           const SizedBox(width: 30),
-          Expanded(child: buildUploadField(image, onSelected)),
+          Expanded(child: buildUploadField(image, existingUrl, onSelected)),
         ],
       ),
     );
@@ -383,7 +428,7 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "EVENTS",
+                  "Events",
                   style: GoogleFonts.inter(
                     fontSize: 40,
                     fontWeight: FontWeight.w800,
@@ -418,16 +463,21 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
                     ),
                     const SizedBox(height: 16),
 
+                    // ✅ Pass existingUrl to each row
                     buildRow("Image 1 Title", title1Controller, image1,
+                        existingUrl1,
                         (file) => setState(() => image1 = file)),
 
                     buildRow("Image 2 Title", title2Controller, image2,
+                        existingUrl2,
                         (file) => setState(() => image2 = file)),
 
                     buildRow("Image 3 Title", title3Controller, image3,
+                        existingUrl3,
                         (file) => setState(() => image3 = file)),
 
                     buildRow("Image 4 Title", title4Controller, image4,
+                        existingUrl4,
                         (file) => setState(() => image4 = file)),
 
                     const SizedBox(height: 20),
@@ -456,298 +506,3 @@ class _EventsUploadPageState extends State<EventsUploadPage> {
     );
   }
 }
-// import 'dart:typed_data';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:ngo_web/constraints/CustomButton.dart';
-// import 'package:ngo_web/constraints/all_colors.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:image_picker/image_picker.dart';
-
-// class EventsUploadPage extends StatefulWidget {
-//   const EventsUploadPage({super.key});
-
-//   @override
-//   State<EventsUploadPage> createState() => _EventsUploadPageState();
-// }
-
-// class _EventsUploadPageState extends State<EventsUploadPage> {
-//   final TextEditingController title1Controller = TextEditingController();
-//   final TextEditingController title2Controller = TextEditingController();
-//   final TextEditingController title3Controller = TextEditingController();
-//   final TextEditingController title4Controller = TextEditingController();
-//   final TextEditingController keyInfoController = TextEditingController();
-
-//   Uint8List? image1;
-//   Uint8List? image2;
-//   Uint8List? image3;
-//   Uint8List? image4;
-
-//   bool _isLoading = false;
-//   final ImagePicker _picker = ImagePicker();
-
-//   // ================= PICK IMAGE =================
-//   Future<Uint8List?> pickImage() async {
-//     final XFile? file = await _picker.pickImage(source: ImageSource.gallery);
-//     if (file != null) {
-//       return await file.readAsBytes();
-//     }
-//     return null;
-//   }
-
-//   // ================= UPLOAD IMAGE =================
-//   Future<String> uploadImage(Uint8List file, String name) async {
-//     final ref = FirebaseStorage.instance
-//         .ref()
-//         .child("events")
-//         .child("$name.jpg");
-//     await ref.putData(file);
-//     return await ref.getDownloadURL();
-//   }
-
-//   // ================= VALIDATION =================
-//   bool validateFields() {
-//     if (title1Controller.text.isEmpty ||
-//         title2Controller.text.isEmpty ||
-//         title3Controller.text.isEmpty ||
-//         title4Controller.text.isEmpty ||
-//         keyInfoController.text.isEmpty ||
-//         image1 == null ||
-//         image2 == null ||
-//         image3 == null ||
-//         image4 == null) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(
-//           content: Text("Please fill all fields & select images"),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//       return false;
-//     }
-//     return true;
-//   }
-
-//   // ================= UPLOAD EVENT =================
-//   Future<void> uploadEvent() async {
-//     if (!validateFields()) return;
-//     if (_isLoading) return;
-
-//     setState(() => _isLoading = true);
-
-//     try {
-//       final time = DateTime.now().millisecondsSinceEpoch;
-
-//       String imageUrl1 = await uploadImage(image1!, "image1_$time");
-//       String imageUrl2 = await uploadImage(image2!, "image2_$time");
-//       String imageUrl3 = await uploadImage(image3!, "image3_$time");
-//       String imageUrl4 = await uploadImage(image4!, "image4_$time");
-
-//       await FirebaseFirestore.instance
-//           .collection("events")
-//           .doc("upload_events")
-//           .set({
-//         "title1": title1Controller.text.trim(),
-//         "title2": title2Controller.text.trim(),
-//         "title3": title3Controller.text.trim(),
-//         "title4": title4Controller.text.trim(),
-//         "key_information": keyInfoController.text.trim(),
-//         "image1": imageUrl1,
-//         "image2": imageUrl2,
-//         "image3": imageUrl3,
-//         "image4": imageUrl4,
-//         "created_at": Timestamp.now(),
-//       });
-
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(
-//           content: Text("Event Uploaded Successfully"),
-//           backgroundColor: Colors.green,
-//         ),
-//       );
-
-//       Navigator.pop(context);
-//     } catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           content: Text("Error: $e"),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//     }
-
-//     setState(() => _isLoading = false);
-//   }
-
-//   // ================= INPUT FIELD =================
-//   Widget buildTitleField(String label, TextEditingController controller) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(label,
-//             style: GoogleFonts.inter(
-//                 fontWeight: FontWeight.w600, fontSize: 15)),
-//         const SizedBox(height: 8),
-//         Container(
-//           height: 55,
-//           decoration: BoxDecoration(
-//             color: Colors.grey.shade100,
-//             borderRadius: BorderRadius.circular(10),
-//             border: Border.all(color: Colors.grey.shade300),
-//           ),
-//           child: TextField(
-//             controller: controller,
-//             decoration: const InputDecoration(
-//               border: InputBorder.none,
-//               contentPadding: EdgeInsets.symmetric(horizontal: 16),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   // ================= IMAGE UPLOAD FIELD =================
-//   Widget buildUploadField(Uint8List? image, Function(Uint8List) onSelected) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text("Image",
-//             style: GoogleFonts.inter(
-//                 fontWeight: FontWeight.w600, fontSize: 15)),
-//         const SizedBox(height: 8),
-//         Container(
-//           height: 55,
-//           decoration: BoxDecoration(
-//             color: Colors.grey.shade100,
-//             borderRadius: BorderRadius.circular(10),
-//             border: Border.all(color: Colors.grey.shade300),
-//           ),
-//           child: Row(
-//             children: [
-//               Expanded(
-//                 child: Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 16),
-//                   child: Text(
-//                     image == null ? "No file chosen" : "Image Selected",
-//                     overflow: TextOverflow.ellipsis,
-//                     style: GoogleFonts.inter(
-//                       color: image != null
-//                           ? Colors.green.shade700
-//                           : Colors.grey.shade600,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               Padding(
-//                 padding: const EdgeInsets.only(right: 8),
-//                 child: CustomButton(
-//                   label: "Choose file",
-//                   fontWeight: FontWeight.w600,
-//                   onPressed: _isLoading
-//                       ? null
-//                       : () async {
-//                           Uint8List? file = await pickImage();
-//                           if (file != null) onSelected(file);
-//                         },
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget buildRow(
-//     String label,
-//     TextEditingController controller,
-//     Uint8List? image,
-//     Function(Uint8List) onSelected,
-//   ) {
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 25),
-//       child: Row(
-//         children: [
-//           Expanded(child: buildTitleField(label, controller)),
-//           const SizedBox(width: 30),
-//           Expanded(child: buildUploadField(image, onSelected)),
-//         ],
-//       ),
-//     );
-//   }
-
-//   // ================= MAIN UI =================
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       backgroundColor: AllColors.secondaryColor,
-//       child: Container(
-//         width: 800,
-//         height: 650,
-//         padding: const EdgeInsets.all(30),
-//         child: Column(
-//           children: [
-//             // ===== HEADER =====
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Text(
-//                   "EVENTS",
-//                   style: GoogleFonts.inter(
-//                     fontSize: 40,
-//                     fontWeight: FontWeight.w800,
-//                   ),
-//                 ),
-//                 IconButton(
-//                   onPressed: () => Navigator.pop(context),
-//                   icon: const Icon(Icons.close),
-//                 ),
-//               ],
-//             ),
-
-//             const SizedBox(height: 20),
-
-//             // ===== BODY (SCROLLABLE) =====
-//             Expanded(
-//               child: SingleChildScrollView(
-//                 child: Column(
-//                   children: [
-//                     buildRow("Image 1 Title", title1Controller, image1,
-//                         (file) => setState(() => image1 = file)),
-
-//                     buildRow("Image 2 Title", title2Controller, image2,
-//                         (file) => setState(() => image2 = file)),
-
-//                     buildRow("Image 3 Title", title3Controller, image3,
-//                         (file) => setState(() => image3 = file)),
-
-//                     buildRow("Image 4 Title", title4Controller, image4,
-//                         (file) => setState(() => image4 = file)),
-
-//                     const SizedBox(height: 20),
-
-//                     buildTitleField("Key Information", keyInfoController),
-
-//                     const SizedBox(height: 40),
-//                   ],
-//                 ),
-//               ),
-//             ),
-
-//             // ===== FOOTER =====
-//             Align(
-//               alignment: Alignment.centerRight,
-//               child: CustomButton(
-//                 label: "Upload",
-//                 fontWeight: FontWeight.w600,
-//                 isLoading: _isLoading,
-//                 onPressed: _isLoading ? null : uploadEvent,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

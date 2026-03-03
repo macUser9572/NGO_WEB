@@ -63,7 +63,7 @@ class _HomeViewState extends State<HomeView> {
                 Container(key: sectionKeys[4], child: const StudentPage()),
                 Container(key: sectionKeys[5], child: const MemberPage()),
                 Container(key: sectionKeys[6], child: const OurInitiatives()),
-                Container(key: sectionKeys[7], child: const ContactPage()),
+                Container(key: sectionKeys[7], child: const ContactPage ()),
                 const Footer(),
               ],
             ),

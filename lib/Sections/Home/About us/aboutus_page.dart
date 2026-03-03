@@ -1,5 +1,6 @@
 import 'dart:ui_web' as ui;
 // ignore: avoid_web_libraries_in_flutter
+import 'package:ngo_web/Sections/Home/Be%20a%20contributor.dart';
 import 'package:web/web.dart' as web;
 
 
@@ -211,7 +212,13 @@ class _AboutDesktop extends StatelessWidget {
               bottom: 170,
               child: CustomButton(
                 label:"Read More" ,
-                 onPressed: (){}),
+                 onPressed: (){
+                  showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => const ComingSoonDialog(),
+                        );
+                 }),
             )
           ],
         ),
