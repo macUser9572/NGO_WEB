@@ -26,7 +26,7 @@ exports.sendMembershipEmail = onCall(async (request) => {
 
   if (status === "approved") {
     subject = "Membership Approved 🎉";
-    message = `Hello ${name},\n\nYour membership has been approved.\n\nThank you!`;
+    message = `Hello ${name},\n\nYour membership request has been successfully approved. We’re happy to have you with us.`;
   } else {
     subject = "Membership Rejected";
     message = `Hello ${name},\n\nA representative will reach out to you shortly. Thank you for your understanding..`;

@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
           case DeviceScreenType.desktop:
             return const HomeDesktop();
           default:
-            return const HomeMobile();
+            return const _MobileLayout();
         }
       },
     );
@@ -229,52 +229,54 @@ class HomeDesktop extends StatelessWidget {
   }
 }
 
-//////////////////////////////////////////////////////
-/// ================= MOBILE ====================== ///
-//////////////////////////////////////////////////////
+/// ================= MOBILE ===================== ///
 
-class HomeMobile extends StatelessWidget {
-  const HomeMobile({super.key});
+class _MobileLayout extends StatelessWidget {
+  const _MobileLayout();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AllColors.fourthColor,
-      body: SingleChildScrollView(
+    final height = MediaQuery.of(context).size.height;
+    final navbarHeight = 70.0;
+
+    return SizedBox(
+      height: height - navbarHeight, // ← exact remaining screen height
+      child: Container(
+        width: double.infinity,
+        color: AllColors.fourthColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Ju Ju ──
+                  const SizedBox(height: 100),
+
                   Text(
-                    "Ju Ju !",
+                    'Ju Ju !',
                     style: GoogleFonts.inter(
-                      fontSize: 56,
-                      fontWeight: FontWeight.w800,
                       color: AllColors.primaryColor,
+                      fontSize: 52,
+                      fontWeight: FontWeight.bold,
                       height: 1,
                     ),
                   ),
 
                   const SizedBox(height: 12),
 
-                  // ── Tagline ──
                   Text(
                     "Jawdaw Re Jaat togai, Hangarai Gat Togai !",
                     style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
                       color: AllColors.primaryColor,
                     ),
                   ),
 
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
 
-                  // ── Subtitle ──
                   Text(
                     "Supporting Students, Preserving culture and building unity.",
                     style: GoogleFonts.inter(
@@ -284,7 +286,7 @@ class HomeMobile extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
                   // ── Buttons ──
                   Row(
@@ -294,25 +296,52 @@ class HomeMobile extends StatelessWidget {
                           backgroundColor: AllColors.fifthColor,
                           foregroundColor: AllColors.fourthColor,
                           elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
                           ),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
-                            vertical: 12,
+                            vertical: 10,
                           ),
                         ),
-                        onPressed: () {},
+                        // Join as Member button onPressed
+                        onPressed: () {
+                          showGeneralDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            barrierColor: Colors.black54,
+                            transitionDuration: const Duration(
+                              milliseconds: 280,
+                            ),
+                            pageBuilder: (_, __, ___) =>
+                                const MembershipMobile(),
+                            transitionBuilder: (context, anim, _, child) {
+                              return SlideTransition(
+                                position:
+                                    Tween<Offset>(
+                                      begin: const Offset(0, 1),
+                                      end: Offset.zero,
+                                    ).animate(
+                                      CurvedAnimation(
+                                        parent: anim,
+                                        curve: Curves.easeOut,
+                                      ),
+                                    ),
+                                child: child,
+                              );
+                            },
+                          );
+                        },
                         child: Text(
                           "Join as Member",
                           style: GoogleFonts.inter(
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
 
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
 
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
@@ -321,19 +350,25 @@ class HomeMobile extends StatelessWidget {
                             color: AllColors.fifthColor,
                             width: 1.5,
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
                           ),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
-                            vertical: 12,
+                            vertical: 10,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => const ComingSoonDialog(),
+                          );
+                        },
                         child: Text(
                           "Be a contributor",
                           style: GoogleFonts.inter(
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -344,24 +379,49 @@ class HomeMobile extends StatelessWidget {
               ),
             ),
 
-            // ── Banner Image ──
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('homepage')
-                  .doc('banner_image')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || !snapshot.data!.exists) {
-                  return const SizedBox.shrink();
-                }
-                final data = snapshot.data!.data() as Map<String, dynamic>;
-                final imageUrl = data['imageUrl'] as String;
-                return Image.network(
-                  imageUrl,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                );
-              },
+            // ── Image fills ALL remaining space ──
+            Expanded(
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('homepage')
+                    .doc('banner_image')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return Center(
+                      child: Icon(
+                        Icons.image_outlined,
+                        size: 60,
+                        color: Colors.grey.shade400,
+                      ),
+                    );
+                  }
+                  final data = snapshot.data!.data() as Map<String, dynamic>;
+                  final imageUrl = data['imageUrl'] as String;
+
+                  return Image.network(
+                    imageUrl,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                    errorBuilder: (context, error, stackTrace) => Center(
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        size: 60,
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),

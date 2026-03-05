@@ -318,8 +318,16 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Mobile Layout", style: GoogleFonts.inter(fontSize: 18)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("studentbody Page"),
+      ),
+      body: const Center(
+        child: Text(
+          "Mobile layout coming soon",
+          style: TextStyle(fontSize: 18,color: AllColors.fifthColor),
+        ),
+      ),
     );
   }
 }

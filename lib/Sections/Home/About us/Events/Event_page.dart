@@ -213,7 +213,7 @@ class _DesktopLayout extends StatelessWidget {
                             Text(
                               data["key_information"] ?? "",
                               style: GoogleFonts.inter(
-                                fontSize: 14,
+                                fontSize: 16,
                                 height: 1.7,
                                 color: AllColors.primaryColor,
                               ),
@@ -241,7 +241,7 @@ class _DesktopLayout extends StatelessWidget {
                             Text(
                               "Discover our diverse range of activities and events designed to enrich our community",
                               style: GoogleFonts.inter(
-                                fontSize: 13,
+                                fontSize: 16,
                                 color: AllColors.primaryColor,
                                 height: 1.5,
                               ),
@@ -267,114 +267,136 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      color: AllColors.secondaryColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "What We Do",
-            style: GoogleFonts.inter(
-              fontSize: 36,
-              fontWeight: FontWeight.w800,
-              color: AllColors.primaryColor,
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Container(
+        width: double.infinity,
+        color: AllColors.secondaryColor,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 45),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // ── Title ──
+            Text(
+              "What We Do",
+              style: GoogleFonts.inter(
+                fontSize: 42,
+                fontWeight: FontWeight.w800,
+                color: AllColors.primaryColor,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 30),
+            const SizedBox(height: 24),
 
-          StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("events")
-                .doc("upload_events")
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Text("Error: ${snapshot.error}",
-                    style: const TextStyle(color: Colors.red));
-              }
-              if (!snapshot.hasData || !snapshot.data!.exists) {
-                return const Text("No Events Found");
-              }
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("events")
+                  .doc("upload_events")
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Error: ${snapshot.error}",
+                        style: const TextStyle(color: Colors.red)),
+                  );
+                }
+                if (!snapshot.hasData || !snapshot.data!.exists) {
+                  return Center(
+                    child: Text("No Events Found",
+                        style: GoogleFonts.inter(fontSize: 14)),
+                  );
+                }
 
-              final data = snapshot.data!.data() as Map<String, dynamic>;
+                final data = snapshot.data!.data() as Map<String, dynamic>;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    // ── Events heading ──
+                    Text(
+                      "Events",
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AllColors.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "Discover our diverse range of activities and events designed to enrich our community",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AllColors.primaryColor,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ── 2×2 Image Grid ──
+                    Row(
+                      children: [
+                        Expanded(
                           child: _imageCard(data["image1"], data["title1"],
-                              height: 300)),
-                      const SizedBox(width: 12),
-                      Expanded(
+                              height: 160),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
                           child: _imageCard(data["image2"], data["title2"],
-                              height: 300)),
-                    ],
-                  ),
+                              height: 160),
+                        ),
+                      ],
+                    ),
 
-                  const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                  Row(
-                    children: [
-                      Expanded(
+                    Row(
+                      children: [
+                        Expanded(
                           child: _imageCard(data["image3"], data["title3"],
-                              height: 340)),
-                      const SizedBox(width: 12),
-                      Expanded(
+                              height: 160),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
                           child: _imageCard(data["image4"], data["title4"],
-                              height: 340)),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Text(
-                    "Key Information",
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AllColors.primaryColor,
+                              height: 160),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    data["key_information"] ?? "",
-                    style: GoogleFonts.inter(
-                        fontSize: 13,
-                        height: 1.6,
-                        color: AllColors.primaryColor),
-                  ),
 
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 28),
 
-                  Text(
-                    "Events",
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AllColors.primaryColor,
+                    // ── Key Information ──
+                    Text(
+                      "Key Information",
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AllColors.primaryColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    "Discover our diverse range of activities and events designed to enrich our community",
-                    style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: Colors.grey.shade600,
-                        height: 1.5),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
+                    const SizedBox(height: 10),
+                    Text(
+                      data["key_information"] ?? "",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        height: 1.7,
+                        color: AllColors.primaryColor,
+                      ),
+                    ),
+
+                    const SizedBox(height: 80),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

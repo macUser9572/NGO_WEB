@@ -3,7 +3,6 @@ import 'dart:ui_web' as ui;
 import 'package:ngo_web/Sections/Home/Be%20a%20contributor.dart';
 import 'package:web/web.dart' as web;
 
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/constraints/CustomButton.dart';
@@ -11,7 +10,6 @@ import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 
 class AboutusPage extends StatelessWidget {
   const AboutusPage({super.key});
@@ -99,7 +97,7 @@ class _AboutDesktop extends StatelessWidget {
                             "who came as students and professionals and went on to build successful "
                             "careers laying a proud foundation for the community.",
                             style: GoogleFonts.inter(
-                              fontSize: 16,
+                              fontSize: 14,
                               height: 1.6,
                               color: AllColors.thirdColor,
                             ),
@@ -157,8 +155,11 @@ class _AboutDesktop extends StatelessWidget {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.videocam_off_rounded,
-                                    size: 56, color: Colors.grey),
+                                const Icon(
+                                  Icons.videocam_off_rounded,
+                                  size: 56,
+                                  color: Colors.grey,
+                                ),
                                 const SizedBox(height: 12),
                                 Text(
                                   "No video uploaded yet",
@@ -180,8 +181,11 @@ class _AboutDesktop extends StatelessWidget {
                         if (videoUrl.isEmpty) {
                           return _placeholderBox(
                             height: height * 0.6,
-                            child: const Icon(Icons.play_circle_outline,
-                                size: 64, color: Colors.grey),
+                            child: const Icon(
+                              Icons.play_circle_outline,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
                           );
                         }
 
@@ -209,17 +213,18 @@ class _AboutDesktop extends StatelessWidget {
             // ── Read More Button ──
             Positioned(
               left: 0,
-              bottom: 170,
+              bottom: 230,
               child: CustomButton(
-                label:"Read More" ,
-                 onPressed: (){
+                label: "Read More",
+                onPressed: () {
                   showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) => const ComingSoonDialog(),
-                        );
-                 }),
-            )
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => const ComingSoonDialog(),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -262,8 +267,7 @@ class _YoutubeInBoxPlayerState extends State<_YoutubeInBoxPlayer> {
   @override
   void initState() {
     super.initState();
-    _viewId =
-        'yt-inbox-${widget.youtubeId ?? widget.videoUrl.hashCode}';
+    _viewId = 'yt-inbox-${widget.youtubeId ?? widget.videoUrl.hashCode}';
 
     // Pre-register the iframe so it's ready when the user taps play
     final web.HTMLIFrameElement iframe = web.HTMLIFrameElement()
@@ -307,8 +311,7 @@ class _YoutubeInBoxPlayerState extends State<_YoutubeInBoxPlayer> {
                     CachedNetworkImage(
                       imageUrl: thumbnailUrl,
                       fit: BoxFit.cover,
-                      placeholder: (_, __) =>
-                          Container(color: Colors.black),
+                      placeholder: (_, __) => Container(color: Colors.black),
                       errorWidget: (_, __, ___) => CachedNetworkImage(
                         imageUrl:
                             'https://img.youtube.com/vi/${widget.youtubeId}/hqdefault.jpg',
@@ -369,10 +372,7 @@ class _FirebaseVideoPlayer extends StatefulWidget {
   final String videoUrl;
   final double height;
 
-  const _FirebaseVideoPlayer({
-    required this.videoUrl,
-    required this.height,
-  });
+  const _FirebaseVideoPlayer({required this.videoUrl, required this.height});
 
   @override
   State<_FirebaseVideoPlayer> createState() => _FirebaseVideoPlayerState();
@@ -394,10 +394,7 @@ class _FirebaseVideoPlayerState extends State<_FirebaseVideoPlayer> {
       ..style.objectFit = 'cover'
       ..style.borderRadius = '8px';
 
-    ui.platformViewRegistry.registerViewFactory(
-      _viewId,
-      (int viewId) => video,
-    );
+    ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) => video);
   }
 
   @override
@@ -418,100 +415,339 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SingleChildScrollView(
-      child: Container(
-        color: AllColors.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "About us",
-              style: GoogleFonts.inter(
-                color: AllColors.primaryColor,
-                fontSize: 40,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "The Bangalore Chakma Society (BCS) represents the collective journey, "
-              "resilience, and unity of the Chakma and Buddhist communities who have "
-              "made Bengaluru their home.",
-              style: GoogleFonts.inter(
-                fontSize: 15,
-                height: 1.6,
-                color: AllColors.thirdColor,
-              ),
-            ),
-            const SizedBox(height: 24),
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: screenHeight),
+        child: Container(
+          width: double.infinity,
+          color: AllColors.secondaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 40),
 
-            // ── Mobile Video ──
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("videos")
-                  .doc("upload_video")
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
-                    height: 220,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (snapshot.hasError ||
-                    !snapshot.hasData ||
-                    !snapshot.data!.exists) {
-                  return const SizedBox(
-                    height: 220,
-                    child: Center(
-                      child: Icon(Icons.videocam_off_rounded,
-                          size: 48, color: Colors.grey),
-                    ),
-                  );
-                }
-
-                final data =
-                    snapshot.data!.data() as Map<String, dynamic>;
-                final String videoUrl =
-                    data["video_url"]?.toString().trim() ?? "";
-
-                if (videoUrl.isEmpty) {
-                  return const SizedBox(height: 220);
-                }
-
-                if (isYoutubeUrl(videoUrl)) {
-                  return _YoutubeInBoxPlayer(
-                    videoUrl: videoUrl,
-                    youtubeId: extractYoutubeId(videoUrl),
-                    height: 220,
-                  );
-                }
-
-                return _FirebaseVideoPlayer(videoUrl: videoUrl, height: 220);
-              },
-            ),
-
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AllColors.primaryColor,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(3),
+              // ── Title ──
+              Text(
+                "About us",
+                style: GoogleFonts.inter(
+                  color: AllColors.primaryColor,
+                  fontSize: 48,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
                 ),
               ),
-              child: const Text(
-                'Read More about BCS',
-                style: TextStyle(fontSize: 15, color: Colors.white),
+
+              const SizedBox(height: 20),
+
+              // ── Video ──
+              StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("videos")
+                    .doc("upload_video")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return _videoPlaceholder(
+                      child: const CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError ||
+                      !snapshot.hasData ||
+                      !snapshot.data!.exists) {
+                    return _videoPlaceholder(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.videocam_off_rounded,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "No video uploaded yet",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  final data = snapshot.data!.data() as Map<String, dynamic>;
+                  final String videoUrl =
+                      data["video_url"]?.toString().trim() ?? "";
+
+                  if (videoUrl.isEmpty) {
+                    return _videoPlaceholder(
+                      child: const Icon(
+                        Icons.play_circle_outline,
+                        size: 48,
+                        color: Colors.grey,
+                      ),
+                    );
+                  }
+                  if (isYoutubeUrl(videoUrl)) {
+                    return _YoutubeInBoxPlayer(
+                      videoUrl: videoUrl,
+                      youtubeId: extractYoutubeId(videoUrl),
+                      height: 220,
+                    );
+                  }
+                  return _FirebaseVideoPlayer(videoUrl: videoUrl, height: 220);
+                },
               ),
-            ),
-          ],
+
+              const SizedBox(height: 24),
+
+              // ── Paragraph 1 ──
+              Text(
+                "The Bangalore Chakma Society (BCS) represents the collective journey, "
+                "resilience, and unity of the Chakma and Buddhist communities who have "
+                "made Bengaluru their home. The roots of this journey trace back to the "
+                "early arrivals of Chakma individuals in the city, beginning with pioneers "
+                "who came as students and professionals and went on to build successful "
+                "careers laying a proud foundation for the community.",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  height: 1.6,
+                  color: AllColors.thirdColor,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ── Paragraph 2 ──
+              Text(
+                "While small groups of Chakma individuals visited or stayed briefly in "
+                "the 1990s, the true groundwork of BCS began to take shape around 2007, "
+                "when a growing number of students and working professionals settled in "
+                "Bangalore. Even during these early years, community members came together "
+                "informally to celebrate culture, religion, and shared identity.",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  height: 1.6,
+                  color: AllColors.thirdColor,
+                ),
+              ),
+
+              const SizedBox(height: 28),
+
+              // ── Read More Button ──
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AllColors.fifthColor,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                    ), // ← reduced from 14
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => const ComingSoonDialog(),
+                    );
+                  },
+                  child: Text(
+                    "Read More",
+                    style: GoogleFonts.inter(
+                      fontSize: 13, // ← reduced from 14
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              // ── Extra bottom padding so button clears the navbar ──
+              const SizedBox(height: 80),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _videoPlaceholder({required Widget child}) {
+    return Container(
+      height: 220,
+      decoration: BoxDecoration(
+        color: const Color(0xFFE0E0E0),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(child: child),
+    );
+  }
 }
+// class _MobileLayout extends StatelessWidget {
+//   const _MobileLayout();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       child: Container(
+//         width: double.infinity,
+//         color: AllColors.secondaryColor,
+//         padding: const EdgeInsets.symmetric(horizontal: 24),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const SizedBox(height: 55),
+
+//             // ── Title ──
+//             Text(
+//               "About us",
+//               style: GoogleFonts.inter(
+//                 color: AllColors.primaryColor,
+//                 fontSize: 48,
+//                 fontWeight: FontWeight.w800,
+//                 height: 1,
+//               ),
+//             ),
+
+//             const SizedBox(height: 20),
+
+//             // ── Video ──
+//             StreamBuilder<DocumentSnapshot>(
+//               stream: FirebaseFirestore.instance
+//                   .collection("videos")
+//                   .doc("upload_video")
+//                   .snapshots(),
+//               builder: (context, snapshot) {
+//                 if (snapshot.connectionState == ConnectionState.waiting) {
+//                   return _videoPlaceholder(
+//                     child: const CircularProgressIndicator(),
+//                   );
+//                 }
+//                 if (snapshot.hasError ||
+//                     !snapshot.hasData ||
+//                     !snapshot.data!.exists) {
+//                   return _videoPlaceholder(
+//                     child: Column(
+//                       mainAxisSize: MainAxisSize.min,
+//                       children: [
+//                         const Icon(Icons.videocam_off_rounded,
+//                             size: 40, color: Colors.grey),
+//                         const SizedBox(height: 8),
+//                         Text(
+//                           "No video uploaded yet",
+//                           style: GoogleFonts.inter(
+//                               fontSize: 12, color: Colors.grey),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 }
+//                 final data =
+//                     snapshot.data!.data() as Map<String, dynamic>;
+//                 final String videoUrl =
+//                     data["video_url"]?.toString().trim() ?? "";
+
+//                 if (videoUrl.isEmpty) {
+//                   return _videoPlaceholder(
+//                     child: const Icon(Icons.play_circle_outline,
+//                         size: 48, color: Colors.grey),
+//                   );
+//                 }
+//                 if (isYoutubeUrl(videoUrl)) {
+//                   return _YoutubeInBoxPlayer(
+//                     videoUrl: videoUrl,
+//                     youtubeId: extractYoutubeId(videoUrl),
+//                     height: 220,
+//                   );
+//                 }
+//                 return _FirebaseVideoPlayer(
+//                     videoUrl: videoUrl, height: 220);
+//               },
+//             ),
+
+//             const SizedBox(height: 24),
+
+//             // ── Paragraph 1 ──
+//             Text(
+//               "The Bangalore Chakma Society (BCS) represents the collective journey, "
+//               "resilience, and unity of the Chakma and Buddhist communities who have "
+//               "made Bengaluru their home. The roots of this journey trace back to the "
+//               "early arrivals of Chakma individuals in the city, beginning with pioneers "
+//               "who came as students and professionals and went on to build successful "
+//               "careers laying a proud foundation for the community.",
+//               style: GoogleFonts.inter(
+//                 fontSize: 14,
+//                 height: 1.6,
+//                 color: AllColors.thirdColor,
+//               ),
+//             ),
+
+//             const SizedBox(height: 16),
+
+//             // ── Paragraph 2 ──
+//             Text(
+//               "While small groups of Chakma individuals visited or stayed briefly in "
+//               "the 1990s, the true groundwork of BCS began to take shape around 2007, "
+//               "when a growing number of students and working professionals settled in "
+//               "Bangalore. Even during these early years, community members came together "
+//               "informally to celebrate culture, religion, and shared identity.",
+//               style: GoogleFonts.inter(
+//                 fontSize: 14,
+//                 height: 1.6,
+//                 color: AllColors.thirdColor,
+//               ),
+//             ),
+
+//             const SizedBox(height: 24),
+
+//             // ── Read More Button ──
+//             SizedBox(
+//               width: double.infinity,
+//               child: OutlinedButton(
+//                 style: OutlinedButton.styleFrom(
+//                   foregroundColor: AllColors.primaryColor,
+//                   side: BorderSide(
+//                       color: AllColors.primaryColor, width: 1.5),
+//                   shape: const RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.zero),
+//                   padding: const EdgeInsets.symmetric(vertical: 14),
+//                 ),
+//                 onPressed: () {
+//                   showDialog(
+//                     context: context,
+//                     barrierDismissible: false,
+//                     builder: (_) => const ComingSoonDialog(),
+//                   );
+//                 },
+//                 child: Text(
+//                   "Read More",
+//                   style: GoogleFonts.inter(
+//                       fontSize: 14, fontWeight: FontWeight.w600),
+//                 ),
+//               ),
+//             ),
+
+//             const SizedBox(height: 40),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _videoPlaceholder({required Widget child}) {
+//     return Container(
+//       height: 220,
+//       decoration: BoxDecoration(
+//         color: const Color(0xFFE0E0E0),
+//         borderRadius: BorderRadius.circular(8),
+//       ),
+//       child: Center(child: child),
+//     );
+//   }
+// }

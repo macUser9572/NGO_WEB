@@ -230,6 +230,16 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("Mobile Layout Coming Soon"));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("member Page"),
+      ),
+      body: const Center(
+        child: Text(
+          "Mobile layout coming soon",
+          style: TextStyle(fontSize: 18,color: AllColors.fifthColor),
+        ),
+      ),
+    );
   }
 }
