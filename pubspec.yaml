@@ -66,8 +66,6 @@ dev_dependencies:
   carousel_slider: ^5.1.2
   mailer: ^6.1.0
   http: ^1.2.1 
-  wakelock_plus: ^1.4.0
-
   
 
 

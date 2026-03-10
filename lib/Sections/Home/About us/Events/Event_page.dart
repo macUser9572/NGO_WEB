@@ -343,44 +343,22 @@ class _MobileLayout extends StatelessWidget {
 
                   // ── 2×2 Image Grid ──
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: _imageCard(
-                          data["image1"],
-                          data["title1"],
-                          height: 160,
-                        ),
-                      ),
+                      Expanded(child: _imageCard(data["image1"], data["title1"])),
                       const SizedBox(width: 12),
-                      Expanded(
-                        child: _imageCard(
-                          data["image2"],
-                          data["title2"],
-                          height: 160,
-                        ),
-                      ),
+                      Expanded(child: _imageCard(data["image2"], data["title2"])),
                     ],
                   ),
 
                   const SizedBox(height: 12),
 
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: _imageCard(
-                          data["image3"],
-                          data["title3"],
-                          height: 160,
-                        ),
-                      ),
+                      Expanded(child: _imageCard(data["image3"], data["title3"])),
                       const SizedBox(width: 12),
-                      Expanded(
-                        child: _imageCard(
-                          data["image4"],
-                          data["title4"],
-                          height: 160,
-                        ),
-                      ),
+                      Expanded(child: _imageCard(data["image4"], data["title4"])),
                     ],
                   ),
 
@@ -414,4 +392,203 @@ class _MobileLayout extends StatelessWidget {
       ),
     );
   }
+
+  Widget _imageCard(String? imageUrl, String? title) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+
+        // ── Image (square, equal size) ──
+        AspectRatio(
+          aspectRatio: 1,
+          child: ClipRRect(
+            borderRadius: BorderRadius.zero,
+            child: imageUrl != null && imageUrl.isNotEmpty
+                ? Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.broken_image, color: Colors.grey),
+                    ),
+                  )
+                : Container(
+                    color: Colors.grey.shade300,
+                    child: const Icon(Icons.image, color: Colors.grey),
+                  ),
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // ── Title below image ──
+        if (title != null && title.isNotEmpty)
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AllColors.primaryColor,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+      ],
+    );
+  }
 }
+// class _MobileLayout extends StatelessWidget {
+//   const _MobileLayout();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: double.infinity,
+//       color: AllColors.secondaryColor,
+//       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 63),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+
+//           // ── Title ──
+//           Text(
+//             "What We Do",
+//             style: GoogleFonts.inter(
+//               fontSize: 32,
+//               fontWeight: FontWeight.w800,
+//               color: AllColors.primaryColor,
+//             ),
+//           ),
+
+//           const SizedBox(height: 15),
+
+//           StreamBuilder<DocumentSnapshot>(
+//             stream: FirebaseFirestore.instance
+//                 .collection("events")
+//                 .doc("upload_events")
+//                 .snapshots(),
+//             builder: (context, snapshot) {
+//               if (snapshot.connectionState == ConnectionState.waiting) {
+//                 return const Center(child: CircularProgressIndicator());
+//               }
+//               if (snapshot.hasError) {
+//                 return Center(
+//                   child: Text(
+//                     "Error: ${snapshot.error}",
+//                     style: const TextStyle(color: Colors.red),
+//                   ),
+//                 );
+//               }
+//               if (!snapshot.hasData || !snapshot.data!.exists) {
+//                 return Center(
+//                   child: Text(
+//                     "No Events Found",
+//                     style: GoogleFonts.inter(fontSize: 14),
+//                   ),
+//                 );
+//               }
+
+//               final data = snapshot.data!.data() as Map<String, dynamic>;
+
+//               return Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+
+//                   // ── Events heading ──
+//                   Text(
+//                     "Events",
+//                     style: GoogleFonts.inter(
+//                       fontSize: 14,
+//                       fontWeight: FontWeight.w700,
+//                       color: AllColors.primaryColor,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 6),
+//                   Text(
+//                     "Discover our diverse range of activities and events designed to enrich our community",
+//                     style: GoogleFonts.inter(
+//                       fontSize: 12,
+//                       color: AllColors.primaryColor,
+//                       height: 1.5,
+//                     ),
+//                   ),
+
+//                   const SizedBox(height: 15),
+
+//                   // ── 2×2 Image Grid ──
+//                   Row(
+//                     children: [
+//                       Expanded(
+//                         child: _imageCard(
+//                           data["image1"],
+//                           data["title1"],
+//                           height: 160,
+//                         ),
+//                       ),
+//                       const SizedBox(width: 12),
+//                       Expanded(
+//                         child: _imageCard(
+//                           data["image2"],
+//                           data["title2"],
+//                           height: 160,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+
+//                   const SizedBox(height: 12),
+
+//                   Row(
+//                     children: [
+//                       Expanded(
+//                         child: _imageCard(
+//                           data["image3"],
+//                           data["title3"],
+//                           height: 160,
+//                         ),
+//                       ),
+//                       const SizedBox(width: 12),
+//                       Expanded(
+//                         child: _imageCard(
+//                           data["image4"],
+//                           data["title4"],
+//                           height: 160,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+
+//                   const SizedBox(height: 20),
+
+//                   // ── Key Information ──
+//                   Text(
+//                     "Key Information",
+//                     style: GoogleFonts.inter(
+//                       fontSize: 14,
+//                       fontWeight: FontWeight.w700,
+//                       color: AllColors.primaryColor,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 10),
+//                   Text(
+//                     data["key_information"] ?? "",
+//                     style: GoogleFonts.inter(
+//                       fontSize: 12,
+//                       height: 1.7,
+//                       color: AllColors.primaryColor,
+//                     ),
+//                   ),
+
+//                   const SizedBox(height: 80),
+//                 ],
+//               );
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
