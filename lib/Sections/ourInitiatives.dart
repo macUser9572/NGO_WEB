@@ -158,17 +158,119 @@ class _DesktopLayout extends StatelessWidget {
 class _MobileLayout extends StatelessWidget {
   const _MobileLayout();
 
+  final List<String> initiatives = const [
+    "Health Insurance Adoption",
+    "Awareness of Law and Justice",
+    "Mental Health Support",
+    "Education and Skill Programs",
+    "Awareness of Chakma Culture and Religion",
+    "Test Rig Software Development",
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Initiatives Page"),
-      ),
-      body: const Center(
-        child: Text(
-          "Mobile layout coming soon",
-          style: TextStyle(fontSize: 18,color: AllColors.fifthColor),
-        ),
+    return Container(
+      width: double.infinity,
+      color: AllColors.fourthColor,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 70),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Title ──
+          Text(
+            "Initiatives",
+            style: GoogleFonts.inter(
+              color: AllColors.primaryColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Subtitle ──
+          Text(
+            "We spearhead initiatives to support newcomers, "
+            "easing their transition into city life and addressing "
+            "common challenges.",
+            style: GoogleFonts.inter(
+              color: AllColors.primaryColor,
+              fontSize: 12,
+              // fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Image ──
+          Center(
+            child: Image.asset(
+              "assets/image/OurInitiatives.png",
+              width: double.infinity,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return const Text(
+                  "Image not found. Check pubspec.yaml",
+                  style: TextStyle(color: Colors.red),
+                );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Bullet Points ──
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: initiatives.map((item) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "• ",
+                      style: GoogleFonts.inter(
+                        color: AllColors.primaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: GoogleFonts.inter(
+                          color: AllColors.primaryColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Button ──
+          CustomButton(
+            label: "Know More",
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => const ComingSoonDialog(),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

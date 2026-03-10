@@ -415,165 +415,154 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    return Container(
+      width: double.infinity,
+      color: AllColors.secondaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 63),
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: screenHeight),
-        child: Container(
-          width: double.infinity,
-          color: AllColors.secondaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
+          Text(
+            "About us",
+            style: GoogleFonts.inter(
+              color: AllColors.primaryColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              height: 1,
+            ),
+          ),
 
-              // ── Title ──
-              Text(
-                "About us",
-                style: GoogleFonts.inter(
-                  color: AllColors.primaryColor,
-                  fontSize: 48,
-                  fontWeight: FontWeight.w800,
-                  height: 1,
-                ),
-              ),
+          const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
-
-              // ── Video ──
-              StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("videos")
-                    .doc("upload_video")
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return _videoPlaceholder(
-                      child: const CircularProgressIndicator(),
-                    );
-                  }
-                  if (snapshot.hasError ||
-                      !snapshot.hasData ||
-                      !snapshot.data!.exists) {
-                    return _videoPlaceholder(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.videocam_off_rounded,
-                            size: 40,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "No video uploaded yet",
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  final data = snapshot.data!.data() as Map<String, dynamic>;
-                  final String videoUrl =
-                      data["video_url"]?.toString().trim() ?? "";
-
-                  if (videoUrl.isEmpty) {
-                    return _videoPlaceholder(
-                      child: const Icon(
-                        Icons.play_circle_outline,
-                        size: 48,
+          // ── Video ──
+          StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("videos")
+                .doc("upload_video")
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return _videoPlaceholder(
+                  child: const CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasError ||
+                  !snapshot.hasData ||
+                  !snapshot.data!.exists) {
+                return _videoPlaceholder(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.videocam_off_rounded,
+                        size: 40,
                         color: Colors.grey,
                       ),
-                    );
-                  }
-                  if (isYoutubeUrl(videoUrl)) {
-                    return _YoutubeInBoxPlayer(
-                      videoUrl: videoUrl,
-                      youtubeId: extractYoutubeId(videoUrl),
-                      height: 220,
-                    );
-                  }
-                  return _FirebaseVideoPlayer(videoUrl: videoUrl, height: 220);
-                },
-              ),
-
-              const SizedBox(height: 24),
-
-              // ── Paragraph 1 ──
-              Text(
-                "The Bangalore Chakma Society (BCS) represents the collective journey, "
-                "resilience, and unity of the Chakma and Buddhist communities who have "
-                "made Bengaluru their home. The roots of this journey trace back to the "
-                "early arrivals of Chakma individuals in the city, beginning with pioneers "
-                "who came as students and professionals and went on to build successful "
-                "careers laying a proud foundation for the community.",
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  height: 1.6,
-                  color: AllColors.thirdColor,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // ── Paragraph 2 ──
-              Text(
-                "While small groups of Chakma individuals visited or stayed briefly in "
-                "the 1990s, the true groundwork of BCS began to take shape around 2007, "
-                "when a growing number of students and working professionals settled in "
-                "Bangalore. Even during these early years, community members came together "
-                "informally to celebrate culture, religion, and shared identity.",
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  height: 1.6,
-                  color: AllColors.thirdColor,
-                ),
-              ),
-
-              const SizedBox(height: 28),
-
-              // ── Read More Button ──
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AllColors.fifthColor,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                    ), // ← reduced from 14
+                      const SizedBox(height: 8),
+                      Text(
+                        "No video uploaded yet",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) => const ComingSoonDialog(),
-                    );
-                  },
-                  child: Text(
-                    "Read More",
-                    style: GoogleFonts.inter(
-                      fontSize: 13, // ← reduced from 14
-                      fontWeight: FontWeight.w600,
-                    ),
+                );
+              }
+              final data = snapshot.data!.data() as Map<String, dynamic>;
+              final String videoUrl =
+                  data["video_url"]?.toString().trim() ?? "";
+
+              if (videoUrl.isEmpty) {
+                return _videoPlaceholder(
+                  child: const Icon(
+                    Icons.play_circle_outline,
+                    size: 48,
+                    color: Colors.grey,
                   ),
-                ),
-              ),
-              // ── Extra bottom padding so button clears the navbar ──
-              const SizedBox(height: 80),
-            ],
+                );
+              }
+              if (isYoutubeUrl(videoUrl)) {
+                return _YoutubeInBoxPlayer(
+                  videoUrl: videoUrl,
+                  youtubeId: extractYoutubeId(videoUrl),
+                  height: 220,
+                );
+              }
+              return _FirebaseVideoPlayer(videoUrl: videoUrl, height: 220);
+            },
           ),
-        ),
+
+          const SizedBox(height: 15),
+
+          Text(
+            "The Bangalore Chakma Society (BCS) represents the collective journey, "
+            "resilience, and unity of the Chakma and Buddhist communities who have "
+            "made Bengaluru their home. The roots of this journey trace back to the "
+            "early arrivals of Chakma individuals in the city, beginning with pioneers "
+            "who came as students and professionals and went on to build successful "
+            "careers laying a proud foundation for the community.",
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              height: 1.6,
+              color: AllColors.thirdColor,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Text(
+            "While small groups of Chakma individuals visited or stayed briefly in "
+            "the 1990s, the true groundwork of BCS began to take shape around 2007, "
+            "when a growing number of students and working professionals settled in "
+            "Bangalore. Even during these early years, community members came together "
+            "informally to celebrate culture, religion, and shared identity.",
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              height: 1.6,
+              color: AllColors.thirdColor,
+            ),
+          ),
+
+          const SizedBox(height: 28),
+
+          SizedBox(
+            width: 120,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AllColors.fifthColor,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 12,
+                ),
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const ComingSoonDialog(),
+                );
+              },
+              child: Text(
+                "Read More",
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 70),
+        ],
       ),
     );
   }
@@ -589,165 +578,3 @@ class _MobileLayout extends StatelessWidget {
     );
   }
 }
-// class _MobileLayout extends StatelessWidget {
-//   const _MobileLayout();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SingleChildScrollView(
-//       child: Container(
-//         width: double.infinity,
-//         color: AllColors.secondaryColor,
-//         padding: const EdgeInsets.symmetric(horizontal: 24),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const SizedBox(height: 55),
-
-//             // ── Title ──
-//             Text(
-//               "About us",
-//               style: GoogleFonts.inter(
-//                 color: AllColors.primaryColor,
-//                 fontSize: 48,
-//                 fontWeight: FontWeight.w800,
-//                 height: 1,
-//               ),
-//             ),
-
-//             const SizedBox(height: 20),
-
-//             // ── Video ──
-//             StreamBuilder<DocumentSnapshot>(
-//               stream: FirebaseFirestore.instance
-//                   .collection("videos")
-//                   .doc("upload_video")
-//                   .snapshots(),
-//               builder: (context, snapshot) {
-//                 if (snapshot.connectionState == ConnectionState.waiting) {
-//                   return _videoPlaceholder(
-//                     child: const CircularProgressIndicator(),
-//                   );
-//                 }
-//                 if (snapshot.hasError ||
-//                     !snapshot.hasData ||
-//                     !snapshot.data!.exists) {
-//                   return _videoPlaceholder(
-//                     child: Column(
-//                       mainAxisSize: MainAxisSize.min,
-//                       children: [
-//                         const Icon(Icons.videocam_off_rounded,
-//                             size: 40, color: Colors.grey),
-//                         const SizedBox(height: 8),
-//                         Text(
-//                           "No video uploaded yet",
-//                           style: GoogleFonts.inter(
-//                               fontSize: 12, color: Colors.grey),
-//                         ),
-//                       ],
-//                     ),
-//                   );
-//                 }
-//                 final data =
-//                     snapshot.data!.data() as Map<String, dynamic>;
-//                 final String videoUrl =
-//                     data["video_url"]?.toString().trim() ?? "";
-
-//                 if (videoUrl.isEmpty) {
-//                   return _videoPlaceholder(
-//                     child: const Icon(Icons.play_circle_outline,
-//                         size: 48, color: Colors.grey),
-//                   );
-//                 }
-//                 if (isYoutubeUrl(videoUrl)) {
-//                   return _YoutubeInBoxPlayer(
-//                     videoUrl: videoUrl,
-//                     youtubeId: extractYoutubeId(videoUrl),
-//                     height: 220,
-//                   );
-//                 }
-//                 return _FirebaseVideoPlayer(
-//                     videoUrl: videoUrl, height: 220);
-//               },
-//             ),
-
-//             const SizedBox(height: 24),
-
-//             // ── Paragraph 1 ──
-//             Text(
-//               "The Bangalore Chakma Society (BCS) represents the collective journey, "
-//               "resilience, and unity of the Chakma and Buddhist communities who have "
-//               "made Bengaluru their home. The roots of this journey trace back to the "
-//               "early arrivals of Chakma individuals in the city, beginning with pioneers "
-//               "who came as students and professionals and went on to build successful "
-//               "careers laying a proud foundation for the community.",
-//               style: GoogleFonts.inter(
-//                 fontSize: 14,
-//                 height: 1.6,
-//                 color: AllColors.thirdColor,
-//               ),
-//             ),
-
-//             const SizedBox(height: 16),
-
-//             // ── Paragraph 2 ──
-//             Text(
-//               "While small groups of Chakma individuals visited or stayed briefly in "
-//               "the 1990s, the true groundwork of BCS began to take shape around 2007, "
-//               "when a growing number of students and working professionals settled in "
-//               "Bangalore. Even during these early years, community members came together "
-//               "informally to celebrate culture, religion, and shared identity.",
-//               style: GoogleFonts.inter(
-//                 fontSize: 14,
-//                 height: 1.6,
-//                 color: AllColors.thirdColor,
-//               ),
-//             ),
-
-//             const SizedBox(height: 24),
-
-//             // ── Read More Button ──
-//             SizedBox(
-//               width: double.infinity,
-//               child: OutlinedButton(
-//                 style: OutlinedButton.styleFrom(
-//                   foregroundColor: AllColors.primaryColor,
-//                   side: BorderSide(
-//                       color: AllColors.primaryColor, width: 1.5),
-//                   shape: const RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.zero),
-//                   padding: const EdgeInsets.symmetric(vertical: 14),
-//                 ),
-//                 onPressed: () {
-//                   showDialog(
-//                     context: context,
-//                     barrierDismissible: false,
-//                     builder: (_) => const ComingSoonDialog(),
-//                   );
-//                 },
-//                 child: Text(
-//                   "Read More",
-//                   style: GoogleFonts.inter(
-//                       fontSize: 14, fontWeight: FontWeight.w600),
-//                 ),
-//               ),
-//             ),
-
-//             const SizedBox(height: 40),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _videoPlaceholder({required Widget child}) {
-//     return Container(
-//       height: 220,
-//       decoration: BoxDecoration(
-//         color: const Color(0xFFE0E0E0),
-//         borderRadius: BorderRadius.circular(8),
-//       ),
-//       child: Center(child: child),
-//     );
-//   }
-// }

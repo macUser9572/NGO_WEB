@@ -186,18 +186,21 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Container(
       width: double.infinity,
       color: AllColors.fourthColor,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      padding: EdgeInsets.fromLTRB(24, 63, 24, bottomPadding + 130),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // ── Vision ──
           Text(
             "Vision",
             style: GoogleFonts.inter(
-              fontSize: 48,
+              fontSize: 32,
               fontWeight: FontWeight.w800,
               color: AllColors.primaryColor,
               height: 1.1,
@@ -208,19 +211,19 @@ class _MobileLayout extends StatelessWidget {
             "To preserve and carry forward the legacy of Chakma culture and "
             "tradition in cities, while embracing the changes of modern times.",
             style: GoogleFonts.inter(
-              fontSize: 14,
-              height: 1.5,
+              fontSize: 12,
+              height: 1.4,
               color: AllColors.primaryColor,
             ),
           ),
 
-          const SizedBox(height: 25),
+          const SizedBox(height: 16),
 
           // ── Mission ──
           Text(
             "Mission",
             style: GoogleFonts.inter(
-              fontSize: 48,
+              fontSize: 32,
               fontWeight: FontWeight.w800,
               color: AllColors.primaryColor,
               height: 1.1,
@@ -231,34 +234,35 @@ class _MobileLayout extends StatelessWidget {
             "To empower the young generation to learn, share their knowledge, "
             "and develop into confident contributors to society.",
             style: GoogleFonts.inter(
-              fontSize: 14,
-              height: 1.5,
+              fontSize: 12,
+              height: 1.4,
               color: AllColors.primaryColor,
             ),
           ),
 
-          const SizedBox(height: 25),
+          // const SizedBox(height: 16),
 
-          // ── Divider ──
-          Divider(color: Colors.grey.shade300, thickness: 1),
+          // Divider(color: Colors.grey.shade300, thickness: 1),
 
-          const SizedBox(height: 25),
+          const SizedBox(height: 16),
 
           // ── Values ──
           Text(
             "Values",
             style: GoogleFonts.inter(
-              fontSize: 48,
+              fontSize: 32,
               fontWeight: FontWeight.w800,
               color: AllColors.primaryColor,
               height: 1.1,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           _mobileValueItem(
             "Unity & Brotherhood",
-            "Believe in growing not just as a community, but together with other cultures and identities, building bridges through respect, cooperation, and shared initiatives.",
+            "Believe in growing not just as a community, but together with other "
+            "cultures and identities, building bridges through respect, cooperation, "
+            "and shared initiatives.",
           ),
           _mobileValueItem(
             "Cultural Preservation",
@@ -274,10 +278,9 @@ class _MobileLayout extends StatelessWidget {
           ),
           _mobileValueItem(
             "Service to Society",
-            "Working collectively to uplift our community and contribute positively to the broader society.",
+            "Working collectively to uplift our community and contribute positively "
+            "to the broader society.",
           ),
-
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -285,24 +288,25 @@ class _MobileLayout extends StatelessWidget {
 
   Widget _mobileValueItem(String title, String description) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             title,
             style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
               color: AllColors.primaryColor,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             description,
             style: GoogleFonts.inter(
-              fontSize: 13,
-              height: 1.5,
+              fontSize: 12,
+              height: 1.4,
               color: AllColors.primaryColor,
             ),
           ),

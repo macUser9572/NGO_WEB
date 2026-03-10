@@ -118,7 +118,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                   children: [
                     Text(
                       "BSCA",
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         fontSize: 80,
                         fontWeight: FontWeight.w800,
                         color: AllColors.primaryColor,
@@ -313,20 +313,263 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 }
 
 // ===================== MOBILE LAYOUT =====================
-class _MobileLayout extends StatelessWidget {
+class _MobileLayout extends StatefulWidget {
   const _MobileLayout();
 
   @override
+  State<_MobileLayout> createState() => _MobileLayoutState();
+}
+
+class _MobileLayoutState extends State<_MobileLayout> {
+  int _currentIndex = 0;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+
+  List<String> _imageUrls = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchImages();
+  }
+
+  Future<void> _fetchImages() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection("student_body")
+          .doc("images")
+          .get();
+
+      if (doc.exists) {
+        final rawData = doc.data();
+        if (rawData == null) {
+          setState(() => _isLoading = false);
+          return;
+        }
+
+        final Map<String, dynamic> data = Map<String, dynamic>.from(rawData);
+        final List<String> urls = [];
+
+        int i = 1;
+        while (data.containsKey("image_${i}_url")) {
+          final url = data["image_${i}_url"];
+          if (url != null && url.toString().isNotEmpty) {
+            urls.add(url.toString());
+          }
+          i++;
+        }
+
+        if (mounted) {
+          setState(() {
+            _imageUrls = urls;
+            _isLoading = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      debugPrint("Error fetching student body images: $e");
+      if (mounted) {
+        setState(() {
+          _imageUrls = [];
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("studentbody Page"),
-      ),
-      body: const Center(
-        child: Text(
-          "Mobile layout coming soon",
-          style: TextStyle(fontSize: 18,color: AllColors.fifthColor),
-        ),
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    // ✅ Removed SingleChildScrollView — HomeView parent handles scrolling
+    return Container(
+      width: double.infinity,
+      color: AllColors.fourthColor,
+      padding: EdgeInsets.fromLTRB(24, 50, 24, bottomPadding + 80),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Title ──
+          Text(
+            "BSCA",
+            style: GoogleFonts.inter(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: AllColors.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            "Student Body",
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AllColors.primaryColor,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // ── Image Carousel ──
+          _isLoading
+              ? Container(
+                  height: 260,
+                  color: Colors.grey.shade200,
+                  child: const Center(child: CircularProgressIndicator()),
+                )
+              : _imageUrls.isEmpty
+              ? Container(
+                  height: 260,
+                  color: Colors.grey.shade200,
+                  child: Center(
+                    child: Text(
+                      "No images available",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AllColors.thirdColor,
+                      ),
+                    ),
+                  ),
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CarouselSlider(
+                      carouselController: _carouselController,
+                      options: CarouselOptions(
+                        height: 260,
+                        viewportFraction: 1.0,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration: const Duration(
+                          milliseconds: 600,
+                        ),
+                        autoPlayCurve: Curves.easeInOut,
+                        enlargeCenterPage: false,
+                        onPageChanged: (index, reason) {
+                          setState(() => _currentIndex = index);
+                        },
+                      ),
+                      items: _imageUrls.map((url) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            url,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, progress) {
+                              if (progress == null) return child;
+                              return Container(
+                                color: Colors.grey.shade200,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stack) {
+                              return Container(
+                                color: Colors.grey.shade200,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image_outlined,
+                                    color: Colors.grey,
+                                    size: 40,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // ── Dot indicators ──
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _imageUrls.asMap().entries.map((entry) {
+                        final isActive = entry.key == _currentIndex;
+                        return GestureDetector(
+                          onTap: () =>
+                              _carouselController.animateToPage(entry.key),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: isActive ? 24 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: isActive
+                                  ? AllColors.primaryColor
+                                  : AllColors.primaryColor.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+
+          const SizedBox(height: 24),
+
+          // ── Description ──
+          Text(
+            "The student body serves as a unifying platform that brings students together, "
+            "creating an environment where everyone can learn, grow, and thrive. It leads "
+            "student-driven activities, supports new initiatives, and ensures that every student "
+            "feels included, represented, and heard. Through these efforts, the community becomes "
+            "stronger, more cohesive, and better connected.",
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.6,
+              color: AllColors.thirdColor,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          Text(
+            "The student body also aims to collaborate with other Northeastern student organizations, "
+            "fostering shared learning, cultural exchange, and collective initiatives. It actively "
+            "participates in addressing student concerns and resolving issues as a united voice.",
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.6,
+              color: AllColors.thirdColor,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          Text(
+            "The Bangalore Chakma Students' Body operates as an integral part of the Bangalore Chakma "
+            "Society and functions under the guidance and supervision of senior members.",
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.6,
+              color: AllColors.thirdColor,
+            ),
+          ),
+
+          const SizedBox(height: 28),
+
+          // ── Button ──
+          CustomButton(
+            label: "Student Members",
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(builder: (_) => const StudentListPage()),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

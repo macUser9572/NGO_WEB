@@ -54,8 +54,8 @@ class HomeDesktop extends StatelessWidget {
                   'Ju Ju !',
                   style: GoogleFonts.inter(
                     color: AllColors.primaryColor,
-                    fontSize: 90,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 80,
+                    fontWeight: FontWeight.w800,
                     height: 1,
                   ),
                 ),
@@ -258,8 +258,8 @@ class _MobileLayout extends StatelessWidget {
                     'Ju Ju !',
                     style: GoogleFonts.inter(
                       color: AllColors.primaryColor,
-                      fontSize: 52,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
                       height: 1,
                     ),
                   ),
@@ -269,7 +269,7 @@ class _MobileLayout extends StatelessWidget {
                   Text(
                     "Jawdaw Re Jaat togai, Hangarai Gat Togai !",
                     style: GoogleFonts.inter(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w800,
                       color: AllColors.primaryColor,
                     ),
@@ -280,7 +280,7 @@ class _MobileLayout extends StatelessWidget {
                   Text(
                     "Supporting Students, Preserving culture and building unity.",
                     style: GoogleFonts.inter(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: AllColors.primaryColor,
                     ),
@@ -378,6 +378,7 @@ class _MobileLayout extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 40), // ← ADD THIS to push image down
 
             // ── Image fills ALL remaining space ──
             Expanded(

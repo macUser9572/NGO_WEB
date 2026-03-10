@@ -9,6 +9,8 @@ class NavbarMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).padding.top + 50;
+
     return SafeArea(
       bottom: false,
       child: Container(
@@ -18,29 +20,36 @@ class NavbarMobile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-
-            // ── Logo ──
-            GestureDetector(
-              onTap: () => scrollToSection(context, 0),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    "assets/icons/CompanyLogo.svg",
-                    height: 34,
+            Row(
+              children: [
+                InkWell(
+                  onTap: (){
+                    scrollToSection(context, 0);
+                    if(Scaffold.of(context).isEndDrawerOpen){
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(6),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/icons/CompanyLogo.svg",
+                        height: 34,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(width: 8),
+                      Text("BCS",
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AllColors.fifthColor,
+                      ),
+                      )
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "NGO",
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AllColors.fifthColor,
-                    ),
-                  ),
-                ],
-              ),
+                )
+              ],
             ),
-
             // ── Hamburger ──
             Builder(
               builder: (ctx) => IconButton(

@@ -267,136 +267,150 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Container(
-        width: double.infinity,
-        color: AllColors.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 45),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return Container(
+      width: double.infinity,
+      color: AllColors.secondaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 63),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-            // ── Title ──
-            Text(
-              "What We Do",
-              style: GoogleFonts.inter(
-                fontSize: 42,
-                fontWeight: FontWeight.w800,
-                color: AllColors.primaryColor,
-              ),
+          // ── Title ──
+          Text(
+            "What We Do",
+            style: GoogleFonts.inter(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: AllColors.primaryColor,
             ),
+          ),
 
-            const SizedBox(height: 24),
+          const SizedBox(height: 15),
 
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("events")
-                  .doc("upload_events")
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text("Error: ${snapshot.error}",
-                        style: const TextStyle(color: Colors.red)),
-                  );
-                }
-                if (!snapshot.hasData || !snapshot.data!.exists) {
-                  return Center(
-                    child: Text("No Events Found",
-                        style: GoogleFonts.inter(fontSize: 14)),
-                  );
-                }
-
-                final data = snapshot.data!.data() as Map<String, dynamic>;
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    // ── Events heading ──
-                    Text(
-                      "Events",
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AllColors.primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "Discover our diverse range of activities and events designed to enrich our community",
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        color: AllColors.primaryColor,
-                        height: 1.5,
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // ── 2×2 Image Grid ──
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _imageCard(data["image1"], data["title1"],
-                              height: 160),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _imageCard(data["image2"], data["title2"],
-                              height: 160),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _imageCard(data["image3"], data["title3"],
-                              height: 160),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _imageCard(data["image4"], data["title4"],
-                              height: 160),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 28),
-
-                    // ── Key Information ──
-                    Text(
-                      "Key Information",
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AllColors.primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      data["key_information"] ?? "",
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        height: 1.7,
-                        color: AllColors.primaryColor,
-                      ),
-                    ),
-
-                    const SizedBox(height: 80),
-                  ],
+          StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("events")
+                .doc("upload_events")
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    "Error: ${snapshot.error}",
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 );
-              },
-            ),
-          ],
-        ),
+              }
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return Center(
+                  child: Text(
+                    "No Events Found",
+                    style: GoogleFonts.inter(fontSize: 14),
+                  ),
+                );
+              }
+
+              final data = snapshot.data!.data() as Map<String, dynamic>;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  // ── Events heading ──
+                  Text(
+                    "Events",
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AllColors.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Discover our diverse range of activities and events designed to enrich our community",
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: AllColors.primaryColor,
+                      height: 1.5,
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // ── 2×2 Image Grid ──
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _imageCard(
+                          data["image1"],
+                          data["title1"],
+                          height: 160,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _imageCard(
+                          data["image2"],
+                          data["title2"],
+                          height: 160,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _imageCard(
+                          data["image3"],
+                          data["title3"],
+                          height: 160,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _imageCard(
+                          data["image4"],
+                          data["title4"],
+                          height: 160,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // ── Key Information ──
+                  Text(
+                    "Key Information",
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AllColors.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    data["key_information"] ?? "",
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      height: 1.7,
+                      color: AllColors.primaryColor,
+                    ),
+                  ),
+
+                  const SizedBox(height: 80),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }

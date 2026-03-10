@@ -230,16 +230,119 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("member Page"),
+    return Container(
+      width: double.infinity,
+      color: AllColors.secondaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 70),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Title ──
+          Text(
+            "Members",
+            style: GoogleFonts.inter(
+              color: AllColors.primaryColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              height: 1,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "The Headcount",
+            style: GoogleFonts.inter(
+              color: AllColors.thirdColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "The number of participants is growing exponentially each year. "
+            "Here's a breakdown of the BCS community members in Bangalore.",
+            style: GoogleFonts.inter(
+              color: AllColors.thirdColor,
+              fontSize: 12,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Firestore Stats (MOVED UP) ──
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("Member_collection")
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return _buildStats(0, 0, 0, 0, 0);
+              }
+
+              int total = snapshot.data!.docs.length;
+              int male = 0, female = 0, children = 0, others = 0;
+
+              for (var doc in snapshot.data!.docs) {
+                final data = Map<String, dynamic>.from(doc.data() as Map);
+                final gender =
+                    (data['gender'] ?? '').toString().toLowerCase();
+                if (gender == 'male') male++;
+                else if (gender == 'female') female++;
+                else if (gender == 'children') children++;
+                else others++;
+              }
+
+              return _buildStats(total, male, female, children, others);
+            },
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Image (MOVED DOWN) ──
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              "assets/image/Memberpage.png",
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // ── Button ──
+          CustomButton(
+            label: "View Members",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const MembersListPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text(
-          "Mobile layout coming soon",
-          style: TextStyle(fontSize: 18,color: AllColors.fifthColor),
-        ),
-      ),
+    );
+  }
+
+  Widget _buildStats(
+      int total, int male, int female, int children, int others) {
+    return Wrap(
+      spacing: 24,
+      runSpacing: 16,
+      children: [
+        _StatItem(label: "Total", value: total.toString()),
+        _StatItem(label: "Men", value: male.toString()),
+        _StatItem(label: "Women", value: female.toString()),
+        _StatItem(label: "Children", value: children.toString()),
+        _StatItem(label: "Others", value: others.toString()),
+      ],
     );
   }
 }

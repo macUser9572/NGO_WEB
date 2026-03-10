@@ -25,36 +25,41 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   late final ScrollController _scrollController;
+  bool _scheduledUpdate = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-
     _scrollController.addListener(_onScroll);
   }
 
   void _onScroll() {
-    final scrollOffset = _scrollController.offset;
+    if (_scheduledUpdate) return;
+    _scheduledUpdate = true;
 
-    // Find which section is currently visible by checking each key's position
-    for (int i = sectionKeys.length - 1; i >= 0; i--) {
-      final keyContext = sectionKeys[i].currentContext;
-      if (keyContext == null) continue;
+    Future.microtask(() {
+      _scheduledUpdate = false;
+      if (!mounted) return;
 
-      final box = keyContext.findRenderObject() as RenderBox?;
-      if (box == null) continue;
-
-      final position = box.localToGlobal(Offset.zero);
       final isMobile = MediaQuery.of(context).size.width < 768;
       final navbarHeight = isMobile ? 56.0 : 70.0;
 
-      // If section top is at or above the navbar bottom, it's the active section
-      if (position.dy <= navbarHeight + 50) {
-        context.read<ScrollState>().updateSection(i);
-        break;
+      for (int i = sectionKeys.length - 1; i >= 0; i--) {
+        final keyContext = sectionKeys[i].currentContext;
+        if (keyContext == null) continue;
+
+        final box = keyContext.findRenderObject() as RenderBox?;
+        if (box == null || !box.hasSize) continue;
+
+        final position = box.localToGlobal(Offset.zero);
+
+        if (position.dy <= navbarHeight + 50) {
+          context.read<ScrollState>().updateSection(i);
+          break;
+        }
       }
-    }
+    });
   }
 
   @override
@@ -73,14 +78,11 @@ class _HomeViewState extends State<HomeView> {
       backgroundColor: AllColors.secondaryColor,
       body: Stack(
         children: [
-          // ── Scrollable Sections ──
           SingleChildScrollView(
             controller: _scrollController,
             child: Column(
               children: [
-                // Space so first section isn't hidden under navbar
                 SizedBox(height: isMobile ? 56 : 70),
-
                 Container(key: sectionKeys[0], child: const HomePage()),
                 Container(key: sectionKeys[1], child: const AboutusPage()),
                 Container(key: sectionKeys[2], child: const AboutusPage2()),
@@ -93,15 +95,11 @@ class _HomeViewState extends State<HomeView> {
               ],
             ),
           ),
-
-          // ── Sticky Navbar ──
           Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: isMobile
-                ? const NavbarMobile()
-                : const NavbarDesktop(),
+            child: isMobile ? const NavbarMobile() : const NavbarDesktop(),
           ),
         ],
       ),
@@ -141,27 +139,35 @@ class _HomeViewState extends State<HomeView> {
 //     super.initState();
 //     _scrollController = ScrollController();
 
-//     _scrollController.addListener(() {
-//       final height = MediaQuery.of(context).size.height;
-//       final isMobile = MediaQuery.of(context).size.width < 768;
+//     _scrollController.addListener(_onScroll);
+//   }
 
-//       // On mobile sections are not full screen height,
-//       // so we track by pixel offset differently
-//       if (isMobile) {
-//         // Estimate section index by dividing offset by average section height
-//         final index =
-//             (_scrollController.offset / (height * 0.8)).round().clamp(0, 7);
-//         context.read<ScrollState>().updateSection(index);
-//       } else {
-//         final index =
-//             (_scrollController.offset / height).round().clamp(0, 7);
-//         context.read<ScrollState>().updateSection(index);
+//   void _onScroll() {
+//     final scrollOffset = _scrollController.offset;
+
+//     // Find which section is currently visible by checking each key's position
+//     for (int i = sectionKeys.length - 1; i >= 0; i--) {
+//       final keyContext = sectionKeys[i].currentContext;
+//       if (keyContext == null) continue;
+
+//       final box = keyContext.findRenderObject() as RenderBox?;
+//       if (box == null) continue;
+
+//       final position = box.localToGlobal(Offset.zero);
+//       final isMobile = MediaQuery.of(context).size.width < 768;
+//       final navbarHeight = isMobile ? 56.0 : 70.0;
+
+//       // If section top is at or above the navbar bottom, it's the active section
+//       if (position.dy <= navbarHeight + 50) {
+//         context.read<ScrollState>().updateSection(i);
+//         break;
 //       }
-//     });
+//     }
 //   }
 
 //   @override
 //   void dispose() {
+//     _scrollController.removeListener(_onScroll);
 //     _scrollController.dispose();
 //     super.dispose();
 //   }
@@ -171,8 +177,7 @@ class _HomeViewState extends State<HomeView> {
 //     final isMobile = MediaQuery.of(context).size.width < 768;
 
 //     return Scaffold(
-//       // ── Drawer only on mobile (opens from left) ──
-//       drawer: isMobile ? const AppDrawer() : null,
+//       endDrawer: isMobile ? const AppDrawer() : null,
 //       backgroundColor: AllColors.secondaryColor,
 //       body: Stack(
 //         children: [
@@ -181,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
 //             controller: _scrollController,
 //             child: Column(
 //               children: [
-//                 // Space so content doesn't hide under navbar
+//                 // Space so first section isn't hidden under navbar
 //                 SizedBox(height: isMobile ? 56 : 70),
 
 //                 Container(key: sectionKeys[0], child: const HomePage()),
@@ -203,8 +208,8 @@ class _HomeViewState extends State<HomeView> {
 //             left: 0,
 //             right: 0,
 //             child: isMobile
-//                 ? const NavbarMobile()   // ← hamburger menu
-//                 : const NavbarDesktop(), // ← full nav links
+//                 ? const NavbarMobile()
+//                 : const NavbarDesktop(),
 //           ),
 //         ],
 //       ),
