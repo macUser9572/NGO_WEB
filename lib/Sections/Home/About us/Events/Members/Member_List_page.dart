@@ -365,7 +365,7 @@ class _MobileLayout extends StatelessWidget {
             Text(
               "BCS Members",
               style: GoogleFonts.inter(
-                fontSize: 28,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 color: AllColors.primaryColor,
               ),
@@ -373,7 +373,7 @@ class _MobileLayout extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               "Phone numbers and emails are hidden. Admin login required to view them.",
-              style: GoogleFonts.inter(fontSize: 12, color: AllColors.thirdColor),
+              style: GoogleFonts.inter(fontSize: 14, color: AllColors.thirdColor),
             ),
             const SizedBox(height: 16),
             Expanded(child: _membersStream()),

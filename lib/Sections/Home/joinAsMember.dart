@@ -210,14 +210,36 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
       mainAxisSize: MainAxisSize.min,
       children: [
 
-        // ── Title ──
-        Text("Membership Request",
-            style: GoogleFonts.inter(
-                fontSize: 32, fontWeight: FontWeight.w700, color: Colors.black)),
-        const SizedBox(height: 4),
-        Text(
-          "Fill in the details to be a part of BCS. Once approved will be updated in the BCS member list.",
-          style: GoogleFonts.inter(fontSize: 16, color: Colors.black54, height: 1.5),
+        // ── Title + Close Button ──
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Membership Request",
+                    style: GoogleFonts.inter(
+                        fontSize: 32, fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Fill in the details to be a part of BCS. Once approved will be updated in the BCS member list.",
+                    style: GoogleFonts.inter(
+                        fontSize: 16, color: Colors.black54, height: 1.5),
+                  ),
+                ],
+              ),
+            ),
+            // ✅ Close Button
+            IconButton(
+              onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+              icon: const Icon(Icons.close, size: 22, color: Colors.black54),
+              tooltip: "Close",
+            ),
+          ],
         ),
 
         const SizedBox(height: 22),
@@ -274,7 +296,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
                                       color: Colors.black.withOpacity(0.45),
                                       alignment: Alignment.center,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const Icon(Icons.edit,
                                               color: Colors.white, size: 26),
@@ -283,7 +306,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
                                               style: GoogleFonts.inter(
                                                   color: Colors.white,
                                                   fontSize: 12,
-                                                  fontWeight: FontWeight.w600)),
+                                                  fontWeight:
+                                                      FontWeight.w600)),
                                         ],
                                       ),
                                     )
@@ -366,7 +390,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
                     dropdownColor: Colors.white,
                     icon: const Icon(Icons.keyboard_arrow_down),
                     items: genders
-                        .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                        .map((g) =>
+                            DropdownMenuItem(value: g, child: Text(g)))
                         .toList(),
                     onChanged: (v) => setState(() => selectedGender = v),
                   ),
@@ -401,7 +426,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
                     dropdownColor: Colors.white,
                     icon: const Icon(Icons.keyboard_arrow_down),
                     items: states
-                        .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                        .map((s) =>
+                            DropdownMenuItem(value: s, child: Text(s)))
                         .toList(),
                     onChanged: (v) => setState(() => selectedState = v),
                   ),
@@ -458,14 +484,17 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
           children: [
             OutlinedButton(
               style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero),
                 side: BorderSide(color: AllColors.fifthColor),
               ),
               onPressed: isLoading ? null : () => Navigator.pop(context),
               child: Text("Cancel",
                   style: GoogleFonts.inter(
-                      fontSize: 14, fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: AllColors.fifthColor)),
             ),
             const SizedBox(width: 12),
@@ -473,8 +502,10 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AllColors.fifthColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero),
                 elevation: 0,
               ),
               onPressed: isLoading ? null : _submitRequest,
@@ -505,14 +536,16 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
               TextSpan(
                 text: text,
                 style: GoogleFonts.inter(
-                    fontSize: 18, fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
                     color: Colors.black87),
               ),
               if (required)
                 const TextSpan(
                   text: ' *',
                   style: TextStyle(
-                      color: Colors.red, fontSize: 18,
+                      color: Colors.red,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
             ],
@@ -521,8 +554,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
       );
 
   Widget _textField(String hint,
-      {TextEditingController? controller,
-      TextInputType keyboardType = TextInputType.text}) =>
+          {TextEditingController? controller,
+          TextInputType keyboardType = TextInputType.text}) =>
       TextField(
         controller: controller,
         keyboardType: keyboardType,
@@ -534,9 +567,11 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
         filled: true,
         fillColor: Colors.grey.shade100,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide.none),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: AllColors.primaryColor, width: 1)),
@@ -558,7 +593,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
                   style: GoogleFonts.inter(
                       fontSize: 13,
                       color: date == null
-                          ? Colors.grey.shade500 : Colors.black87)),
+                          ? Colors.grey.shade500
+                          : Colors.black87)),
               const Spacer(),
               Icon(Icons.calendar_today_outlined,
                   size: 16, color: Colors.grey.shade500),
@@ -756,14 +792,7 @@ class _MembershipMobileState extends State<MembershipMobile> {
           ),
           child: Column(
             children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+
               const SizedBox(height: 8),
               Expanded(
                 child: SingleChildScrollView(
@@ -784,16 +813,37 @@ class _MembershipMobileState extends State<MembershipMobile> {
       mainAxisSize: MainAxisSize.min,
       children: [
 
-        // ── Title ──
-        Text(
-          "Membership Request",
-          style: GoogleFonts.inter(
-              fontSize: 22, fontWeight: FontWeight.w700, color: Colors.black),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          "Fill in the details to be a part of BCS. Once approved will be updated in the BCS member list.",
-          style: GoogleFonts.inter(fontSize: 12, color: Colors.black54, height: 1.5),
+        // ── Title + Close Button ──
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Membership Request",
+                    style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Fill in the details to be a part of BCS. Once approved will be updated in the BCS member list.",
+                    style: GoogleFonts.inter(
+                        fontSize: 12, color: Colors.black, height: 1.5),
+                  ),
+                ],
+              ),
+            ),
+            // ✅ Close Button in title row
+            IconButton(
+              onPressed: _closeSheet,
+              icon: const Icon(Icons.close, size: 20, color: Colors.black54),
+              tooltip: "Close",
+            ),
+          ],
         ),
 
         const SizedBox(height: 18),
@@ -814,7 +864,8 @@ class _MembershipMobileState extends State<MembershipMobile> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.grey.shade200,
-                        border: Border.all(color: Colors.grey.shade300, width: 2),
+                        border: Border.all(
+                            color: Colors.grey.shade300, width: 2),
                         image: pickedImageBytes != null
                             ? DecorationImage(
                                 image: MemoryImage(pickedImageBytes!),
@@ -988,7 +1039,8 @@ class _MembershipMobileState extends State<MembershipMobile> {
                 onPressed: isLoading ? null : _closeSheet,
                 child: Text("Cancel",
                     style: GoogleFonts.inter(
-                        fontSize: 13, fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                         color: AllColors.fifthColor)),
               ),
             ),
@@ -1032,14 +1084,16 @@ class _MembershipMobileState extends State<MembershipMobile> {
               TextSpan(
                 text: text,
                 style: GoogleFonts.inter(
-                    fontSize: 14, fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                     color: Colors.black87),
               ),
               if (required)
                 const TextSpan(
                   text: ' *',
                   style: TextStyle(
-                      color: Colors.red, fontSize: 14,
+                      color: Colors.red,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold),
                 ),
             ],
@@ -1048,8 +1102,8 @@ class _MembershipMobileState extends State<MembershipMobile> {
       );
 
   Widget _textField(String hint,
-      {TextEditingController? controller,
-      TextInputType keyboardType = TextInputType.text}) =>
+          {TextEditingController? controller,
+          TextInputType keyboardType = TextInputType.text}) =>
       TextField(
         controller: controller,
         keyboardType: keyboardType,
@@ -1080,7 +1134,8 @@ class _MembershipMobileState extends State<MembershipMobile> {
 
   InputDecoration _inputDecoration({String? hint}) => InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade400),
+        hintStyle:
+            GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade400),
         filled: true,
         fillColor: Colors.grey.shade100,
         border: OutlineInputBorder(
