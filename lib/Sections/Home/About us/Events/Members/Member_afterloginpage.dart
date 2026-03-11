@@ -432,6 +432,7 @@ class _MobileLayout extends StatelessWidget {
                   _infoRow(
                     "assets/icons/mail.svg",
                     member.email.isNotEmpty ? member.email : 'N/A',
+                    wrap: true,
                   ),
                   _infoRow("assets/icons/place.svg", member.place),
                   _infoRow("assets/icons/SignIn.svg", member.checkIn),
@@ -470,19 +471,30 @@ class _MobileLayout extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(String iconPath, String text) {
+  Widget _infoRow(String iconPath, String text, {bool wrap = false}) {
     return Padding(
       padding: const EdgeInsets.only(top: 3),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgPicture.asset(iconPath, height: 16, width: 16),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: SvgPicture.asset(iconPath, height: 16, width: 16),
+          ),
           const SizedBox(width: 6),
           Expanded(
-            child: Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              style: CustomText.memberBodyColor,
-            ),
+            child: wrap
+                ? Text(
+                    text,
+                    softWrap: true,
+                    style: CustomText.memberBodyColor,
+                  )
+                : Text(
+                    text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomText.memberBodyColor,
+                  ),
           ),
         ],
       ),
