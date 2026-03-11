@@ -25,9 +25,10 @@ class MembershipRequestDialog extends StatelessWidget {
     );
   }
 }
-/// ================= DESKTOP ===================== ///
 
-
+// ─────────────────────────────────────────────
+//  DESKTOP
+// ─────────────────────────────────────────────
 class MembershipDesktop extends StatefulWidget {
   const MembershipDesktop({super.key});
 
@@ -50,10 +51,13 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
   String?    pickedImageName;
 
   final List<String> genders = ['Male', 'Female', 'Children', 'Others'];
-  final List<String> states  = [
-    'Arunachal Pradesh', 'Assam', 'Bihar', 'Karnataka', 'Kerala',
-    'Tamil Nadu', 'Telangana', 'Manipur', 'Mizoram', 'Nagaland',
-    'Tripura', 'Meghalaya', 'Sikkim',
+  final List<String> states = [
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+    'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+    'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',
+    'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand',
+    'West Bengal',
   ];
 
   @override
@@ -206,7 +210,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
       mainAxisSize: MainAxisSize.min,
       children: [
 
-        // Title
+        // ── Title ──
         Text("Membership Request",
             style: GoogleFonts.inter(
                 fontSize: 32, fontWeight: FontWeight.w700, color: Colors.black)),
@@ -218,7 +222,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
         const SizedBox(height: 22),
 
-        // Upload Photo
+        // ── Upload Photo ──
         _label("Upload Photo"),
         const SizedBox(height: 12),
         Center(
@@ -337,7 +341,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
         const SizedBox(height: 20),
 
-        // Name + Gender
+        // ── Name + Gender ──
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -374,7 +378,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
         const SizedBox(height: 16),
 
-        // Email
+        // ── Email ──
         _label("Email", required: true),
         _textField("Enter Email",
             controller: emailController,
@@ -382,7 +386,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
         const SizedBox(height: 16),
 
-        // State + Phone
+        // ── State + Phone ──
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -421,7 +425,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
         const SizedBox(height: 16),
 
-        // Arrival + Exit Date
+        // ── Arrival + Exit Date ──
         Row(
           children: [
             Expanded(
@@ -448,7 +452,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
         const SizedBox(height: 20),
 
-        // Buttons
+        // ── Buttons ──
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -489,6 +493,10 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
     );
   }
 
+  // ─────────────────────────────────────────
+  //  HELPERS
+  // ─────────────────────────────────────────
+
   Widget _label(String text, {bool required = false}) => Padding(
         padding: const EdgeInsets.only(bottom: 6),
         child: RichText(
@@ -503,7 +511,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
               if (required)
                 const TextSpan(
                   text: ' *',
-                  style: TextStyle(color: Colors.red, fontSize: 18,
+                  style: TextStyle(
+                      color: Colors.red, fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
             ],
@@ -531,7 +540,8 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: AllColors.primaryColor, width: 1)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
       );
 
   Widget _dateBox(DateTime? date, VoidCallback onTap) => InkWell(
@@ -557,8 +567,10 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
         ),
       );
 }
-/// ================= MOBILE ===================== ///
 
+// ─────────────────────────────────────────────
+//  MOBILE
+// ─────────────────────────────────────────────
 class MembershipMobile extends StatefulWidget {
   const MembershipMobile({super.key});
 
@@ -580,10 +592,13 @@ class _MembershipMobileState extends State<MembershipMobile> {
   String?    pickedImageName;
 
   final List<String> genders = ['Male', 'Female', 'Children', 'Others'];
-  final List<String> states  = [
-    'Arunachal Pradesh', 'Assam', 'Bihar', 'Karnataka', 'Kerala',
-    'Tamil Nadu', 'Telangana', 'Manipur', 'Mizoram', 'Nagaland',
-    'Tripura', 'Meghalaya', 'Sikkim',
+  final List<String> states = [
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+    'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+    'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',
+    'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand',
+    'West Bengal',
   ];
 
   @override
@@ -594,7 +609,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
     super.dispose();
   }
 
-  // ── Closes THIS bottom sheet (the showGeneralDialog route) ──
   void _closeSheet() {
     if (mounted) Navigator.of(context, rootNavigator: true).pop();
   }
@@ -616,8 +630,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
 
   Future<void> _pickDate(bool isArrival) async {
     DateTime tempDate = DateTime.now();
-
-    // ── Uses normal Navigator.pop — only closes the calendar dialog ──
     await showDialog(
       context: context,
       builder: (dialogContext) => Dialog(
@@ -680,9 +692,7 @@ class _MembershipMobileState extends State<MembershipMobile> {
       );
       return;
     }
-
     setState(() => isLoading = true);
-
     try {
       String? photoUrl;
       if (pickedImageBytes != null) {
@@ -695,7 +705,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
         );
         photoUrl = await snapshot.ref.getDownloadURL();
       }
-
       await FirebaseFirestore.instance.collection('membership_requests').add({
         'name':        nameController.text.trim(),
         'phone':       phoneController.text.trim(),
@@ -708,12 +717,8 @@ class _MembershipMobileState extends State<MembershipMobile> {
         'status':      'pending',
         'createdAt':   FieldValue.serverTimestamp(),
       });
-
       if (!mounted) return;
-
-      // ── Close sheet FIRST, then show snackbar ──
       _closeSheet();
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Membership request sent successfully ✅"),
@@ -751,7 +756,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
           ),
           child: Column(
             children: [
-              // ── Drag handle ──
               const SizedBox(height: 12),
               Container(
                 width: 40, height: 4,
@@ -761,8 +765,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // ── Scrollable form ──
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
@@ -837,7 +839,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
                             )
                           : null,
                     ),
-                    // ── Camera badge ──
                     Positioned(
                       bottom: 0, left: 0,
                       child: Container(
@@ -851,7 +852,6 @@ class _MembershipMobileState extends State<MembershipMobile> {
                             color: Colors.white, size: 10),
                       ),
                     ),
-                    // ── Remove button ──
                     if (pickedImageBytes != null)
                       Positioned(
                         bottom: 0, right: 0,
@@ -985,7 +985,7 @@ class _MembershipMobileState extends State<MembershipMobile> {
                       borderRadius: BorderRadius.zero),
                   side: BorderSide(color: AllColors.fifthColor),
                 ),
-                onPressed: isLoading ? null : _closeSheet,   // ← cancel closes sheet
+                onPressed: isLoading ? null : _closeSheet,
                 child: Text("Cancel",
                     style: GoogleFonts.inter(
                         fontSize: 13, fontWeight: FontWeight.w600,
@@ -1123,558 +1123,3 @@ class _MembershipMobileState extends State<MembershipMobile> {
         ),
       );
 }
-// class MembershipMobile extends StatefulWidget {
-//   const MembershipMobile({super.key});
-
-//   @override
-//   State<MembershipMobile> createState() => _MembershipMobileState();
-// }
-
-// class _MembershipMobileState extends State<MembershipMobile> {
-//   final nameController  = TextEditingController();
-//   final phoneController = TextEditingController();
-//   final emailController = TextEditingController();
-
-//   String?    selectedGender  = 'Male';
-//   String?    selectedState   = 'Arunachal Pradesh';
-//   DateTime?  arrivalDate;
-//   DateTime?  exitDate;
-//   bool       isLoading       = false;
-//   Uint8List? pickedImageBytes;
-//   String?    pickedImageName;
-
-//   final List<String> genders = ['Male', 'Female', 'Children', 'Others'];
-//   final List<String> states  = [
-//     'Arunachal Pradesh', 'Assam', 'Bihar', 'Karnataka', 'Kerala',
-//     'Tamil Nadu', 'Telangana', 'Manipur', 'Mizoram', 'Nagaland',
-//     'Tripura', 'Meghalaya', 'Sikkim',
-//   ];
-
-//   @override
-//   void dispose() {
-//     nameController.dispose();
-//     phoneController.dispose();
-//     emailController.dispose();
-//     super.dispose();
-//   }
-
-//   Future<void> _pickImage() async {
-//     final picker = ImagePicker();
-//     final XFile? picked = await picker.pickImage(
-//       source: ImageSource.gallery,
-//       maxWidth: 1024, maxHeight: 1024, imageQuality: 85,
-//     );
-//     if (picked != null) {
-//       final bytes = await picked.readAsBytes();
-//       setState(() {
-//         pickedImageBytes = bytes;
-//         pickedImageName  = picked.name;
-//       });
-//     }
-//   }
-
-//   Future<void> _pickDate(bool isArrival) async {
-//     DateTime tempDate = DateTime.now();
-//     await showDialog(
-//       context: context,
-//       builder: (_) => Dialog(
-//         backgroundColor: Colors.white,
-//         child: SizedBox(
-//           width: 320, height: 420,
-//           child: Column(
-//             children: [
-//               Expanded(
-//                 child: CalendarDatePicker(
-//                   initialDate: tempDate,
-//                   firstDate: DateTime(2000),
-//                   lastDate: DateTime(2100),
-//                   onDateChanged: (d) => tempDate = d,
-//                 ),
-//               ),
-//               Padding(
-//                 padding: const EdgeInsets.all(12),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.end,
-//                   children: [
-//                     TextButton(
-//                       onPressed: () => Navigator.pop(context),
-//                       child: Text("Cancel", style: GoogleFonts.inter()),
-//                     ),
-//                     const SizedBox(width: 8),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         setState(() {
-//                           if (isArrival) arrivalDate = tempDate;
-//                           else           exitDate    = tempDate;
-//                         });
-//                         Navigator.pop(context);
-//                       },
-//                       child: Text("OK", style: GoogleFonts.inter()),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   String _formatDate(DateTime? date) {
-//     if (date == null) return "Select date";
-//     return "${date.day.toString().padLeft(2, '0')}-"
-//         "${date.month.toString().padLeft(2, '0')}-"
-//         "${date.year}";
-//   }
-
-//   Future<void> _submitRequest() async {
-//     if (nameController.text.isEmpty ||
-//         phoneController.text.isEmpty ||
-//         emailController.text.isEmpty) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("Please fill all required fields")),
-//       );
-//       return;
-//     }
-//     setState(() => isLoading = true);
-//     try {
-//       String? photoUrl;
-//       if (pickedImageBytes != null) {
-//         final fileName =
-//             'membership/${DateTime.now().millisecondsSinceEpoch}_$pickedImageName';
-//         final ref = FirebaseStorage.instance.ref().child(fileName);
-//         final snapshot = await ref.putData(
-//           pickedImageBytes!,
-//           SettableMetadata(contentType: 'image/jpeg'),
-//         );
-//         photoUrl = await snapshot.ref.getDownloadURL();
-//       }
-//       await FirebaseFirestore.instance.collection('membership_requests').add({
-//         'name':        nameController.text.trim(),
-//         'phone':       phoneController.text.trim(),
-//         'email':       emailController.text.trim(),
-//         'gender':      selectedGender,
-//         'state':       selectedState,
-//         'arrivalDate': arrivalDate != null ? Timestamp.fromDate(arrivalDate!) : null,
-//         'exitDate':    exitDate    != null ? Timestamp.fromDate(exitDate!)    : null,
-//         'photoUrl':    photoUrl ?? '',
-//         'status':      'pending',
-//         'createdAt':   FieldValue.serverTimestamp(),
-//       });
-//       if (!mounted) return;
-//       Navigator.pop(context);
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(
-//           content: Text("Membership request sent successfully ✅"),
-//           backgroundColor: Colors.green,
-//         ),
-//       );
-//     } catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           content: Text("Failed to send request ❌ $e"),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//     } finally {
-//       if (mounted) setState(() => isLoading = false);
-//     }
-//   }
-
-//   // ─────────────────────────────────────────
-//   //  BUILD
-//   // ─────────────────────────────────────────
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     final screenWidth  = MediaQuery.of(context).size.width;
-
-//     return Align(
-//       alignment: Alignment.bottomCenter,
-//       child: Material(
-//         color: Colors.transparent,
-//         child: Container(
-//           width: screenWidth,
-//           height: screenHeight * 0.92,
-//           decoration: const BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-//           ),
-//           child: Column(
-//             children: [
-//               // ── Drag handle ──
-//               const SizedBox(height: 12),
-//               Container(
-//                 width: 40, height: 4,
-//                 decoration: BoxDecoration(
-//                   color: Colors.grey.shade300,
-//                   borderRadius: BorderRadius.circular(2),
-//                 ),
-//               ),
-//               const SizedBox(height: 8),
-
-//               // ── Scrollable form ──
-//               Expanded(
-//                 child: SingleChildScrollView(
-//                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-//                   child: _buildForm(),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   // ─────────────────────────────────────────
-//   //  FORM
-//   // ─────────────────────────────────────────
-//   Widget _buildForm() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-
-//         // ── Title ──
-//         Text(
-//           "Membership Request",
-//           style: GoogleFonts.inter(
-//               fontSize: 22, fontWeight: FontWeight.w700, color: Colors.black),
-//         ),
-//         const SizedBox(height: 4),
-//         Text(
-//           "Fill in the details to be a part of BCS. Once approved will be updated in the BCS member list.",
-//           style: GoogleFonts.inter(fontSize: 12, color: Colors.black54, height: 1.5),
-//         ),
-
-//         const SizedBox(height: 18),
-
-//         // ── Upload Photo ──
-//         _label("Upload Photo"),
-//         const SizedBox(height: 10),
-//         Center(
-//           child: Column(
-//             children: [
-//               GestureDetector(
-//                 onTap: _pickImage,
-//                 child: Stack(
-//                   clipBehavior: Clip.none,
-//                   children: [
-//                     Container(
-//                       width: 90, height: 90,
-//                       decoration: BoxDecoration(
-//                         shape: BoxShape.circle,
-//                         color: Colors.grey.shade200,
-//                         border: Border.all(color: Colors.grey.shade300, width: 2),
-//                         image: pickedImageBytes != null
-//                             ? DecorationImage(
-//                                 image: MemoryImage(pickedImageBytes!),
-//                                 fit: BoxFit.cover)
-//                             : null,
-//                       ),
-//                       child: pickedImageBytes == null
-//                           ? ClipOval(
-//                               child: Column(
-//                                 mainAxisAlignment: MainAxisAlignment.center,
-//                                 children: [
-//                                   Icon(Icons.cloud_upload_outlined,
-//                                       size: 24, color: Colors.grey.shade500),
-//                                   const SizedBox(height: 4),
-//                                   Text("Upload\nPhoto",
-//                                       textAlign: TextAlign.center,
-//                                       style: GoogleFonts.inter(
-//                                           fontSize: 10,
-//                                           color: Colors.grey.shade600)),
-//                                 ],
-//                               ),
-//                             )
-//                           : null,
-//                     ),
-//                     // ── Camera badge ──
-//                     Positioned(
-//                       bottom: 0, left: 0,
-//                       child: Container(
-//                         decoration: BoxDecoration(
-//                           color: Colors.grey.shade700,
-//                           shape: BoxShape.circle,
-//                           border: Border.all(color: Colors.white, width: 2),
-//                         ),
-//                         padding: const EdgeInsets.all(4),
-//                         child: const Icon(Icons.camera_alt,
-//                             color: Colors.white, size: 10),
-//                       ),
-//                     ),
-//                     // ── Remove button ──
-//                     if (pickedImageBytes != null)
-//                       Positioned(
-//                         bottom: 0, right: 0,
-//                         child: GestureDetector(
-//                           onTap: () => setState(() {
-//                             pickedImageBytes = null;
-//                             pickedImageName  = null;
-//                           }),
-//                           child: Container(
-//                             decoration: const BoxDecoration(
-//                                 color: Colors.red, shape: BoxShape.circle),
-//                             padding: const EdgeInsets.all(3),
-//                             child: const Icon(Icons.close,
-//                                 color: Colors.white, size: 10),
-//                           ),
-//                         ),
-//                       ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(height: 6),
-//               Text(
-//                 pickedImageBytes != null
-//                     ? (pickedImageName ?? "Photo selected ✓")
-//                     : "Tap to choose a profile photo",
-//                 style: GoogleFonts.inter(
-//                   fontSize: 11,
-//                   color: pickedImageBytes != null
-//                       ? Colors.green : Colors.grey.shade500,
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-
-//         const SizedBox(height: 16),
-
-//         // ── Name + Gender ──
-//         Row(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   _label("Name", required: true),
-//                   _textField("Enter Name", controller: nameController),
-//                 ],
-//               ),
-//             ),
-//             const SizedBox(width: 10),
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   _label("Gender", required: true),
-//                   _dropdownField<String>(
-//                     value: selectedGender,
-//                     items: genders,
-//                     onChanged: (v) => setState(() => selectedGender = v),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-
-//         const SizedBox(height: 12),
-
-//         // ── Email ──
-//         _label("Email", required: true),
-//         _textField("Enter Email",
-//             controller: emailController,
-//             keyboardType: TextInputType.emailAddress),
-
-//         const SizedBox(height: 12),
-
-//         // ── State / Hometown ──
-//         _label("State / Hometown", required: true),
-//         _dropdownField<String>(
-//           value: selectedState,
-//           items: states,
-//           onChanged: (v) => setState(() => selectedState = v),
-//         ),
-
-//         const SizedBox(height: 12),
-
-//         // ── Contact Number ──
-//         _label("Contact Number", required: true),
-//         _textField("***********",
-//             controller: phoneController,
-//             keyboardType: TextInputType.phone),
-
-//         const SizedBox(height: 12),
-
-//         // ── Arrival + Exit Date ──
-//         Row(
-//           children: [
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   _label("Arrival Date"),
-//                   _dateBox(arrivalDate, () => _pickDate(true)),
-//                 ],
-//               ),
-//             ),
-//             const SizedBox(width: 10),
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   _label("Exit Date"),
-//                   _dateBox(exitDate, () => _pickDate(false)),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-
-//         const SizedBox(height: 20),
-
-//         // ── Buttons ──
-//         Row(
-//           children: [
-//             Expanded(
-//               child: OutlinedButton(
-//                 style: OutlinedButton.styleFrom(
-//                   padding: const EdgeInsets.symmetric(vertical: 13),
-//                   shape: const RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.zero),
-//                   side: BorderSide(color: AllColors.fifthColor),
-//                 ),
-//                 onPressed: isLoading ? null : () => Navigator.pop(context),
-//                 child: Text("Cancel",
-//                     style: GoogleFonts.inter(
-//                         fontSize: 13, fontWeight: FontWeight.w600,
-//                         color: AllColors.fifthColor)),
-//               ),
-//             ),
-//             const SizedBox(width: 10),
-//             Expanded(
-//               child: ElevatedButton(
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: AllColors.fifthColor,
-//                   foregroundColor: Colors.white,
-//                   padding: const EdgeInsets.symmetric(vertical: 13),
-//                   shape: const RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.zero),
-//                   elevation: 0,
-//                 ),
-//                 onPressed: isLoading ? null : _submitRequest,
-//                 child: isLoading
-//                     ? const SizedBox(
-//                         width: 16, height: 16,
-//                         child: CircularProgressIndicator(
-//                             strokeWidth: 2, color: Colors.white))
-//                     : Text("Send Request",
-//                         style: GoogleFonts.inter(
-//                             fontSize: 13, fontWeight: FontWeight.w600)),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-
-//   // ─────────────────────────────────────────
-//   //  HELPERS
-//   // ─────────────────────────────────────────
-
-//   Widget _label(String text, {bool required = false}) => Padding(
-//         padding: const EdgeInsets.only(bottom: 5),
-//         child: RichText(
-//           text: TextSpan(
-//             children: [
-//               TextSpan(
-//                 text: text,
-//                 style: GoogleFonts.inter(
-//                     fontSize: 14, fontWeight: FontWeight.w500,
-//                     color: Colors.black87),
-//               ),
-//               if (required)
-//                 const TextSpan(
-//                   text: ' *',
-//                   style: TextStyle(
-//                       color: Colors.red, fontSize: 14,
-//                       fontWeight: FontWeight.bold),
-//                 ),
-//             ],
-//           ),
-//         ),
-//       );
-
-//   Widget _textField(String hint,
-//       {TextEditingController? controller,
-//       TextInputType keyboardType = TextInputType.text}) =>
-//       TextField(
-//         controller: controller,
-//         keyboardType: keyboardType,
-//         style: GoogleFonts.inter(fontSize: 13),
-//         decoration: _inputDecoration(hint: hint),
-//       );
-
-//   Widget _dropdownField<T>({
-//     required T? value,
-//     required List<T> items,
-//     required ValueChanged<T?> onChanged,
-//   }) =>
-//       DropdownButtonFormField<T>(
-//         value: value,
-//         isExpanded: true,
-//         decoration: _inputDecoration(),
-//         dropdownColor: Colors.white,
-//         icon: const Icon(Icons.keyboard_arrow_down, size: 18),
-//         style: GoogleFonts.inter(fontSize: 13, color: Colors.black87),
-//         items: items
-//             .map((item) => DropdownMenuItem<T>(
-//                 value: item,
-//                 child: Text(item.toString(),
-//                     overflow: TextOverflow.ellipsis)))
-//             .toList(),
-//         onChanged: onChanged,
-//       );
-
-//   InputDecoration _inputDecoration({String? hint}) => InputDecoration(
-//         hintText: hint,
-//         hintStyle: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade400),
-//         filled: true,
-//         fillColor: Colors.grey.shade100,
-//         border: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(4),
-//             borderSide: BorderSide.none),
-//         enabledBorder: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(4),
-//             borderSide: BorderSide.none),
-//         focusedBorder: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(4),
-//             borderSide: BorderSide(color: AllColors.primaryColor, width: 1)),
-//         contentPadding:
-//             const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-//       );
-
-//   Widget _dateBox(DateTime? date, VoidCallback onTap) => InkWell(
-//         onTap: onTap,
-//         child: Container(
-//           height: 42,
-//           padding: const EdgeInsets.symmetric(horizontal: 10),
-//           decoration: BoxDecoration(
-//               color: Colors.grey.shade100,
-//               borderRadius: BorderRadius.circular(4)),
-//           child: Row(
-//             children: [
-//               Expanded(
-//                 child: Text(
-//                   _formatDate(date),
-//                   style: GoogleFonts.inter(
-//                       fontSize: 12,
-//                       color: date == null
-//                           ? Colors.grey.shade500 : Colors.black87),
-//                   overflow: TextOverflow.ellipsis,
-//                 ),
-//               ),
-//               Icon(Icons.calendar_today_outlined,
-//                   size: 14, color: Colors.grey.shade500),
-//             ],
-//           ),
-//         ),
-//       );
-// }

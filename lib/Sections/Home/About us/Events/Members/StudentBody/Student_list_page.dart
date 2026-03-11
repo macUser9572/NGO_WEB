@@ -459,7 +459,7 @@ class _MobileMemberCard extends StatelessWidget {
                     height: 16,width: 16),
                     const SizedBox(width: 4),
                     Text(member.collage,style:CustomText.memberBodyColor),
-                    const SizedBox(width: 60),
+                    const SizedBox(width: 129),
                     SvgPicture.asset("assets/icons/couseicon.svg",
                     height: 16,width: 16),
                     const SizedBox(width: 4),
@@ -467,31 +467,7 @@ class _MobileMemberCard extends StatelessWidget {
 
                   ],
                 ),
-                // Row(
-                //   children: [
-                //     SvgPicture.asset("assets/icons/collageicon.svg",
-                //         height: 14, width: 14),
-                //     const SizedBox(width: 4),
-                //     Expanded(
-                //       child: Text(
-                //         member.collage,
-                //         overflow: TextOverflow.ellipsis,
-                //         style: CustomText.memberBodyColor,
-                //       ),
-                //     ),
-                //     const SizedBox(width: 12),
-                //     SvgPicture.asset("assets/icons/couseicon.svg",
-                //         height: 14, width: 14),
-                //     const SizedBox(width: 4),
-                //     Expanded(
-                //       child: Text(
-                //         member.course,
-                //         overflow: TextOverflow.ellipsis,
-                //         style: CustomText.memberBodyColor,
-                //       ),
-                //     ),
-                //   ],
-                // ),
+               
                 const SizedBox(height: 4),
 
                 // Row 4 — Place
