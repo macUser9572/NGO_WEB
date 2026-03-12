@@ -4,11 +4,8 @@ import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-// ─────────────────────────────────────────────
-//  STUDENT LIST PAGE
-// ─────────────────────────────────────────────
 class Studentadminpopuppage extends StatelessWidget {
-  const Studentadminpopuppage ({super.key});
+  const Studentadminpopuppage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +22,8 @@ class Studentadminpopuppage extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-//  ADMIN LOGIN POPUP (unchanged)
-// ─────────────────────────────────────────────
+// ============================== DESKTOP LAYOUT ==============================
+
 class _DesktopLayout extends StatefulWidget {
   const _DesktopLayout({super.key});
 
@@ -37,35 +33,56 @@ class _DesktopLayout extends StatefulWidget {
 
 class _DesktopLayoutState extends State<_DesktopLayout> {
   bool isPasswordVisible = false;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController    = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  String error = "";
-  bool isLoading = false;
+  String emailError    = "";
+  String passwordError = "";
+  String loginError    = "";
+  bool isLoading       = false;
 
-  static const String ADMIN_EMAIL = "admin@ngo.com";
+  static const String ADMIN_EMAIL    = "admin@ngo.com";
   static const String ADMIN_PASSWORD = "changma@2026";
 
   void loginAdmin() {
+    // ── Clear all errors first ──
     setState(() {
-      error = "";
-      isLoading = true;
+      emailError    = "";
+      passwordError = "";
+      loginError    = "";
     });
 
+    final email    = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    // ── Field-level validation ──
+    bool hasError = false;
+
+    if (email.isEmpty) {
+      setState(() => emailError = "Please fill the email id");
+      hasError = true;
+    }
+    if (password.isEmpty) {
+      setState(() => passwordError = "Please fill the password");
+      hasError = true;
+    }
+
+    if (hasError) return; // stop here if fields are empty
+
+    // ── Proceed with login ──
+    setState(() => isLoading = true);
+
     Future.delayed(const Duration(milliseconds: 500), () {
-      if (emailController.text.trim() == ADMIN_EMAIL &&
-          passwordController.text.trim() == ADMIN_PASSWORD) {
+      if (email == ADMIN_EMAIL && password == ADMIN_PASSWORD) {
         Navigator.pop(context);
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => const AfterLoginStudentPage(),
-          ),
+          MaterialPageRoute(builder: (_) => const AfterLoginStudentPage()),
         );
       } else {
         setState(() {
-          error = "Invalid admin email or password";
-          isLoading = false;
+          loginError = "Invalid admin email or password";
+          isLoading  = false;
         });
       }
     });
@@ -88,7 +105,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // ================= TITLE =================
+              // ── Title ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -108,15 +125,12 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
               Text(
                 "To view members kindly login as an Admin",
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+                style: GoogleFonts.inter(fontSize: 14, color: Colors.black),
               ),
 
               const SizedBox(height: 32),
 
-              // ================= USER NAME =================
+              // ── User Name ──
               Text(
                 "User Name",
                 style: GoogleFonts.inter(
@@ -129,16 +143,45 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: "Test",
+                  hintText: "Enter email id",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
                   ),
                 ),
+                onChanged: (_) {
+                  if (emailError.isNotEmpty) {
+                    setState(() => emailError = "");
+                  }
+                },
               ),
+
+              // ── Email error message ──
+              if (emailError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  emailError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
 
               const SizedBox(height: 20),
 
-              // ================= PASSWORD =================
+              // ── Password ──
               Text(
                 "Password",
                 style: GoogleFonts.inter(
@@ -152,35 +195,62 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                 controller: passwordController,
                 obscureText: !isPasswordVisible,
                 decoration: InputDecoration(
+                  hintText: "Enter Password ",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                     ),
                     onPressed: () {
-                      setState(() {
-                        isPasswordVisible = !isPasswordVisible;
-                      });
+                      setState(() => isPasswordVisible = !isPasswordVisible);
                     },
                   ),
                 ),
+                onChanged: (_) {
+                  if (passwordError.isNotEmpty) {
+                    setState(() => passwordError = "");
+                  }
+                },
               ),
 
-              if (error.isNotEmpty) ...[
+              // ── Password error message ──
+              if (passwordError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  passwordError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
+
+              // ── Wrong credentials error ──
+              if (loginError.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
-                  error,
-                  style: const TextStyle(color: Colors.red),
+                  loginError,
+                  style: const TextStyle(color: Colors.red, fontSize: 13),
                 ),
               ],
 
               const SizedBox(height: 30),
 
-              // ================= LOGIN BUTTON =================
+              // ── Login Button ──
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -214,7 +284,8 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
     );
   }
 }
-// ====================== MOBILE LAYOUT ======================
+
+// ============================== MOBILE LAYOUT ==============================
 
 class _MobileLayout extends StatefulWidget {
   const _MobileLayout({super.key});
@@ -225,35 +296,53 @@ class _MobileLayout extends StatefulWidget {
 
 class _MobileLayoutState extends State<_MobileLayout> {
   bool isPasswordVisible = false;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController    = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  String error = "";
-  bool isLoading = false;
+  String emailError    = "";
+  String passwordError = "";
+  String loginError    = "";
+  bool isLoading       = false;
 
-  static const String ADMIN_EMAIL = "admin@ngo.com";
+  static const String ADMIN_EMAIL    = "admin@ngo.com";
   static const String ADMIN_PASSWORD = "changma@2026";
 
   void loginAdmin() {
     setState(() {
-      error = "";
-      isLoading = true;
+      emailError    = "";
+      passwordError = "";
+      loginError    = "";
     });
 
+    final email    = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    bool hasError = false;
+
+    if (email.isEmpty) {
+      setState(() => emailError = "Please fill the email id");
+      hasError = true;
+    }
+    if (password.isEmpty) {
+      setState(() => passwordError = "Please fill the password");
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    setState(() => isLoading = true);
+
     Future.delayed(const Duration(milliseconds: 500), () {
-      if (emailController.text.trim() == ADMIN_EMAIL &&
-          passwordController.text.trim() == ADMIN_PASSWORD) {
+      if (email == ADMIN_EMAIL && password == ADMIN_PASSWORD) {
         Navigator.pop(context);
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => const AfterLoginStudentPage(),
-          ),
+          MaterialPageRoute(builder: (_) => const AfterLoginStudentPage()),
         );
       } else {
         setState(() {
-          error = "Invalid admin email or password";
-          isLoading = false;
+          loginError = "Invalid admin email or password";
+          isLoading  = false;
         });
       }
     });
@@ -264,8 +353,8 @@ class _MobileLayoutState extends State<_MobileLayout> {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        width: double.infinity,                                      // full width on mobile
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24), // tighter padding
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         decoration: BoxDecoration(
           color: AllColors.secondaryColor,
           borderRadius: BorderRadius.circular(8),
@@ -276,14 +365,14 @@ class _MobileLayoutState extends State<_MobileLayout> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // ================= TITLE =================
+              // ── Title ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Student Admin Login",
                     style: GoogleFonts.inter(
-                      fontSize: 22,                                 
+                      fontSize: 22,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -296,15 +385,12 @@ class _MobileLayoutState extends State<_MobileLayout> {
 
               Text(
                 "To view members kindly login as an Admin",
-                style: GoogleFonts.inter(
-                  fontSize: 12,                                      // slightly smaller
-                  color: Colors.black,
-                ),
+                style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
               ),
 
-              const SizedBox(height: 16),                           // reduced spacing
+              const SizedBox(height: 16),
 
-              // ================= USER NAME =================
+              // ── User Name ──
               Text(
                 "User Name",
                 style: GoogleFonts.inter(
@@ -317,16 +403,44 @@ class _MobileLayoutState extends State<_MobileLayout> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: "Test",
+                  hintText: "Enter email id",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
                   ),
                 ),
+                onChanged: (_) {
+                  if (emailError.isNotEmpty) {
+                    setState(() => emailError = "");
+                  }
+                },
               ),
+
+              if (emailError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  emailError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
 
               const SizedBox(height: 20),
 
-              // ================= PASSWORD =================
+              // ── Password ──
               Text(
                 "Password",
                 style: GoogleFonts.inter(
@@ -340,35 +454,60 @@ class _MobileLayoutState extends State<_MobileLayout> {
                 controller: passwordController,
                 obscureText: !isPasswordVisible,
                 decoration: InputDecoration(
+                  hintText: "Enter Password ",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                     ),
                     onPressed: () {
-                      setState(() {
-                        isPasswordVisible = !isPasswordVisible;
-                      });
+                      setState(() => isPasswordVisible = !isPasswordVisible);
                     },
                   ),
                 ),
+                onChanged: (_) {
+                  if (passwordError.isNotEmpty) {
+                    setState(() => passwordError = "");
+                  }
+                },
               ),
 
-              if (error.isNotEmpty) ...[
-                const SizedBox(height: 12),
+              if (passwordError.isNotEmpty) ...[
+                const SizedBox(height: 6),
                 Text(
-                  error,
-                  style: const TextStyle(color: Colors.red),
+                  passwordError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
                 ),
               ],
 
-              const SizedBox(height: 24),                           // reduced spacing
+              if (loginError.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  loginError,
+                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                ),
+              ],
 
-              // ================= LOGIN BUTTON =================
+              const SizedBox(height: 24),
+
+              // ── Login Button ──
               SizedBox(
                 height: 45,
                 width: double.infinity,

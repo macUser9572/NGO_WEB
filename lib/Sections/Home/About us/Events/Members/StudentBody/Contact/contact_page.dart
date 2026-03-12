@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,13 +42,9 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
   bool isLoading = false;
 
-  // ============================================================
-  //  🔑  PASTE YOUR EMAILJS CREDENTIALS HERE
-  // ============================================================
-static const String _serviceId  = 'service_id_1';
-static const String _templateId = 'template_pfxf54s';
-static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
-  // ============================================================
+  static const String _serviceId  = 'service_id_1';
+  static const String _templateId = 'template_pfxf54s';
+  static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
 
   @override
   void dispose() {
@@ -60,7 +55,6 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
     super.dispose();
   }
 
-  // ================= SEND EMAIL via EmailJS =================
   Future<void> _sendEmail() async {
     final response = await http.post(
       Uri.parse('https://api.emailjs.com/api/v1.0/email/send'),
@@ -86,7 +80,6 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
     }
   }
 
-  // ================= SAVE TO FIRESTORE =================
   Future<void> _saveToFirestore() async {
     await FirebaseFirestore.instance.collection('contact_messages').add({
       'name':      nameController.text.trim(),
@@ -97,7 +90,6 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
     });
   }
 
-  // ================= SUBMIT =================
   Future<void> _submitForm() async {
     if (nameController.text.isEmpty ||
         phoneController.text.isEmpty ||
@@ -110,7 +102,6 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
     setState(() => isLoading = true);
 
     try {
-      // Send email + save to Firestore at the same time
       await Future.wait([
         _sendEmail(),
         _saveToFirestore(),
@@ -131,7 +122,6 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
     }
   }
 
-  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     final width  = MediaQuery.of(context).size.width;
@@ -178,7 +168,7 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
                       ),
                       const SizedBox(height: 25),
 
-                      _label("Your Name"),
+                      _label("Your Name", required: true),
                       _input(controller: nameController),
 
                       const SizedBox(height: 18),
@@ -188,7 +178,7 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _label("Contact Number"),
+                                _label("Contact Number", required: true),
                                 _input(controller: phoneController),
                               ],
                             ),
@@ -198,7 +188,7 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _label("Mail"),
+                                _label("Mail", required: true),
                                 _input(controller: emailController),
                               ],
                             ),
@@ -207,7 +197,7 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
                       ),
 
                       const SizedBox(height: 18),
-                      _label("Your Message"),
+                      _label("Your Message", required: true),
                       Container(
                         height: 140,
                         decoration: BoxDecoration(
@@ -307,12 +297,31 @@ static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
     );
   }
 
-  Widget _label(String text) {
+  Widget _label(String text, {bool required = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: text,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+            if (required)
+              const TextSpan(
+                text: ' *',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -503,19 +512,19 @@ class _MobileLayoutState extends State<_MobileLayout> {
                 ),
                 const SizedBox(height: 20),
 
-                _label("Your Name"),
+                _label("Your Name", required: true),
                 _input(controller: nameController),
 
                 const SizedBox(height: 16),
-                _label("Contact Number"),
+                _label("Contact Number", required: true),
                 _input(controller: phoneController),
 
                 const SizedBox(height: 16),
-                _label("Mail"),
+                _label("Mail", required: true),
                 _input(controller: emailController),
 
                 const SizedBox(height: 16),
-                _label("Your Message"),
+                _label("Your Message", required: true),
                 Container(
                   height: 120,
                   decoration: BoxDecoration(
@@ -575,12 +584,31 @@ class _MobileLayoutState extends State<_MobileLayout> {
     );
   }
 
-  Widget _label(String text) {
+  Widget _label(String text, {bool required = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: text,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+            if (required)
+              const TextSpan(
+                text: ' *',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

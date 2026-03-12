@@ -65,7 +65,8 @@ dev_dependencies:
   chewie: ^1.13.0
   carousel_slider: ^5.1.2
   mailer: ^6.1.0
-  http: ^1.2.1 
+  http: ^1.2.1
+
   
 
 

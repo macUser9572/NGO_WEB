@@ -32,6 +32,45 @@ class AddMemberPageTab extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
+//  FULL-PAGE BOTTOM SHEET WRAPPER
+//  Slides up from bottom, covers full screen,
+//  rounded top corners
+// ─────────────────────────────────────────────
+class _FullPageSheet extends StatelessWidget {
+  final Widget child;
+  const _FullPageSheet({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        child: child,
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+//  HELPER — show Add Member as bottom sheet
+// ─────────────────────────────────────────────
+void _showAddMemberSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    isDismissible: false,
+    enableDrag: false,
+    backgroundColor: Colors.transparent,
+    builder: (_) => const _FullPageSheet(child: AddMemberPage()),
+  );
+}
+
+// ─────────────────────────────────────────────
 //  DESKTOP LAYOUT
 // ─────────────────────────────────────────────
 class _DesktopLayout extends StatelessWidget {
@@ -111,13 +150,7 @@ class _DesktopLayout extends StatelessWidget {
                     const SizedBox(width: 16),
                     CustomButton(
                       label: "Add Member",
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) => const AddMemberPage(),
-                        );
-                      },
+                      onPressed: () => _showAddMemberSheet(context),
                     ),
                   ],
                 ),
@@ -170,18 +203,13 @@ class _DesktopLayout extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "assets/icons/PhoneCall.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                SvgPicture.asset("assets/icons/PhoneCall.svg",
+                    height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.phone,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
+                  child: Text(member.phone,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor),
                 ),
               ],
             ),
@@ -192,18 +220,14 @@ class _DesktopLayout extends StatelessWidget {
             flex: 4,
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "assets/icons/mail.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                SvgPicture.asset("assets/icons/mail.svg",
+                    height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    member.email.isNotEmpty ? member.email : 'N/A',
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
+                      member.email.isNotEmpty ? member.email : 'N/A',
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor),
                 ),
               ],
             ),
@@ -214,18 +238,13 @@ class _DesktopLayout extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "assets/icons/place.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                SvgPicture.asset("assets/icons/place.svg",
+                    height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.place,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
+                  child: Text(member.place,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor),
                 ),
               ],
             ),
@@ -236,18 +255,13 @@ class _DesktopLayout extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "assets/icons/SignIn.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                SvgPicture.asset("assets/icons/SignIn.svg",
+                    height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.checkIn,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
+                  child: Text(member.checkIn,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor),
                 ),
               ],
             ),
@@ -258,18 +272,13 @@ class _DesktopLayout extends StatelessWidget {
             flex: 3,
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "assets/icons/SignOut.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                SvgPicture.asset("assets/icons/SignOut.svg",
+                    height: 20, width: 20),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
-                    member.checkOut,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
+                  child: Text(member.checkOut,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor),
                 ),
               ],
             ),
@@ -280,19 +289,13 @@ class _DesktopLayout extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/edit.svg",
-                  height: 20,
-                  width: 20,
-                ),
-                onPressed: () => _showEditMemberDialog(context, member),
+                icon: SvgPicture.asset("assets/icons/edit.svg",
+                    height: 20, width: 20),
+                onPressed: () => _showEditMemberSheet(context, member),
               ),
               IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/Trash.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                icon: SvgPicture.asset("assets/icons/Trash.svg",
+                    height: 20, width: 20),
                 onPressed: () => _showDeleteDialog(context, member),
               ),
             ],
@@ -364,13 +367,7 @@ class _MobileLayout extends StatelessWidget {
             padding: const EdgeInsets.only(right: 12),
             child: CustomButton(
               label: "Add Member",
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (_) => const AddMemberPage(),
-                );
-              },
+              onPressed: () => _showAddMemberSheet(context),
             ),
           ),
         ],
@@ -421,17 +418,13 @@ class _MobileLayout extends StatelessWidget {
                   Text(
                     member.name,
                     style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
+                        fontWeight: FontWeight.w600, fontSize: 14),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   _infoRow("assets/icons/PhoneCall.svg", member.phone),
-                  _infoRow(
-                    "assets/icons/mail.svg",
-                    member.email.isNotEmpty ? member.email : 'N/A',
-                  ),
+                  _infoRow("assets/icons/mail.svg",
+                      member.email.isNotEmpty ? member.email : 'N/A'),
                   _infoRow("assets/icons/place.svg", member.place),
                   _infoRow("assets/icons/SignIn.svg", member.checkIn),
                   _infoRow("assets/icons/SignOut.svg", member.checkOut),
@@ -445,20 +438,14 @@ class _MobileLayout extends StatelessWidget {
               children: [
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: SvgPicture.asset(
-                    "assets/icons/edit.svg",
-                    height: 16,
-                    width: 16,
-                  ),
-                  onPressed: () => _showEditMemberDialog(context, member),
+                  icon: SvgPicture.asset("assets/icons/edit.svg",
+                      height: 16, width: 16),
+                  onPressed: () => _showEditMemberSheet(context, member),
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: SvgPicture.asset(
-                    "assets/icons/Trash.svg",
-                    height: 16,
-                    width: 16,
-                  ),
+                  icon: SvgPicture.asset("assets/icons/Trash.svg",
+                      height: 16, width: 16),
                   onPressed: () => _showDeleteDialog(context, member),
                 ),
               ],
@@ -477,11 +464,9 @@ class _MobileLayout extends StatelessWidget {
           SvgPicture.asset(iconPath, height: 16, width: 16),
           const SizedBox(width: 6),
           Expanded(
-            child: Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              style: CustomText.memberBodyColor,
-            ),
+            child: Text(text,
+                overflow: TextOverflow.ellipsis,
+                style: CustomText.memberBodyColor),
           ),
         ],
       ),
@@ -547,7 +532,8 @@ void _showDeleteDialog(BuildContext context, Member member) {
         child: SizedBox(
           width: 420,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -561,18 +547,14 @@ void _showDeleteDialog(BuildContext context, Member member) {
                 Text(
                   "Delete Member",
                   style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                  ),
+                      fontSize: 28, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "Are you sure you want to delete this member?",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                      fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 28),
                 Row(
@@ -581,25 +563,23 @@ void _showDeleteDialog(BuildContext context, Member member) {
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
+                            borderRadius: BorderRadius.zero),
                         side: const BorderSide(
-                          color: Color.fromARGB(255, 240, 26, 11),
-                        ),
+                            color: Color.fromARGB(255, 240, 26, 11)),
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         "Cancel",
                         style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Color.fromARGB(255, 240, 26, 11),
-                        ),
+                            fontSize: 12,
+                            color: Color.fromARGB(255, 240, 26, 11)),
                       ),
                     ),
                     const SizedBox(width: 24),
                     CustomButton(
                       label: "Delete",
-                      backgroundColor: const Color.fromARGB(255, 240, 26, 11),
+                      backgroundColor:
+                          const Color.fromARGB(255, 240, 26, 11),
                       textColor: Colors.white,
                       onPressed: () async {
                         await FirebaseFirestore.instance
@@ -620,27 +600,45 @@ void _showDeleteDialog(BuildContext context, Member member) {
   );
 }
 
-// ==================== EDIT DIALOG ====================
-void _showEditMemberDialog(BuildContext context, Member member) {
-  final nameController = TextEditingController(text: member.name);
-  final phoneController = TextEditingController(text: member.phone);
-  final emailController = TextEditingController(text: member.email);
-  final descriptionController = TextEditingController();
+// ==================== EDIT — BOTTOM SHEET ====================
+void _showEditMemberSheet(BuildContext context, Member member) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    isDismissible: false,
+    enableDrag: false,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _FullPageSheet(child: _EditMemberPage(member: member)),
+  );
+}
+
+// ─────────────────────────────────────────────
+//  EDIT MEMBER — FULL PAGE STATEFUL WIDGET
+// ─────────────────────────────────────────────
+class _EditMemberPage extends StatefulWidget {
+  final Member member;
+  const _EditMemberPage({required this.member});
+
+  @override
+  State<_EditMemberPage> createState() => _EditMemberPageState();
+}
+
+class _EditMemberPageState extends State<_EditMemberPage> {
+  late final TextEditingController nameController;
+  late final TextEditingController phoneController;
+  late final TextEditingController emailController;
+  final TextEditingController descriptionController = TextEditingController();
 
   String? selectedGender;
-  String? selectedState = member.place.isNotEmpty ? member.place : null;
+  String? selectedState;
 
-  DateTime? arrivalDate = member.checkIn.isNotEmpty
-      ? DateTime.tryParse(member.checkIn.split('-').reversed.join('-'))
-      : null;
-  DateTime? exitDate = member.checkOut.isNotEmpty
-      ? DateTime.tryParse(member.checkOut.split('-').reversed.join('-'))
-      : null;
+  DateTime? arrivalDate;
+  DateTime? exitDate;
 
   Uint8List? editImageBytes;
   String? editImageName;
   bool isEditHovered = false;
-  String currentPhotoUrl = member.photoUrl;
+  late String currentPhotoUrl;
   bool isUpdating = false;
 
   final List<String> states = [
@@ -652,442 +650,461 @@ void _showEditMemberDialog(BuildContext context, Member member) {
     'West Bengal',
   ];
 
-  showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: AllColors.secondaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: StatefulBuilder(
-          builder: (context, setState) {
-            Future<void> pickEditImage() async {
-              final picker = ImagePicker();
-              final XFile? picked = await picker.pickImage(
-                source: ImageSource.gallery,
-                maxWidth: 1024,
-                maxHeight: 1024,
-                imageQuality: 85,
-              );
-              if (picked != null) {
-                final bytes = await picked.readAsBytes();
-                setState(() {
-                  editImageBytes = bytes;
-                  editImageName = picked.name;
-                });
-              }
-            }
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.member.name);
+    phoneController = TextEditingController(text: widget.member.phone);
+    emailController = TextEditingController(text: widget.member.email);
+    selectedState =
+        widget.member.place.isNotEmpty ? widget.member.place : null;
+    currentPhotoUrl = widget.member.photoUrl;
+    arrivalDate = widget.member.checkIn.isNotEmpty
+        ? DateTime.tryParse(
+            widget.member.checkIn.split('-').reversed.join('-'))
+        : null;
+    exitDate = widget.member.checkOut.isNotEmpty
+        ? DateTime.tryParse(
+            widget.member.checkOut.split('-').reversed.join('-'))
+        : null;
+  }
 
-            ImageProvider? avatarImage() {
-              if (editImageBytes != null) return MemoryImage(editImageBytes!);
-              if (currentPhotoUrl.isNotEmpty)
-                return NetworkImage(currentPhotoUrl);
-              return null;
-            }
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
-            return SizedBox(
-              width: 520,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Edit Member",
-                        style: GoogleFonts.inter(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        "Fill in the details to edit a member.",
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: AllColors.thirdColor,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
+  Future<void> _pickEditImage() async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+    if (picked != null) {
+      final bytes = await picked.readAsBytes();
+      setState(() {
+        editImageBytes = bytes;
+        editImageName = picked.name;
+      });
+    }
+  }
 
-                      // ── Profile Photo ──
-                      _label("Profile Photo"),
-                      Center(
-                        child: MouseRegion(
-                          onEnter: (_) => setState(() => isEditHovered = true),
-                          onExit: (_) => setState(() => isEditHovered = false),
-                          child: GestureDetector(
-                            onTap: isUpdating ? null : pickEditImage,
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AllColors.fourthColor,
-                                    border: Border.all(
-                                      color: isEditHovered
-                                          ? AllColors.primaryColor
-                                          : Colors.grey.shade300,
-                                      width: 2,
-                                    ),
-                                    image: avatarImage() != null
-                                        ? DecorationImage(
-                                            image: avatarImage()!,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
-                                  ),
-                                  child: ClipOval(
-                                    child: avatarImage() == null
-                                        ? Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.cloud_upload_outlined,
-                                                size: 28,
-                                                color: Colors.grey[500],
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                "Upload\nPhoto",
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 10,
-                                                  color: AllColors.fourthColor,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 2,
-                                  left: 2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AllColors.primaryColor,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.all(4),
-                                    child: const Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                      size: 12,
-                                    ),
-                                  ),
-                                ),
-                                if (editImageBytes != null)
-                                  Positioned(
-                                    bottom: 2,
-                                    right: 2,
-                                    child: GestureDetector(
-                                      onTap: () => setState(() {
-                                        editImageBytes = null;
-                                        editImageName = null;
-                                      }),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        padding: const EdgeInsets.all(4),
-                                        child: const Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                          size: 13,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+  ImageProvider? get _avatarImage {
+    if (editImageBytes != null) return MemoryImage(editImageBytes!);
+    if (currentPhotoUrl.isNotEmpty) return NetworkImage(currentPhotoUrl);
+    return null;
+  }
 
-                      const SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          editImageBytes != null
-                              ? "${editImageName ?? 'New photo selected'} ✓"
-                              : currentPhotoUrl.isNotEmpty
-                                  ? "Current photo loaded ✓"
-                                  : "Tap to upload a photo",
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color: editImageBytes != null ||
-                                    currentPhotoUrl.isNotEmpty
-                                ? Colors.green
-                                : Colors.grey[500],
-                          ),
-                        ),
-                      ),
+  Future<void> _updateMember() async {
+    setState(() => isUpdating = true);
+    try {
+      String? newPhotoUrl;
+      if (editImageBytes != null) {
+        final fileName =
+            'members/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+        final ref = FirebaseStorage.instance.ref().child(fileName);
+        final snapshot = await ref.putData(
+          editImageBytes!,
+          SettableMetadata(contentType: 'image/jpeg'),
+        );
+        newPhotoUrl = await snapshot.ref.getDownloadURL();
+        setState(() {
+          currentPhotoUrl = newPhotoUrl!;
+          editImageBytes = null;
+        });
+      }
 
-                      const SizedBox(height: 24),
+      await FirebaseFirestore.instance
+          .collection('Member_collection')
+          .doc(widget.member.id)
+          .update({
+        "name": nameController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "email": emailController.text.trim(),
+        "state": selectedState,
+        "gender": selectedGender,
+        "arrivalDate":
+            arrivalDate != null ? Timestamp.fromDate(arrivalDate!) : null,
+        "exitDate": exitDate != null ? Timestamp.fromDate(exitDate!) : null,
+        "photoUrl": newPhotoUrl ?? currentPhotoUrl,
+        "updatedAt": FieldValue.serverTimestamp(),
+      });
 
-                      _label("Member Name"),
-                      _textField("Edit member name",
-                          controller: nameController),
-                      const SizedBox(height: 20),
-
-                      _label("Phone Number"),
-                      _textField(
-                        "Edit phone number",
-                        keyboardType: TextInputType.phone,
-                        controller: phoneController,
-                      ),
-                      const SizedBox(height: 20),
-
-                      _label("Email Address"),
-                      _textField(
-                        "Edit email address",
-                        keyboardType: TextInputType.emailAddress,
-                        controller: emailController,
-                      ),
-                      const SizedBox(height: 20),
-
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Gender"),
-                                DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  dropdownColor: Colors.grey[100],
-                                  decoration: _inputDecoration().copyWith(
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                  ),
-                                  hint: const Text("Select Gender"),
-                                  items: const [
-                                    DropdownMenuItem(
-                                        value: "Male", child: Text("Male")),
-                                    DropdownMenuItem(
-                                        value: "Female", child: Text("Female")),
-                                    DropdownMenuItem(
-                                        value: "Children",
-                                        child: Text("Children")),
-                                    DropdownMenuItem(
-                                        value: "Others", child: Text("Others")),
-                                  ],
-                                  onChanged: isUpdating
-                                      ? null
-                                      : (value) =>
-                                          setState(() => selectedGender = value),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("State / Hometown"),
-                                DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  dropdownColor: Colors.grey[100],
-                                  decoration: _inputDecoration().copyWith(
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                  ),
-                                  hint: const Text("Select State"),
-                                  value: selectedState,
-                                  items: states
-                                      .map((s) => DropdownMenuItem(
-                                          value: s, child: Text(s)))
-                                      .toList(),
-                                  onChanged: isUpdating
-                                      ? null
-                                      : (value) =>
-                                          setState(() => selectedState = value),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Arrival Date"),
-                                _dateBox(arrivalDate, () {
-                                  if (isUpdating) return;
-                                  _openCalendar(
-                                    context,
-                                    arrivalDate,
-                                    (d) => setState(() => arrivalDate = d),
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Exit Date"),
-                                _dateBox(exitDate, () {
-                                  if (isUpdating) return;
-                                  _openCalendar(
-                                    context,
-                                    exitDate,
-                                    (d) => setState(() => exitDate = d),
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      _label("Description"),
-                      TextField(
-                        controller: descriptionController,
-                        maxLines: 4,
-                        decoration:
-                            _inputDecoration(hint: "Enter a brief description"),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero,
-                              ),
-                              side: BorderSide(
-                                color: isUpdating
-                                    ? Colors.grey
-                                    : AllColors.primaryColor,
-                              ),
-                            ),
-                            onPressed: isUpdating
-                                ? null
-                                : () => Navigator.pop(context),
-                            child: Text(
-                              "Cancel",
-                              style: GoogleFonts.inter(
-                                color: AllColors.primaryColor,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          CustomButton(
-                            label: isUpdating ? "Saving..." : "Update Member",
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            height: 48,
-                            isLoading: isUpdating,
-                            onPressed: isUpdating
-                                ? null
-                                : () async {
-                                    setState(() => isUpdating = true);
-                                    try {
-                                      String? newPhotoUrl;
-                                      if (editImageBytes != null) {
-                                        final fileName =
-                                            'members/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
-                                        final ref = FirebaseStorage.instance
-                                            .ref()
-                                            .child(fileName);
-                                        final snapshot = await ref.putData(
-                                          editImageBytes!,
-                                          SettableMetadata(
-                                            contentType: 'image/jpeg',
-                                          ),
-                                        );
-                                        newPhotoUrl =
-                                            await snapshot.ref.getDownloadURL();
-                                        setState(() {
-                                          currentPhotoUrl = newPhotoUrl!;
-                                          editImageBytes = null;
-                                        });
-                                      }
-
-                                      await FirebaseFirestore.instance
-                                          .collection('Member_collection')
-                                          .doc(member.id)
-                                          .update({
-                                        "name": nameController.text.trim(),
-                                        "phone": phoneController.text.trim(),
-                                        "email": emailController.text.trim(),
-                                        "state": selectedState,
-                                        "gender": selectedGender,
-                                        "arrivalDate": arrivalDate != null
-                                            ? Timestamp.fromDate(arrivalDate!)
-                                            : null,
-                                        "exitDate": exitDate != null
-                                            ? Timestamp.fromDate(exitDate!)
-                                            : null,
-                                        "photoUrl":
-                                            newPhotoUrl ?? currentPhotoUrl,
-                                        "updatedAt":
-                                            FieldValue.serverTimestamp(),
-                                      });
-
-                                      if (!context.mounted) return;
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              "Member updated successfully ✅"),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content:
-                                              Text("Failed to update ❌ $e"),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    } finally {
-                                      if (context.mounted)
-                                        setState(() => isUpdating = false);
-                                    }
-                                  },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Member updated successfully ✅"),
+          backgroundColor: Colors.green,
         ),
       );
-    },
-  );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to update ❌ $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => isUpdating = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AllColors.secondaryColor,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header with close button ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 20, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Edit Member",
+                          style: GoogleFonts.inter(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Fill in the details to edit a member.",
+                          style: GoogleFonts.inter(
+                              fontSize: 13, color: AllColors.thirdColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ── Close Button ──
+                  InkWell(
+                    onTap: isUpdating ? null : () => Navigator.pop(context),
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                      height: 38,
+                      width: 38,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close,
+                          size: 20, color: Colors.black87),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+
+            // ── Scrollable form ──
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Profile Photo ──
+                    _label("Profile Photo"),
+                    Center(
+                      child: MouseRegion(
+                        onEnter: (_) =>
+                            setState(() => isEditHovered = true),
+                        onExit: (_) =>
+                            setState(() => isEditHovered = false),
+                        child: GestureDetector(
+                          onTap: isUpdating ? null : _pickEditImage,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AllColors.fourthColor,
+                                  border: Border.all(
+                                    color: isEditHovered
+                                        ? AllColors.primaryColor
+                                        : Colors.grey.shade300,
+                                    width: 2,
+                                  ),
+                                  image: _avatarImage != null
+                                      ? DecorationImage(
+                                          image: _avatarImage!,
+                                          fit: BoxFit.cover)
+                                      : null,
+                                ),
+                                child: ClipOval(
+                                  child: _avatarImage == null
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.cloud_upload_outlined,
+                                              size: 28,
+                                              color: Colors.grey[500],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "Upload\nPhoto",
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.inter(
+                                                fontSize: 10,
+                                                color: AllColors.fourthColor,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 2,
+                                left: 2,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: AllColors.primaryColor,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                  ),
+                                  padding: const EdgeInsets.all(4),
+                                  child: const Icon(Icons.camera_alt,
+                                      color: Colors.white, size: 12),
+                                ),
+                              ),
+                              if (editImageBytes != null)
+                                Positioned(
+                                  bottom: 2,
+                                  right: 2,
+                                  child: GestureDetector(
+                                    onTap: () => setState(() {
+                                      editImageBytes = null;
+                                      editImageName = null;
+                                    }),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle),
+                                      padding: const EdgeInsets.all(4),
+                                      child: const Icon(Icons.close,
+                                          color: Colors.white, size: 13),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+                    Center(
+                      child: Text(
+                        editImageBytes != null
+                            ? "${editImageName ?? 'New photo selected'} ✓"
+                            : currentPhotoUrl.isNotEmpty
+                                ? "Current photo loaded ✓"
+                                : "Tap to upload a photo",
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: editImageBytes != null ||
+                                  currentPhotoUrl.isNotEmpty
+                              ? Colors.green
+                              : Colors.grey[500],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    _label("Member Name"),
+                    _textField("Edit member name",
+                        controller: nameController),
+                    const SizedBox(height: 20),
+
+                    _label("Phone Number"),
+                    _textField("Edit phone number",
+                        keyboardType: TextInputType.phone,
+                        controller: phoneController),
+                    const SizedBox(height: 20),
+
+                    _label("Email Address"),
+                    _textField("Edit email address",
+                        keyboardType: TextInputType.emailAddress,
+                        controller: emailController),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _label("Gender"),
+                              DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                dropdownColor: Colors.grey[100],
+                                decoration: _inputDecoration().copyWith(
+                                    filled: true,
+                                    fillColor: Colors.grey[100]),
+                                hint: const Text("Select Gender"),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: "Male", child: Text("Male")),
+                                  DropdownMenuItem(
+                                      value: "Female",
+                                      child: Text("Female")),
+                                  DropdownMenuItem(
+                                      value: "Children",
+                                      child: Text("Children")),
+                                  DropdownMenuItem(
+                                      value: "Others",
+                                      child: Text("Others")),
+                                ],
+                                onChanged: isUpdating
+                                    ? null
+                                    : (value) => setState(
+                                        () => selectedGender = value),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _label("State / Hometown"),
+                              DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                dropdownColor: Colors.grey[100],
+                                decoration: _inputDecoration().copyWith(
+                                    filled: true,
+                                    fillColor: Colors.grey[100]),
+                                hint: const Text("Select State"),
+                                value: selectedState,
+                                items: states
+                                    .map((s) => DropdownMenuItem(
+                                        value: s, child: Text(s)))
+                                    .toList(),
+                                onChanged: isUpdating
+                                    ? null
+                                    : (value) => setState(
+                                        () => selectedState = value),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _label("Arrival Date"),
+                              _dateBox(arrivalDate, () {
+                                if (isUpdating) return;
+                                _openCalendar(context, arrivalDate,
+                                    (d) => setState(() => arrivalDate = d));
+                              }),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _label("Exit Date"),
+                              _dateBox(exitDate, () {
+                                if (isUpdating) return;
+                                _openCalendar(context, exitDate,
+                                    (d) => setState(() => exitDate = d));
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    _label("Description"),
+                    TextField(
+                      controller: descriptionController,
+                      maxLines: 4,
+                      decoration: _inputDecoration(
+                          hint: "Enter a brief description"),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero),
+                            side: BorderSide(
+                              color: isUpdating
+                                  ? Colors.grey
+                                  : AllColors.primaryColor,
+                            ),
+                          ),
+                          onPressed: isUpdating
+                              ? null
+                              : () => Navigator.pop(context),
+                          child: Text("Cancel",
+                              style: GoogleFonts.inter(
+                                  color: AllColors.primaryColor)),
+                        ),
+                        const SizedBox(width: 16),
+                        CustomButton(
+                          label:
+                              isUpdating ? "Saving..." : "Update Member",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          height: 48,
+                          isLoading: isUpdating,
+                          onPressed: isUpdating ? null : _updateMember,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // ==================== SHARED HELPERS ====================
@@ -1195,7 +1212,7 @@ void _openCalendar(
 }
 
 // ─────────────────────────────────────────────
-//  ADD MEMBER PAGE (Dialog Form)
+//  ADD MEMBER PAGE — FULL PAGE FORM
 // ─────────────────────────────────────────────
 class AddMemberPage extends StatefulWidget {
   const AddMemberPage({super.key});
@@ -1218,7 +1235,6 @@ class _AddMemberPageState extends State<AddMemberPage> {
   DateTime? arrivalDate;
   DateTime? exitDate;
 
-  // ── Photo ──
   Uint8List? _selectedImageBytes;
   String? _selectedImageName;
   bool _isImageHovered = false;
@@ -1232,7 +1248,15 @@ class _AddMemberPageState extends State<AddMemberPage> {
     'West Bengal',
   ];
 
-  // ── Pick image ──
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final XFile? picked = await picker.pickImage(
@@ -1250,7 +1274,6 @@ class _AddMemberPageState extends State<AddMemberPage> {
     }
   }
 
-  // ── Upload to Firebase Storage ──
   Future<String?> _uploadImageToStorage() async {
     if (_selectedImageBytes == null) return null;
     try {
@@ -1268,7 +1291,6 @@ class _AddMemberPageState extends State<AddMemberPage> {
     }
   }
 
-  // ── Save to Firestore ──
   Future<void> addMember() async {
     setState(() => _isloading = true);
 
@@ -1327,337 +1349,400 @@ class _AddMemberPageState extends State<AddMemberPage> {
         ),
       );
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
       );
     } finally {
-      setState(() => _isloading = false);
+      if (mounted) setState(() => _isloading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return Scaffold(
       backgroundColor: AllColors.secondaryColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      child: Container(
-        width: 700,
-        padding: const EdgeInsets.all(32),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Header ──
-              Text(
-                "Add New Member",
-                style: GoogleFonts.inter(
-                    fontSize: 26, fontWeight: FontWeight.w700),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header with close button ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 24, 24, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Add New Member",
+                          style: GoogleFonts.inter(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Fill in the details to add a new member.",
+                          style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: AllColors.thirdColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ── Close Button ──
+                  InkWell(
+                    onTap:
+                        _isloading ? null : () => Navigator.pop(context),
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                      height: 38,
+                      width: 38,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close,
+                          size: 20, color: Colors.black87),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
+            ),
 
-              // ── Profile Photo ──
-              _addFormLabel("Upload Photo"),
-              Center(
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+
+            // ── Scrollable form ──
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MouseRegion(
-                      onEnter: (_) =>
-                          setState(() => _isImageHovered = true),
-                      onExit: (_) =>
-                          setState(() => _isImageHovered = false),
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 110,
-                              height: 110,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade200,
-                                border: Border.all(
-                                  color: _isImageHovered
-                                      ? AllColors.primaryColor
-                                      : Colors.grey.shade400,
-                                  width: 2,
-                                ),
-                                image: _selectedImageBytes != null
-                                    ? DecorationImage(
-                                        image: MemoryImage(
-                                            _selectedImageBytes!),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: ClipOval(
-                                child: _selectedImageBytes == null
-                                    ? Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.cloud_upload_outlined,
-                                            size: 30,
-                                            color: Colors.grey[500],
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            "Upload\nPhoto",
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 11,
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : _isImageHovered
-                                        ? Container(
-                                            color: Colors.black
-                                                .withOpacity(0.45),
-                                            alignment: Alignment.center,
-                                            child: Column(
+                    // ── Profile Photo ──
+                    _addFormLabel("Upload Photo"),
+                    Center(
+                      child: Column(
+                        children: [
+                          MouseRegion(
+                            onEnter: (_) =>
+                                setState(() => _isImageHovered = true),
+                            onExit: (_) =>
+                                setState(() => _isImageHovered = false),
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  AnimatedContainer(
+                                    duration:
+                                        const Duration(milliseconds: 200),
+                                    width: 110,
+                                    height: 110,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey.shade200,
+                                      border: Border.all(
+                                        color: _isImageHovered
+                                            ? AllColors.primaryColor
+                                            : Colors.grey.shade400,
+                                        width: 2,
+                                      ),
+                                      image: _selectedImageBytes != null
+                                          ? DecorationImage(
+                                              image: MemoryImage(
+                                                  _selectedImageBytes!),
+                                              fit: BoxFit.cover)
+                                          : null,
+                                    ),
+                                    child: ClipOval(
+                                      child: _selectedImageBytes == null
+                                          ? Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                const Icon(Icons.edit,
-                                                    color: Colors.white,
-                                                    size: 26),
+                                                Icon(
+                                                  Icons.cloud_upload_outlined,
+                                                  size: 30,
+                                                  color: Colors.grey[500],
+                                                ),
                                                 const SizedBox(height: 4),
                                                 Text(
-                                                  "Change",
+                                                  "Upload\nPhoto",
+                                                  textAlign:
+                                                      TextAlign.center,
                                                   style: GoogleFonts.inter(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w600,
+                                                    fontSize: 11,
+                                                    color: Colors.grey[600],
                                                   ),
                                                 ),
                                               ],
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 2,
-                              left: 2,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: AllColors.primaryColor,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Colors.white, width: 2),
-                                ),
-                                padding: const EdgeInsets.all(5),
-                                child: const Icon(Icons.camera_alt,
-                                    color: Colors.white, size: 13),
-                              ),
-                            ),
-                            if (_selectedImageBytes != null)
-                              Positioned(
-                                bottom: 2,
-                                right: 2,
-                                child: GestureDetector(
-                                  onTap: () => setState(() {
-                                    _selectedImageBytes = null;
-                                    _selectedImageName = null;
-                                  }),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle),
-                                    padding: const EdgeInsets.all(4),
-                                    child: const Icon(Icons.close,
-                                        color: Colors.white, size: 14),
+                                            )
+                                          : _isImageHovered
+                                              ? Container(
+                                                  color: Colors.black
+                                                      .withOpacity(0.45),
+                                                  alignment:
+                                                      Alignment.center,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(
+                                                          Icons.edit,
+                                                          color: Colors.white,
+                                                          size: 26),
+                                                      const SizedBox(
+                                                          height: 4),
+                                                      Text(
+                                                        "Change",
+                                                        style: GoogleFonts
+                                                            .inter(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : const SizedBox.shrink(),
+                                    ),
                                   ),
-                                ),
+                                  Positioned(
+                                    bottom: 2,
+                                    left: 2,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AllColors.primaryColor,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                      ),
+                                      padding: const EdgeInsets.all(5),
+                                      child: const Icon(Icons.camera_alt,
+                                          color: Colors.white, size: 13),
+                                    ),
+                                  ),
+                                  if (_selectedImageBytes != null)
+                                    Positioned(
+                                      bottom: 2,
+                                      right: 2,
+                                      child: GestureDetector(
+                                        onTap: () => setState(() {
+                                          _selectedImageBytes = null;
+                                          _selectedImageName = null;
+                                        }),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle),
+                                          padding:
+                                              const EdgeInsets.all(4),
+                                          child: const Icon(Icons.close,
+                                              color: Colors.white,
+                                              size: 14),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                          ],
-                        ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _selectedImageBytes != null
+                                ? _selectedImageName ?? "Photo selected ✓"
+                                : "Tap to choose a profile photo",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: _selectedImageBytes != null
+                                  ? Colors.green
+                                  : Colors.grey[500],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _selectedImageBytes != null
-                          ? _selectedImageName ?? "Photo selected ✓"
-                          : "Tap to choose a profile photo",
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: _selectedImageBytes != null
-                            ? Colors.green
-                            : Colors.grey[500],
-                      ),
+
+                    const SizedBox(height: 24),
+
+                    _addFormLabel("Name"),
+                    _addFormTextField("Enter member name",
+                        controller: nameController),
+                    const SizedBox(height: 20),
+
+                    _addFormLabel("Phone Number"),
+                    _addFormTextField("Enter phone number",
+                        controller: phoneController,
+                        keyboardType: TextInputType.phone),
+                    const SizedBox(height: 20),
+
+                    _addFormLabel("Email Address"),
+                    _addFormTextField("Enter email address",
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _addFormLabel("Gender"),
+                              DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                dropdownColor: Colors.grey[100],
+                                decoration:
+                                    _addFormInputDecoration().copyWith(
+                                        filled: true,
+                                        fillColor: Colors.grey[100]),
+                                hint: const Text("Select Gender",
+                                    style: TextStyle(
+                                        color: Colors.black54)),
+                                style:
+                                    const TextStyle(color: Colors.black),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: "Male", child: Text("Male")),
+                                  DropdownMenuItem(
+                                      value: "Female",
+                                      child: Text("Female")),
+                                  DropdownMenuItem(
+                                      value: "Children",
+                                      child: Text("Children")),
+                                  DropdownMenuItem(
+                                      value: "Others",
+                                      child: Text("Others")),
+                                ],
+                                onChanged: (value) =>
+                                    setState(() => selectedGender = value),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _addFormLabel("State / Hometown"),
+                              DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                dropdownColor: Colors.grey[100],
+                                decoration:
+                                    _addFormInputDecoration().copyWith(
+                                        filled: true,
+                                        fillColor: Colors.grey[100]),
+                                hint: const Text("Select State",
+                                    style: TextStyle(
+                                        color: Colors.black54)),
+                                style:
+                                    const TextStyle(color: Colors.black),
+                                items: states
+                                    .map((s) => DropdownMenuItem(
+                                        value: s, child: Text(s)))
+                                    .toList(),
+                                onChanged: (value) =>
+                                    setState(() => selectedState = value),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _addFormLabel("Arrival Date"),
+                              _addFormDateBox(arrivalDate, () {
+                                _openCalendar(context, arrivalDate,
+                                    (d) => setState(() => arrivalDate = d));
+                              }),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _addFormLabel("Exit Date"),
+                              _addFormDateBox(exitDate, () {
+                                _openCalendar(context, exitDate,
+                                    (d) => setState(() => exitDate = d));
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    _addFormLabel("Description"),
+                    TextField(
+                      maxLines: 4,
+                      controller: descriptionController,
+                      decoration: _addFormInputDecoration(
+                          hint: "Enter a brief description"),
+                    ),
+                    const SizedBox(height: 32),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero),
+                            side: const BorderSide(
+                                color: AllColors.primaryColor),
+                          ),
+                          onPressed: _isloading
+                              ? null
+                              : () => Navigator.pop(context),
+                          child: Text("Cancel",
+                              style: GoogleFonts.inter(
+                                  color: AllColors.primaryColor)),
+                        ),
+                        const SizedBox(width: 16),
+                        CustomButton(
+                          label: "Add Member",
+                          height: 48,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          isLoading: _isloading,
+                          onPressed: _isloading ? null : addMember,
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              // ── Name ──
-              _addFormLabel("Name"),
-              _addFormTextField("Enter member name",
-                  controller: nameController),
-              const SizedBox(height: 20),
-
-              // ── Phone ──
-              _addFormLabel("Phone Number"),
-              _addFormTextField("Enter phone number",
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone),
-              const SizedBox(height: 20),
-
-              // ── Email ──
-              _addFormLabel("Email Address"),
-              _addFormTextField("Enter email address",
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 20),
-
-              // ── Gender & State ──
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _addFormLabel("Gender"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _addFormInputDecoration().copyWith(
-                              filled: true, fillColor: Colors.grey[100]),
-                          hint: const Text("Select Gender",
-                              style: TextStyle(color: Colors.black54)),
-                          style: const TextStyle(color: Colors.black),
-                          items: const [
-                            DropdownMenuItem(
-                                value: "Male", child: Text("Male")),
-                            DropdownMenuItem(
-                                value: "Female", child: Text("Female")),
-                            DropdownMenuItem(
-                                value: "Children", child: Text("Children")),
-                            DropdownMenuItem(
-                                value: "Others", child: Text("Others")),
-                          ],
-                          onChanged: (value) =>
-                              setState(() => selectedGender = value),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _addFormLabel("State / Hometown"),
-                        DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          dropdownColor: Colors.grey[100],
-                          decoration: _addFormInputDecoration().copyWith(
-                              filled: true, fillColor: Colors.grey[100]),
-                          hint: const Text("Select State",
-                              style: TextStyle(color: Colors.black54)),
-                          style: const TextStyle(color: Colors.black),
-                          items: states
-                              .map((s) => DropdownMenuItem(
-                                  value: s, child: Text(s)))
-                              .toList(),
-                          onChanged: (value) =>
-                              setState(() => selectedState = value),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // ── Dates ──
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _addFormLabel("Arrival Date"),
-                        _addFormDateBox(arrivalDate, () {
-                          _openCalendar(context, arrivalDate,
-                              (d) => setState(() => arrivalDate = d));
-                        }),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _addFormLabel("Exit Date"),
-                        _addFormDateBox(exitDate, () {
-                          _openCalendar(context, exitDate,
-                              (d) => setState(() => exitDate = d));
-                        }),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // ── Description ──
-              _addFormLabel("Description"),
-              TextField(
-                maxLines: 4,
-                controller: descriptionController,
-                decoration:
-                    _addFormInputDecoration(hint: "Enter a brief description"),
-              ),
-              const SizedBox(height: 32),
-
-              // ── Buttons ──
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero),
-                      side: const BorderSide(color: AllColors.primaryColor),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: Text("Cancel",
-                        style:
-                            GoogleFonts.inter(color: AllColors.primaryColor)),
-                  ),
-                  const SizedBox(width: 16),
-                  CustomButton(
-                    label: "Add Member",
-                    height: 48,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
-                    isLoading: _isloading,
-                    onPressed: _isloading ? null : addMember,
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // ── Add-form specific helpers (fontSize 16 to match original) ──
   Widget _addFormLabel(String text) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(text,
-            style:
-                GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600)),
+            style: GoogleFonts.inter(
+                fontSize: 16, fontWeight: FontWeight.w600)),
       );
 
   Widget _addFormTextField(
@@ -1687,7 +1772,8 @@ class _AddMemberPageState extends State<AddMemberPage> {
         height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-            color: Colors.grey[100], borderRadius: BorderRadius.circular(4)),
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(4)),
         alignment: Alignment.centerLeft,
         child: Text(
           date == null

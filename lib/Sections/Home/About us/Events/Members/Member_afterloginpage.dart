@@ -82,18 +82,18 @@ class _DesktopLayout extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Back Button ──
-            InkWell(
-              onTap: () => Navigator.pop(context),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.arrow_back),
-                  SizedBox(width: 6),
-                  Text("Back"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
+            // InkWell(
+            //   onTap: () => Navigator.pop(context),
+            //   child: const Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       Icon(Icons.arrow_back),
+            //       SizedBox(width: 6),
+            //       Text("Back"),
+            //     ],
+            //   ),
+            // ),
+            // const SizedBox(height: 24),
 
             // ── Header ──
             Row(
@@ -113,10 +113,14 @@ class _DesktopLayout extends StatelessWidget {
                     CustomButton(
                       label: "Add Member",
                       onPressed: () {
-                        showDialog(
+                        showModalBottomSheet(
                           context: context,
-                          barrierDismissible: false,
-                          builder: (_) => const AddMemberPage(),
+                          isScrollControlled: true,
+                          isDismissible: false,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => _FullPageBottomSheet(
+                            child: const AddMemberPage(),
+                          ),
                         );
                       },
                     ),
@@ -305,6 +309,28 @@ class _DesktopLayout extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
+//  FULL PAGE BOTTOM SHEET WRAPPER
+//  Wraps any child with a rounded top container
+//  that slides up from the bottom.
+// ─────────────────────────────────────────────
+class _FullPageBottomSheet extends StatelessWidget {
+  final Widget child;
+  const _FullPageBottomSheet({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(
+        color: AllColors.secondaryColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: child,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
 //  MOBILE LAYOUT
 // ─────────────────────────────────────────────
 class _MobileLayout extends StatelessWidget {
@@ -351,10 +377,8 @@ class _MobileLayout extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AllColors.secondaryColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,   
+
         title: Text(
           "BCS Members",
           style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700),
@@ -366,10 +390,14 @@ class _MobileLayout extends StatelessWidget {
             child: CustomButton(
               label: "Add Member",
               onPressed: () {
-                showDialog(
+                showModalBottomSheet(
                   context: context,
-                  barrierDismissible: false,
-                  builder: (_) => const AddMemberPage(),
+                  isScrollControlled: true,
+                  isDismissible: false,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => _FullPageBottomSheet(
+                    child: const AddMemberPage(),
+                  ),
                 );
               },
             ),
@@ -633,7 +661,7 @@ void _showDeleteDialog(BuildContext context, Member member) {
   );
 }
 
-// ==================== EDIT DIALOG ====================
+// ==================== EDIT BOTTOM SHEET ====================
 void _showEditMemberDialog(BuildContext context, Member member) {
   final nameController = TextEditingController(text: member.name);
   final phoneController = TextEditingController(text: member.phone);
@@ -665,439 +693,533 @@ void _showEditMemberDialog(BuildContext context, Member member) {
     'West Bengal',
   ];
 
-  showDialog(
+  showModalBottomSheet(
     context: context,
-    barrierDismissible: true,
+    isScrollControlled: true,
+    isDismissible: true,
+    backgroundColor: Colors.transparent,
     builder: (context) {
-      return Dialog(
-        backgroundColor: AllColors.secondaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: StatefulBuilder(
-          builder: (context, setState) {
-            Future<void> pickEditImage() async {
-              final picker = ImagePicker();
-              final XFile? picked = await picker.pickImage(
-                source: ImageSource.gallery,
-                maxWidth: 1024,
-                maxHeight: 1024,
-                imageQuality: 85,
-              );
-              if (picked != null) {
-                final bytes = await picked.readAsBytes();
-                setState(() {
-                  editImageBytes = bytes;
-                  editImageName = picked.name;
-                });
-              }
-            }
+      return DraggableScrollableSheet(
+        initialChildSize: 1.0,
+        minChildSize: 0.5,
+        maxChildSize: 1.0,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: AllColors.secondaryColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                Future<void> pickEditImage() async {
+                  final picker = ImagePicker();
+                  final XFile? picked = await picker.pickImage(
+                    source: ImageSource.gallery,
+                    maxWidth: 1024,
+                    maxHeight: 1024,
+                    imageQuality: 85,
+                  );
+                  if (picked != null) {
+                    final bytes = await picked.readAsBytes();
+                    setState(() {
+                      editImageBytes = bytes;
+                      editImageName = picked.name;
+                    });
+                  }
+                }
 
-            ImageProvider? avatarImage() {
-              if (editImageBytes != null) return MemoryImage(editImageBytes!);
-              if (currentPhotoUrl.isNotEmpty)
-                return NetworkImage(currentPhotoUrl);
-              return null;
-            }
+                ImageProvider? avatarImage() {
+                  if (editImageBytes != null) return MemoryImage(editImageBytes!);
+                  if (currentPhotoUrl.isNotEmpty)
+                    return NetworkImage(currentPhotoUrl);
+                  return null;
+                }
 
-            return SizedBox(
-              width: 520,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Edit Member",
-                        style: GoogleFonts.inter(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        "Fill in the details to edit a member.",
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: AllColors.thirdColor,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // ── Profile Photo ──
-                      _label("Profile Photo"),
-                      Center(
-                        child: MouseRegion(
-                          onEnter: (_) => setState(() => isEditHovered = true),
-                          onExit: (_) => setState(() => isEditHovered = false),
-                          child: GestureDetector(
-                            onTap: isUpdating ? null : pickEditImage,
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AllColors.fourthColor,
-                                    border: Border.all(
-                                      color: isEditHovered
-                                          ? AllColors.primaryColor
-                                          : Colors.grey.shade300,
-                                      width: 2,
-                                    ),
-                                    image: avatarImage() != null
-                                        ? DecorationImage(
-                                            image: avatarImage()!,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
-                                  ),
-                                  child: ClipOval(
-                                    child: avatarImage() == null
-                                        ? Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.cloud_upload_outlined,
-                                                size: 28,
-                                                color: Colors.grey[500],
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                "Upload\nPhoto",
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 10,
-                                                  color: AllColors.fourthColor,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 2,
-                                  left: 2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AllColors.primaryColor,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.all(4),
-                                    child: const Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                      size: 12,
-                                    ),
-                                  ),
-                                ),
-                                if (editImageBytes != null)
-                                  Positioned(
-                                    bottom: 2,
-                                    right: 2,
-                                    child: GestureDetector(
-                                      onTap: () => setState(() {
-                                        editImageBytes = null;
-                                        editImageName = null;
-                                      }),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        padding: const EdgeInsets.all(4),
-                                        child: const Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                          size: 13,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-                      Center(
-                        child: Text(
-                          editImageBytes != null
-                              ? "${editImageName ?? 'New photo selected'} ✓"
-                              : currentPhotoUrl.isNotEmpty
-                                  ? "Current photo loaded ✓"
-                                  : "Tap to upload a photo",
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color: editImageBytes != null ||
-                                    currentPhotoUrl.isNotEmpty
-                                ? Colors.green
-                                : Colors.grey[500],
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      _label("Member Name"),
-                      _textField("Edit member name",
-                          controller: nameController),
-                      const SizedBox(height: 20),
-
-                      _label("Phone Number"),
-                      _textField(
-                        "Edit phone number",
-                        keyboardType: TextInputType.phone,
-                        controller: phoneController,
-                      ),
-                      const SizedBox(height: 20),
-
-                      _label("Email Address"),
-                      _textField(
-                        "Edit email address",
-                        keyboardType: TextInputType.emailAddress,
-                        controller: emailController,
-                      ),
-                      const SizedBox(height: 20),
-
-                      Row(
+                return Column(
+                  children: [
+                    // ── Top bar with close button ──
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 16, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Gender"),
-                                DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  dropdownColor: Colors.grey[100],
-                                  decoration: _inputDecoration().copyWith(
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                  ),
-                                  hint: const Text("Select Gender"),
-                                  items: const [
-                                    DropdownMenuItem(
-                                        value: "Male", child: Text("Male")),
-                                    DropdownMenuItem(
-                                        value: "Female", child: Text("Female")),
-                                    DropdownMenuItem(
-                                        value: "Children",
-                                        child: Text("Children")),
-                                    DropdownMenuItem(
-                                        value: "Others", child: Text("Others")),
-                                  ],
-                                  onChanged: isUpdating
-                                      ? null
-                                      : (value) =>
-                                          setState(() => selectedGender = value),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Edit Member",
+                                style: GoogleFonts.inter(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("State / Hometown"),
-                                DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  dropdownColor: Colors.grey[100],
-                                  decoration: _inputDecoration().copyWith(
-                                    filled: true,
-                                    fillColor: Colors.grey[100],
-                                  ),
-                                  hint: const Text("Select State"),
-                                  value: selectedState,
-                                  items: states
-                                      .map((s) => DropdownMenuItem(
-                                          value: s, child: Text(s)))
-                                      .toList(),
-                                  onChanged: isUpdating
-                                      ? null
-                                      : (value) =>
-                                          setState(() => selectedState = value),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Arrival Date"),
-                                _dateBox(arrivalDate, () {
-                                  if (isUpdating) return;
-                                  _openCalendar(
-                                    context,
-                                    arrivalDate,
-                                    (d) => setState(() => arrivalDate = d),
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label("Exit Date"),
-                                _dateBox(exitDate, () {
-                                  if (isUpdating) return;
-                                  _openCalendar(
-                                    context,
-                                    exitDate,
-                                    (d) => setState(() => exitDate = d),
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      _label("Description"),
-                      TextField(
-                        controller: descriptionController,
-                        maxLines: 4,
-                        decoration:
-                            _inputDecoration(hint: "Enter a brief description"),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero,
                               ),
-                              side: BorderSide(
-                                color: isUpdating
-                                    ? Colors.grey
-                                    : AllColors.primaryColor,
+                              const SizedBox(height: 4),
+                              Text(
+                                "Fill in the details to edit a member.",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: AllColors.thirdColor,
+                                ),
                               ),
-                            ),
+                            ],
+                          ),
+                          // ── Close Button (top right) ──
+                          IconButton(
                             onPressed: isUpdating
                                 ? null
                                 : () => Navigator.pop(context),
-                            child: Text(
-                              "Cancel",
-                              style: GoogleFonts.inter(
-                                color: AllColors.primaryColor,
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                shape: BoxShape.circle,
                               ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(Icons.close, size: 20),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          CustomButton(
-                            label: isUpdating ? "Saving..." : "Update Member",
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            height: 48,
-                            isLoading: isUpdating,
-                            onPressed: isUpdating
-                                ? null
-                                : () async {
-                                    setState(() => isUpdating = true);
-                                    try {
-                                      String? newPhotoUrl;
-                                      if (editImageBytes != null) {
-                                        final fileName =
-                                            'members/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
-                                        final ref = FirebaseStorage.instance
-                                            .ref()
-                                            .child(fileName);
-                                        final snapshot = await ref.putData(
-                                          editImageBytes!,
-                                          SettableMetadata(
-                                            contentType: 'image/jpeg',
-                                          ),
-                                        );
-                                        newPhotoUrl =
-                                            await snapshot.ref.getDownloadURL();
-                                        setState(() {
-                                          currentPhotoUrl = newPhotoUrl!;
-                                          editImageBytes = null;
-                                        });
-                                      }
-
-                                      await FirebaseFirestore.instance
-                                          .collection('Member_collection')
-                                          .doc(member.id)
-                                          .update({
-                                        "name": nameController.text.trim(),
-                                        "phone": phoneController.text.trim(),
-                                        "email": emailController.text.trim(),
-                                        "state": selectedState,
-                                        "gender": selectedGender,
-                                        "arrivalDate": arrivalDate != null
-                                            ? Timestamp.fromDate(arrivalDate!)
-                                            : null,
-                                        "exitDate": exitDate != null
-                                            ? Timestamp.fromDate(exitDate!)
-                                            : null,
-                                        "photoUrl":
-                                            newPhotoUrl ?? currentPhotoUrl,
-                                        "updatedAt":
-                                            FieldValue.serverTimestamp(),
-                                      });
-
-                                      if (!context.mounted) return;
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              "Member updated successfully ✅"),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content:
-                                              Text("Failed to update ❌ $e"),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    } finally {
-                                      if (context.mounted)
-                                        setState(() => isUpdating = false);
-                                    }
-                                  },
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+                    ),
+
+                    const SizedBox(height: 8),
+                    const Divider(height: 1),
+
+                    // ── Scrollable content ──
+                    Expanded(
+                      child: SingleChildScrollView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 520),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // ── Profile Photo ──
+                                _label("Profile Photo"),
+                                Center(
+                                  child: MouseRegion(
+                                    onEnter: (_) =>
+                                        setState(() => isEditHovered = true),
+                                    onExit: (_) =>
+                                        setState(() => isEditHovered = false),
+                                    child: GestureDetector(
+                                      onTap: isUpdating ? null : pickEditImage,
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          AnimatedContainer(
+                                            duration: const Duration(
+                                                milliseconds: 200),
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AllColors.fourthColor,
+                                              border: Border.all(
+                                                color: isEditHovered
+                                                    ? AllColors.primaryColor
+                                                    : Colors.grey.shade300,
+                                                width: 2,
+                                              ),
+                                              image: avatarImage() != null
+                                                  ? DecorationImage(
+                                                      image: avatarImage()!,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : null,
+                                            ),
+                                            child: ClipOval(
+                                              child: avatarImage() == null
+                                                  ? Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .cloud_upload_outlined,
+                                                          size: 28,
+                                                          color:
+                                                              Colors.grey[500],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 4),
+                                                        Text(
+                                                          "Upload\nPhoto",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style:
+                                                              GoogleFonts.inter(
+                                                            fontSize: 10,
+                                                            color: AllColors
+                                                                .fourthColor,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 2,
+                                            left: 2,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: AllColors.primaryColor,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              padding: const EdgeInsets.all(4),
+                                              child: const Icon(
+                                                Icons.camera_alt,
+                                                color: Colors.white,
+                                                size: 12,
+                                              ),
+                                            ),
+                                          ),
+                                          if (editImageBytes != null)
+                                            Positioned(
+                                              bottom: 2,
+                                              right: 2,
+                                              child: GestureDetector(
+                                                onTap: () => setState(() {
+                                                  editImageBytes = null;
+                                                  editImageName = null;
+                                                }),
+                                                child: Container(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.red,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  child: const Icon(
+                                                    Icons.close,
+                                                    color: Colors.white,
+                                                    size: 13,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 8),
+                                Center(
+                                  child: Text(
+                                    editImageBytes != null
+                                        ? "${editImageName ?? 'New photo selected'} ✓"
+                                        : currentPhotoUrl.isNotEmpty
+                                            ? "Current photo loaded ✓"
+                                            : "Tap to upload a photo",
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      color: editImageBytes != null ||
+                                              currentPhotoUrl.isNotEmpty
+                                          ? Colors.green
+                                          : Colors.grey[500],
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                _label("Member Name"),
+                                _textField("Edit member name",
+                                    controller: nameController),
+                                const SizedBox(height: 20),
+
+                                _label("Phone Number"),
+                                _textField(
+                                  "Edit phone number",
+                                  keyboardType: TextInputType.phone,
+                                  controller: phoneController,
+                                ),
+                                const SizedBox(height: 20),
+
+                                _label("Email Address"),
+                                _textField(
+                                  "Edit email address",
+                                  keyboardType: TextInputType.emailAddress,
+                                  controller: emailController,
+                                ),
+                                const SizedBox(height: 20),
+
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _label("Gender"),
+                                          DropdownButtonFormField<String>(
+                                            isExpanded: true,
+                                            dropdownColor: Colors.grey[100],
+                                            decoration:
+                                                _inputDecoration().copyWith(
+                                              filled: true,
+                                              fillColor: Colors.grey[100],
+                                            ),
+                                            hint: const Text("Select Gender"),
+                                            items: const [
+                                              DropdownMenuItem(
+                                                  value: "Male",
+                                                  child: Text("Male")),
+                                              DropdownMenuItem(
+                                                  value: "Female",
+                                                  child: Text("Female")),
+                                              DropdownMenuItem(
+                                                  value: "Children",
+                                                  child: Text("Children")),
+                                              DropdownMenuItem(
+                                                  value: "Others",
+                                                  child: Text("Others")),
+                                            ],
+                                            onChanged: isUpdating
+                                                ? null
+                                                : (value) => setState(
+                                                    () => selectedGender =
+                                                        value),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _label("State / Hometown"),
+                                          DropdownButtonFormField<String>(
+                                            isExpanded: true,
+                                            dropdownColor: Colors.grey[100],
+                                            decoration:
+                                                _inputDecoration().copyWith(
+                                              filled: true,
+                                              fillColor: Colors.grey[100],
+                                            ),
+                                            hint: const Text("Select State"),
+                                            value: selectedState,
+                                            items: states
+                                                .map((s) => DropdownMenuItem(
+                                                    value: s, child: Text(s)))
+                                                .toList(),
+                                            onChanged: isUpdating
+                                                ? null
+                                                : (value) => setState(
+                                                    () =>
+                                                        selectedState = value),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _label("Arrival Date"),
+                                          _dateBox(arrivalDate, () {
+                                            if (isUpdating) return;
+                                            _openCalendar(
+                                              context,
+                                              arrivalDate,
+                                              (d) => setState(
+                                                  () => arrivalDate = d),
+                                            );
+                                          }),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _label("Exit Date"),
+                                          _dateBox(exitDate, () {
+                                            if (isUpdating) return;
+                                            _openCalendar(
+                                              context,
+                                              exitDate,
+                                              (d) =>
+                                                  setState(() => exitDate = d),
+                                            );
+                                          }),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                _label("Description"),
+                                TextField(
+                                  controller: descriptionController,
+                                  maxLines: 4,
+                                  decoration: _inputDecoration(
+                                      hint: "Enter a brief description"),
+                                ),
+
+                                const SizedBox(height: 32),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.zero,
+                                        ),
+                                        side: BorderSide(
+                                          color: isUpdating
+                                              ? Colors.grey
+                                              : AllColors.primaryColor,
+                                        ),
+                                      ),
+                                      onPressed: isUpdating
+                                          ? null
+                                          : () => Navigator.pop(context),
+                                      child: Text(
+                                        "Cancel",
+                                        style: GoogleFonts.inter(
+                                          color: AllColors.primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    CustomButton(
+                                      label: isUpdating
+                                          ? "Saving..."
+                                          : "Update Member",
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300,
+                                      height: 48,
+                                      isLoading: isUpdating,
+                                      onPressed: isUpdating
+                                          ? null
+                                          : () async {
+                                              setState(
+                                                  () => isUpdating = true);
+                                              try {
+                                                String? newPhotoUrl;
+                                                if (editImageBytes != null) {
+                                                  final fileName =
+                                                      'members/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+                                                  final ref = FirebaseStorage
+                                                      .instance
+                                                      .ref()
+                                                      .child(fileName);
+                                                  final snapshot =
+                                                      await ref.putData(
+                                                    editImageBytes!,
+                                                    SettableMetadata(
+                                                      contentType:
+                                                          'image/jpeg',
+                                                    ),
+                                                  );
+                                                  newPhotoUrl = await snapshot
+                                                      .ref
+                                                      .getDownloadURL();
+                                                  setState(() {
+                                                    currentPhotoUrl =
+                                                        newPhotoUrl!;
+                                                    editImageBytes = null;
+                                                  });
+                                                }
+
+                                                await FirebaseFirestore.instance
+                                                    .collection(
+                                                        'Member_collection')
+                                                    .doc(member.id)
+                                                    .update({
+                                                  "name": nameController.text
+                                                      .trim(),
+                                                  "phone": phoneController.text
+                                                      .trim(),
+                                                  "email": emailController.text
+                                                      .trim(),
+                                                  "state": selectedState,
+                                                  "gender": selectedGender,
+                                                  "arrivalDate":
+                                                      arrivalDate != null
+                                                          ? Timestamp.fromDate(
+                                                              arrivalDate!)
+                                                          : null,
+                                                  "exitDate": exitDate != null
+                                                      ? Timestamp.fromDate(
+                                                          exitDate!)
+                                                      : null,
+                                                  "photoUrl": newPhotoUrl ??
+                                                      currentPhotoUrl,
+                                                  "updatedAt": FieldValue
+                                                      .serverTimestamp(),
+                                                });
+
+                                                if (!context.mounted) return;
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        "Member updated successfully ✅"),
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                );
+                                              } catch (e) {
+                                                if (!context.mounted) return;
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        "Failed to update ❌ $e"),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                              } finally {
+                                                if (context.mounted)
+                                                  setState(
+                                                      () => isUpdating = false);
+                                              }
+                                            },
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 24),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        },
       );
     },
   );

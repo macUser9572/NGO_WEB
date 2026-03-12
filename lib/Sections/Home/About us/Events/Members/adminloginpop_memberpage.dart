@@ -32,33 +32,56 @@ class _DesktopLayout extends StatefulWidget {
 
 class _DesktopLayoutState extends State<_DesktopLayout> {
   bool isPasswordVisible = false;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController    = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  String error = "";
-  bool isLoading = false;
+  String emailError    = "";
+  String passwordError = "";
+  String loginError    = "";
+  bool isLoading       = false;
 
-  static const String ADMIN_EMAIL = "admin@ngo.com";
+  static const String ADMIN_EMAIL    = "admin@ngo.com";
   static const String ADMIN_PASSWORD = "changma@2026";
 
   Future<void> loginAdmin() async {
+    // ── Clear all errors ──
     setState(() {
-      error = "";
-      isLoading = true;
+      emailError    = "";
+      passwordError = "";
+      loginError    = "";
     });
+
+    final email    = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    // ── Field-level validation ──
+    bool hasError = false;
+
+    if (email.isEmpty) {
+      setState(() => emailError = "Please fill the email id");
+      hasError = true;
+    }
+    if (password.isEmpty) {
+      setState(() => passwordError = "Please fill the password");
+      hasError = true;
+    }
+
+    if (hasError) return; // stop if any field is empty
+
+    // ── Proceed with login ──
+    setState(() => isLoading = true);
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (emailController.text.trim() == ADMIN_EMAIL &&
-        passwordController.text.trim() == ADMIN_PASSWORD) {
+    if (email == ADMIN_EMAIL && password == ADMIN_PASSWORD) {
       Navigator.of(context, rootNavigator: true).pop();
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (_) => const AfterLoginPage()),
       );
     } else {
       setState(() {
-        error = "Invalid admin email or password";
-        isLoading = false;
+        loginError = "Invalid admin email or password";
+        isLoading  = false;
       });
     }
   }
@@ -80,7 +103,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // ================= TITLE =================
+              // ── Title ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -109,51 +132,122 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
               const SizedBox(height: 32),
 
-              // ================= EMAIL =================
+              // ── User Name ──
               Text(
                 "User Name",
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 10),
+
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: "Test",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  hintText: "Enter email id",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
+                  ),
                 ),
+                onChanged: (_) {
+                  if (emailError.isNotEmpty) {
+                    setState(() => emailError = "");
+                  }
+                },
               ),
+
+              // ── Email error ──
+              if (emailError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  emailError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
 
               const SizedBox(height: 20),
 
-              // ================= PASSWORD =================
+              // ── Password ──
               Text(
                 "Password",
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 10),
+
               TextField(
                 controller: passwordController,
                 obscureText: !isPasswordVisible,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  hintText: "Enter Password",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () =>
                         setState(() => isPasswordVisible = !isPasswordVisible),
                   ),
                 ),
+                onChanged: (_) {
+                  if (passwordError.isNotEmpty) {
+                    setState(() => passwordError = "");
+                  }
+                },
               ),
 
-              if (error.isNotEmpty) ...[
+              // ── Password error ──
+              if (passwordError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  passwordError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
+
+              // ── Wrong credentials error ──
+              if (loginError.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                Text(error, style: const TextStyle(color: Colors.red)),
+                Text(
+                  loginError,
+                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                ),
               ],
 
               const SizedBox(height: 30),
 
-              // ================= LOGIN BUTTON =================
+              // ── Login Button ──
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -198,33 +292,53 @@ class _MobileLayout extends StatefulWidget {
 
 class _MobileLayoutState extends State<_MobileLayout> {
   bool isPasswordVisible = false;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController    = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  String error = "";
-  bool isLoading = false;
+  String emailError    = "";
+  String passwordError = "";
+  String loginError    = "";
+  bool isLoading       = false;
 
-  static const String ADMIN_EMAIL = "admin@ngo.com";
+  static const String ADMIN_EMAIL    = "admin@ngo.com";
   static const String ADMIN_PASSWORD = "changma@2026";
 
   Future<void> loginAdmin() async {
     setState(() {
-      error = "";
-      isLoading = true;
+      emailError    = "";
+      passwordError = "";
+      loginError    = "";
     });
+
+    final email    = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    bool hasError = false;
+
+    if (email.isEmpty) {
+      setState(() => emailError = "Please fill the email id");
+      hasError = true;
+    }
+    if (password.isEmpty) {
+      setState(() => passwordError = "Please fill the password");
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    setState(() => isLoading = true);
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    if (emailController.text.trim() == ADMIN_EMAIL &&
-        passwordController.text.trim() == ADMIN_PASSWORD) {
+    if (email == ADMIN_EMAIL && password == ADMIN_PASSWORD) {
       Navigator.of(context, rootNavigator: true).pop();
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (_) => const AfterLoginPage()),
       );
     } else {
       setState(() {
-        error = "Invalid admin email or password";
-        isLoading = false;
+        loginError = "Invalid admin email or password";
+        isLoading  = false;
       });
     }
   }
@@ -247,7 +361,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              // ================= TITLE =================
+              // ── Title ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -268,66 +382,131 @@ class _MobileLayoutState extends State<_MobileLayout> {
 
               Text(
                 "To view members kindly login as an Admin",
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: Colors.black,
-                ),
+                style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
               ),
 
               const SizedBox(height: 24),
 
-              // ================= EMAIL =================
+              // ── User Name ──
               Text(
                 "User Name",
-                style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 8),
+
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: "Test",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  hintText: "Enter email id",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: emailError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
+                  ),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                 ),
+                onChanged: (_) {
+                  if (emailError.isNotEmpty) {
+                    setState(() => emailError = "");
+                  }
+                },
               ),
+
+              // ── Email error ──
+              if (emailError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  emailError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
 
               const SizedBox(height: 16),
 
-              // ================= PASSWORD =================
+              // ── Password ──
               Text(
                 "Password",
-                style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 10),
+
               TextField(
                 controller: passwordController,
                 obscureText: !isPasswordVisible,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  hintText: "Enter Password",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: passwordError.isNotEmpty ? Colors.red : Colors.blue,
+                    ),
+                  ),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () =>
                         setState(() => isPasswordVisible = !isPasswordVisible),
                   ),
                 ),
+                onChanged: (_) {
+                  if (passwordError.isNotEmpty) {
+                    setState(() => passwordError = "");
+                  }
+                },
               ),
 
-              if (error.isNotEmpty) ...[
+              // ── Password error ──
+              if (passwordError.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  passwordError,
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ],
+
+              // ── Wrong credentials error ──
+              if (loginError.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
-                  error,
+                  loginError,
                   style: const TextStyle(color: Colors.red, fontSize: 12),
                 ),
               ],
 
               const SizedBox(height: 24),
 
-              // ================= LOGIN BUTTON =================
+              // ── Login Button ──
               SizedBox(
                 height: 45,
                 width: double.infinity,
