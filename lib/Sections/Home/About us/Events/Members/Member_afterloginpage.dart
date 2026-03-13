@@ -23,9 +23,9 @@ class AddMemberPageTab extends StatelessWidget {
       builder: (context, sizing) {
         switch (sizing.deviceScreenType) {
           case DeviceScreenType.desktop:
-            return const _DesktopLayout();
+            return const AddMemberDesktopLayout();
           default:
-            return const _MobileLayout();
+            return const AddMemberMobileLayout();
         }
       },
     );
@@ -35,10 +35,10 @@ class AddMemberPageTab extends StatelessWidget {
 // ─────────────────────────────────────────────
 //  DESKTOP LAYOUT
 // ─────────────────────────────────────────────
-class _DesktopLayout extends StatelessWidget {
-  const _DesktopLayout();
+class AddMemberDesktopLayout extends StatelessWidget {
+  const AddMemberDesktopLayout({super.key});
 
-  Widget memberStream() {
+  Widget _memberStream() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('Member_collection')
@@ -54,7 +54,6 @@ class _DesktopLayout extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const Center(child: Text("No members found"));
         }
-
         return ListView.separated(
           itemCount: snapshot.data!.docs.length,
           separatorBuilder: (_, __) =>
@@ -81,20 +80,6 @@ class _DesktopLayout extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Back Button ──
-            // InkWell(
-            //   onTap: () => Navigator.pop(context),
-            //   child: const Row(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: [
-            //       Icon(Icons.arrow_back),
-            //       SizedBox(width: 6),
-            //       Text("Back"),
-            //     ],
-            //   ),
-            // ),
-            // const SizedBox(height: 24),
-
             // ── Header ──
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,8 +103,8 @@ class _DesktopLayout extends StatelessWidget {
                           isScrollControlled: true,
                           isDismissible: false,
                           backgroundColor: Colors.transparent,
-                          builder: (_) => _FullPageBottomSheet(
-                            child: const AddMemberPage(),
+                          builder: (_) => const _FullPageBottomSheet(
+                            child: AddMemberPage(),
                           ),
                         );
                       },
@@ -129,7 +114,7 @@ class _DesktopLayout extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 30),
-            Expanded(child: memberStream()),
+            Expanded(child: _memberStream()),
           ],
         ),
       ),
@@ -163,121 +148,78 @@ class _DesktopLayout extends StatelessWidget {
           // ── Name ──
           Expanded(
             flex: 3,
-            child: Text(
-              member.name,
-              style: CustomText.memberBodyColor,
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: Text(member.name,
+                style: CustomText.memberBodyColor,
+                overflow: TextOverflow.ellipsis),
           ),
 
           // ── Phone ──
           Expanded(
             flex: 3,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/PhoneCall.svg",
-                  height: 20,
-                  width: 20,
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    member.phone,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
-                ),
-              ],
-            ),
+            child: Row(children: [
+              SvgPicture.asset("assets/icons/PhoneCall.svg",
+                  height: 20, width: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                  child: Text(member.phone,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor)),
+            ]),
           ),
 
           // ── Email ──
           Expanded(
             flex: 4,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/mail.svg",
-                  height: 20,
-                  width: 20,
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    member.email.isNotEmpty ? member.email : 'N/A',
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
-                ),
-              ],
-            ),
+            child: Row(children: [
+              SvgPicture.asset("assets/icons/mail.svg", height: 20, width: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                  child: Text(member.email.isNotEmpty ? member.email : 'N/A',
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor)),
+            ]),
           ),
 
           // ── Place ──
           Expanded(
             flex: 3,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/place.svg",
-                  height: 20,
-                  width: 20,
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    member.place,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
-                ),
-              ],
-            ),
+            child: Row(children: [
+              SvgPicture.asset("assets/icons/place.svg",
+                  height: 20, width: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                  child: Text(member.place,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor)),
+            ]),
           ),
 
           // ── Check In ──
           Expanded(
             flex: 3,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/SignIn.svg",
-                  height: 20,
-                  width: 20,
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    member.checkIn,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
-                ),
-              ],
-            ),
+            child: Row(children: [
+              SvgPicture.asset("assets/icons/SignIn.svg",
+                  height: 20, width: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                  child: Text(member.checkIn,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor)),
+            ]),
           ),
 
           // ── Check Out ──
           Expanded(
             flex: 3,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  "assets/icons/SignOut.svg",
-                  height: 20,
-                  width: 20,
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    member.checkOut,
-                    overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
-                ),
-              ],
-            ),
+            child: Row(children: [
+              SvgPicture.asset("assets/icons/SignOut.svg",
+                  height: 20, width: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                  child: Text(member.checkOut,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomText.memberBodyColor)),
+            ]),
           ),
 
           // ── Actions ──
@@ -285,19 +227,13 @@ class _DesktopLayout extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/edit.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                icon: SvgPicture.asset("assets/icons/edit.svg",
+                    height: 20, width: 20),
                 onPressed: () => _showEditMemberDialog(context, member),
               ),
               IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/Trash.svg",
-                  height: 20,
-                  width: 20,
-                ),
+                icon: SvgPicture.asset("assets/icons/Trash.svg",
+                    height: 20, width: 20),
                 onPressed: () => _showDeleteDialog(context, member),
               ),
             ],
@@ -309,34 +245,12 @@ class _DesktopLayout extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-//  FULL PAGE BOTTOM SHEET WRAPPER
-//  Wraps any child with a rounded top container
-//  that slides up from the bottom.
-// ─────────────────────────────────────────────
-class _FullPageBottomSheet extends StatelessWidget {
-  final Widget child;
-  const _FullPageBottomSheet({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(
-        color: AllColors.secondaryColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: child,
-    );
-  }
-}
-
-// ─────────────────────────────────────────────
 //  MOBILE LAYOUT
 // ─────────────────────────────────────────────
-class _MobileLayout extends StatelessWidget {
-  const _MobileLayout();
+class AddMemberMobileLayout extends StatelessWidget {
+  const AddMemberMobileLayout({super.key});
 
-  Widget memberStream() {
+  Widget _memberStream() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('Member_collection')
@@ -352,7 +266,6 @@ class _MobileLayout extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const Center(child: Text("No members found"));
         }
-
         return ListView.separated(
           itemCount: snapshot.data!.docs.length,
           separatorBuilder: (_, __) =>
@@ -377,8 +290,7 @@ class _MobileLayout extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AllColors.secondaryColor,
         elevation: 0,
-        automaticallyImplyLeading: false,   
-
+        automaticallyImplyLeading: false,
         title: Text(
           "BCS Members",
           style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700),
@@ -395,8 +307,8 @@ class _MobileLayout extends StatelessWidget {
                   isScrollControlled: true,
                   isDismissible: false,
                   backgroundColor: Colors.transparent,
-                  builder: (_) => _FullPageBottomSheet(
-                    child: const AddMemberPage(),
+                  builder: (_) => const _FullPageBottomSheet(
+                    child: AddMemberPage(),
                   ),
                 );
               },
@@ -406,7 +318,7 @@ class _MobileLayout extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: memberStream(),
+        child: _memberStream(),
       ),
     );
   }
@@ -450,9 +362,7 @@ class _MobileLayout extends StatelessWidget {
                   Text(
                     member.name,
                     style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
+                        fontWeight: FontWeight.w600, fontSize: 14),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
@@ -475,20 +385,14 @@ class _MobileLayout extends StatelessWidget {
               children: [
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: SvgPicture.asset(
-                    "assets/icons/edit.svg",
-                    height: 16,
-                    width: 16,
-                  ),
+                  icon: SvgPicture.asset("assets/icons/edit.svg",
+                      height: 16, width: 16),
                   onPressed: () => _showEditMemberDialog(context, member),
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: SvgPicture.asset(
-                    "assets/icons/Trash.svg",
-                    height: 16,
-                    width: 16,
-                  ),
+                  icon: SvgPicture.asset("assets/icons/Trash.svg",
+                      height: 16, width: 16),
                   onPressed: () => _showDeleteDialog(context, member),
                 ),
               ],
@@ -512,20 +416,34 @@ class _MobileLayout extends StatelessWidget {
           const SizedBox(width: 6),
           Expanded(
             child: wrap
-                ? Text(
-                    text,
-                    softWrap: true,
-                    style: CustomText.memberBodyColor,
-                  )
-                : Text(
-                    text,
+                ? Text(text, softWrap: true, style: CustomText.memberBodyColor)
+                : Text(text,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: CustomText.memberBodyColor,
-                  ),
+                    style: CustomText.memberBodyColor),
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+//  FULL PAGE BOTTOM SHEET WRAPPER
+// ─────────────────────────────────────────────
+class _FullPageBottomSheet extends StatelessWidget {
+  final Widget child;
+  const _FullPageBottomSheet({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(
+        color: AllColors.secondaryColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: child,
     );
   }
 }
@@ -588,7 +506,8 @@ void _showDeleteDialog(BuildContext context, Member member) {
         child: SizedBox(
           width: 420,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -602,18 +521,14 @@ void _showDeleteDialog(BuildContext context, Member member) {
                 Text(
                   "Delete Member",
                   style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                  ),
+                      fontSize: 28, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "Are you sure you want to delete this member?",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style:
+                      GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 28),
                 Row(
@@ -622,19 +537,16 @@ void _showDeleteDialog(BuildContext context, Member member) {
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
+                            borderRadius: BorderRadius.zero),
                         side: const BorderSide(
-                          color: Color.fromARGB(255, 240, 26, 11),
-                        ),
+                            color: Color.fromARGB(255, 240, 26, 11)),
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         "Cancel",
                         style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Color.fromARGB(255, 240, 26, 11),
-                        ),
+                            fontSize: 12,
+                            color: Color.fromARGB(255, 240, 26, 11)),
                       ),
                     ),
                     const SizedBox(width: 24),
@@ -729,7 +641,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                 }
 
                 ImageProvider? avatarImage() {
-                  if (editImageBytes != null) return MemoryImage(editImageBytes!);
+                  if (editImageBytes != null)
+                    return MemoryImage(editImageBytes!);
                   if (currentPhotoUrl.isNotEmpty)
                     return NetworkImage(currentPhotoUrl);
                   return null;
@@ -737,7 +650,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
 
                 return Column(
                   children: [
-                    // ── Top bar with close button ──
+                    // ── Top bar ──
                     Padding(
                       padding: const EdgeInsets.fromLTRB(24, 20, 16, 0),
                       child: Row(
@@ -750,21 +663,18 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               Text(
                                 "Edit Member",
                                 style: GoogleFonts.inter(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w700),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 "Fill in the details to edit a member.",
                                 style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  color: AllColors.thirdColor,
-                                ),
+                                    fontSize: 12,
+                                    color: AllColors.thirdColor),
                               ),
                             ],
                           ),
-                          // ── Close Button (top right) ──
                           IconButton(
                             onPressed: isUpdating
                                 ? null
@@ -781,7 +691,6 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 8),
                     const Divider(height: 1),
 
@@ -792,7 +701,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         padding: const EdgeInsets.all(24),
                         child: Center(
                           child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 520),
+                            constraints:
+                                const BoxConstraints(maxWidth: 520),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -800,12 +710,14 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 _label("Profile Photo"),
                                 Center(
                                   child: MouseRegion(
-                                    onEnter: (_) =>
-                                        setState(() => isEditHovered = true),
-                                    onExit: (_) =>
-                                        setState(() => isEditHovered = false),
+                                    onEnter: (_) => setState(
+                                        () => isEditHovered = true),
+                                    onExit: (_) => setState(
+                                        () => isEditHovered = false),
                                     child: GestureDetector(
-                                      onTap: isUpdating ? null : pickEditImage,
+                                      onTap: isUpdating
+                                          ? null
+                                          : pickEditImage,
                                       child: Stack(
                                         clipBehavior: Clip.none,
                                         children: [
@@ -841,8 +753,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                           Icons
                                                               .cloud_upload_outlined,
                                                           size: 28,
-                                                          color:
-                                                              Colors.grey[500],
+                                                          color: Colors
+                                                              .grey[500],
                                                         ),
                                                         const SizedBox(
                                                             height: 4),
@@ -870,16 +782,15 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                 color: AllColors.primaryColor,
                                                 shape: BoxShape.circle,
                                                 border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 2,
-                                                ),
+                                                    color: Colors.white,
+                                                    width: 2),
                                               ),
-                                              padding: const EdgeInsets.all(4),
+                                              padding:
+                                                  const EdgeInsets.all(4),
                                               child: const Icon(
-                                                Icons.camera_alt,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
+                                                  Icons.camera_alt,
+                                                  color: Colors.white,
+                                                  size: 12),
                                             ),
                                           ),
                                           if (editImageBytes != null)
@@ -900,10 +811,9 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                   padding:
                                                       const EdgeInsets.all(4),
                                                   child: const Icon(
-                                                    Icons.close,
-                                                    color: Colors.white,
-                                                    size: 13,
-                                                  ),
+                                                      Icons.close,
+                                                      color: Colors.white,
+                                                      size: 13),
                                                 ),
                                               ),
                                             ),
@@ -912,7 +822,6 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                     ),
                                   ),
                                 ),
-
                                 const SizedBox(height: 8),
                                 Center(
                                   child: Text(
@@ -932,26 +841,21 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 ),
 
                                 const SizedBox(height: 24),
-
                                 _label("Member Name"),
                                 _textField("Edit member name",
                                     controller: nameController),
                                 const SizedBox(height: 20),
 
                                 _label("Phone Number"),
-                                _textField(
-                                  "Edit phone number",
-                                  keyboardType: TextInputType.phone,
-                                  controller: phoneController,
-                                ),
+                                _textField("Edit phone number",
+                                    keyboardType: TextInputType.phone,
+                                    controller: phoneController),
                                 const SizedBox(height: 20),
 
                                 _label("Email Address"),
-                                _textField(
-                                  "Edit email address",
-                                  keyboardType: TextInputType.emailAddress,
-                                  controller: emailController,
-                                ),
+                                _textField("Edit email address",
+                                    keyboardType: TextInputType.emailAddress,
+                                    controller: emailController),
                                 const SizedBox(height: 20),
 
                                 Row(
@@ -965,12 +869,13 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                           DropdownButtonFormField<String>(
                                             isExpanded: true,
                                             dropdownColor: Colors.grey[100],
-                                            decoration:
-                                                _inputDecoration().copyWith(
-                                              filled: true,
-                                              fillColor: Colors.grey[100],
-                                            ),
-                                            hint: const Text("Select Gender"),
+                                            decoration: _inputDecoration()
+                                                .copyWith(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Colors.grey[100]),
+                                            hint:
+                                                const Text("Select Gender"),
                                             items: const [
                                               DropdownMenuItem(
                                                   value: "Male",
@@ -987,9 +892,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                             ],
                                             onChanged: isUpdating
                                                 ? null
-                                                : (value) => setState(
-                                                    () => selectedGender =
-                                                        value),
+                                                : (v) => setState(
+                                                    () => selectedGender = v),
                                           ),
                                         ],
                                       ),
@@ -1004,11 +908,11 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                           DropdownButtonFormField<String>(
                                             isExpanded: true,
                                             dropdownColor: Colors.grey[100],
-                                            decoration:
-                                                _inputDecoration().copyWith(
-                                              filled: true,
-                                              fillColor: Colors.grey[100],
-                                            ),
+                                            decoration: _inputDecoration()
+                                                .copyWith(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Colors.grey[100]),
                                             hint: const Text("Select State"),
                                             value: selectedState,
                                             items: states
@@ -1017,9 +921,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                 .toList(),
                                             onChanged: isUpdating
                                                 ? null
-                                                : (value) => setState(
-                                                    () =>
-                                                        selectedState = value),
+                                                : (v) => setState(
+                                                    () => selectedState = v),
                                           ),
                                         ],
                                       ),
@@ -1039,12 +942,9 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                           _label("Arrival Date"),
                                           _dateBox(arrivalDate, () {
                                             if (isUpdating) return;
-                                            _openCalendar(
-                                              context,
-                                              arrivalDate,
-                                              (d) => setState(
-                                                  () => arrivalDate = d),
-                                            );
+                                            _openCalendar(context, arrivalDate,
+                                                (d) => setState(
+                                                    () => arrivalDate = d));
                                           }),
                                         ],
                                       ),
@@ -1058,12 +958,9 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                           _label("Exit Date"),
                                           _dateBox(exitDate, () {
                                             if (isUpdating) return;
-                                            _openCalendar(
-                                              context,
-                                              exitDate,
-                                              (d) =>
-                                                  setState(() => exitDate = d),
-                                            );
+                                            _openCalendar(context, exitDate,
+                                                (d) => setState(
+                                                    () => exitDate = d));
                                           }),
                                         ],
                                       ),
@@ -1089,8 +986,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                     OutlinedButton(
                                       style: OutlinedButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.zero,
-                                        ),
+                                            borderRadius: BorderRadius.zero),
                                         side: BorderSide(
                                           color: isUpdating
                                               ? Colors.grey
@@ -1100,12 +996,9 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                       onPressed: isUpdating
                                           ? null
                                           : () => Navigator.pop(context),
-                                      child: Text(
-                                        "Cancel",
-                                        style: GoogleFonts.inter(
-                                          color: AllColors.primaryColor,
-                                        ),
-                                      ),
+                                      child: Text("Cancel",
+                                          style: GoogleFonts.inter(
+                                              color: AllColors.primaryColor)),
                                     ),
                                     const SizedBox(width: 16),
                                     CustomButton(
@@ -1130,16 +1023,14 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                       .instance
                                                       .ref()
                                                       .child(fileName);
-                                                  final snapshot =
+                                                  final snap =
                                                       await ref.putData(
                                                     editImageBytes!,
                                                     SettableMetadata(
-                                                      contentType:
-                                                          'image/jpeg',
-                                                    ),
+                                                        contentType:
+                                                            'image/jpeg'),
                                                   );
-                                                  newPhotoUrl = await snapshot
-                                                      .ref
+                                                  newPhotoUrl = await snap.ref
                                                       .getDownloadURL();
                                                   setState(() {
                                                     currentPhotoUrl =
@@ -1155,9 +1046,11 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                     .update({
                                                   "name": nameController.text
                                                       .trim(),
-                                                  "phone": phoneController.text
+                                                  "phone": phoneController
+                                                      .text
                                                       .trim(),
-                                                  "email": emailController.text
+                                                  "email": emailController
+                                                      .text
                                                       .trim(),
                                                   "state": selectedState,
                                                   "gender": selectedGender,
@@ -1199,14 +1092,13 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                 );
                                               } finally {
                                                 if (context.mounted)
-                                                  setState(
-                                                      () => isUpdating = false);
+                                                  setState(() =>
+                                                      isUpdating = false);
                                               }
                                             },
                                     ),
                                   ],
                                 ),
-
                                 const SizedBox(height: 24),
                               ],
                             ),
@@ -1225,7 +1117,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
   );
 }
 
-// ==================== SHARED HELPERS ====================
+// ==================== SHARED HELPER WIDGETS ====================
 
 Widget _label(String text) => Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -1239,13 +1131,12 @@ Widget _textField(
   String hint, {
   TextInputType keyboardType = TextInputType.text,
   TextEditingController? controller,
-}) {
-  return TextField(
-    keyboardType: keyboardType,
-    controller: controller,
-    decoration: _inputDecoration(hint: hint),
-  );
-}
+}) =>
+    TextField(
+      keyboardType: keyboardType,
+      controller: controller,
+      decoration: _inputDecoration(hint: hint),
+    );
 
 InputDecoration _inputDecoration({String? hint}) => InputDecoration(
       hintText: hint,
@@ -1257,25 +1148,25 @@ InputDecoration _inputDecoration({String? hint}) => InputDecoration(
       ),
     );
 
-Widget _dateBox(DateTime? date, VoidCallback onTap) {
-  return InkWell(
-    onTap: onTap,
-    child: Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(4),
+Widget _dateBox(DateTime? date, VoidCallback onTap) => InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(4),
+        ),
+        alignment: Alignment.centerLeft,
+        child: Text(
+          date == null
+              ? "Select date"
+              : "${date.day.toString().padLeft(2, '0')}-"
+                  "${date.month.toString().padLeft(2, '0')}-"
+                  "${date.year}",
+        ),
       ),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        date == null
-            ? "Select date"
-            : "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}",
-      ),
-    ),
-  );
-}
+    );
 
 void _openCalendar(
   BuildContext context,

@@ -538,6 +538,7 @@ void _showDeleteBottomSheet(BuildContext context, Member member) {
     },
   );
 }
+
 // ─────────────────────────────────────────────
 //  EDIT BOTTOM SHEET  (mobile)
 // ─────────────────────────────────────────────
@@ -938,106 +939,120 @@ class _EditBottomSheetState extends State<_EditBottomSheet> {
                     ),
                     const SizedBox(height: 32),
 
-                    // ── Buttons ──
+                    // ── Buttons ── ✅ CHANGED: full-width Expanded layout
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero),
-                            side: BorderSide(
-                              color: isUpdating
-                                  ? Colors.grey
-                                  : AllColors.primaryColor,
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero),
+                              side: BorderSide(
+                                color: isUpdating
+                                    ? Colors.grey
+                                    : AllColors.primaryColor,
+                              ),
+                            ),
+                            onPressed: isUpdating
+                                ? null
+                                : () => Navigator.pop(context),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: isUpdating
+                                    ? Colors.grey
+                                    : AllColors.primaryColor,
+                              ),
                             ),
                           ),
-                          onPressed: isUpdating
-                              ? null
-                              : () => Navigator.pop(context),
-                          child: Text("Cancel",
-                              style: GoogleFonts.inter(
-                                  color: AllColors.primaryColor)),
                         ),
-                        const SizedBox(width: 16),
-                        CustomButton(
-                          label: isUpdating ? "Saving..." : "Update Student",
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300,
-                          height: 48,
-                          isLoading: isUpdating,
-                          onPressed: isUpdating
-                              ? null
-                              : () async {
-                                  setState(() => isUpdating = true);
-                                  try {
-                                    String? newPhotoUrl;
-                                    if (editImageBytes != null) {
-                                      final fileName =
-                                          'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
-                                      final ref = FirebaseStorage.instance
-                                          .ref()
-                                          .child(fileName);
-                                      final snapshot = await ref.putData(
-                                        editImageBytes!,
-                                        SettableMetadata(
-                                            contentType: 'image/jpeg'),
-                                      );
-                                      newPhotoUrl = await snapshot.ref
-                                          .getDownloadURL();
-                                      setState(() {
-                                        currentPhotoUrl = newPhotoUrl!;
-                                        editImageBytes = null;
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomButton(
+                            label: isUpdating ? "Saving..." : "Update Student",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            height: 48,
+                            isLoading: isUpdating,
+                            onPressed: isUpdating
+                                ? null
+                                : () async {
+                                    setState(() => isUpdating = true);
+                                    try {
+                                      String? newPhotoUrl;
+                                      if (editImageBytes != null) {
+                                        final fileName =
+                                            'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+                                        final ref = FirebaseStorage.instance
+                                            .ref()
+                                            .child(fileName);
+                                        final snapshot = await ref.putData(
+                                          editImageBytes!,
+                                          SettableMetadata(
+                                              contentType: 'image/jpeg'),
+                                        );
+                                        newPhotoUrl = await snapshot.ref
+                                            .getDownloadURL();
+                                        setState(() {
+                                          currentPhotoUrl = newPhotoUrl!;
+                                          editImageBytes = null;
+                                        });
+                                      }
+
+                                      await FirebaseFirestore.instance
+                                          .collection('Student_collection')
+                                          .doc(widget.member.id)
+                                          .update({
+                                        "name": nameController.text.trim(),
+                                        "phone": phoneController.text.trim(),
+                                        "email": emailController.text.trim(),
+                                        "collage":
+                                            collageController.text.trim(),
+                                        "course": courseController.text.trim(),
+                                        "state": selectedState,
+                                        "gender": selectedGender,
+                                        "arrivalDate": arrivalDate != null
+                                            ? Timestamp.fromDate(arrivalDate!)
+                                            : null,
+                                        "exitDate": exitDate != null
+                                            ? Timestamp.fromDate(exitDate!)
+                                            : null,
+                                        "photoUrl":
+                                            newPhotoUrl ?? currentPhotoUrl,
+                                        "updatedAt":
+                                            FieldValue.serverTimestamp(),
                                       });
+
+                                      if (!context.mounted) return;
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              "Student updated successfully ✅"),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text("Failed to update ❌ $e"),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    } finally {
+                                      if (mounted)
+                                        setState(() => isUpdating = false);
                                     }
-
-                                    await FirebaseFirestore.instance
-                                        .collection('Student_collection')
-                                        .doc(widget.member.id)
-                                        .update({
-                                      "name": nameController.text.trim(),
-                                      "phone": phoneController.text.trim(),
-                                      "email": emailController.text.trim(),
-                                      "collage":
-                                          collageController.text.trim(),
-                                      "course": courseController.text.trim(),
-                                      "state": selectedState,
-                                      "gender": selectedGender,
-                                      "arrivalDate": arrivalDate != null
-                                          ? Timestamp.fromDate(arrivalDate!)
-                                          : null,
-                                      "exitDate": exitDate != null
-                                          ? Timestamp.fromDate(exitDate!)
-                                          : null,
-                                      "photoUrl":
-                                          newPhotoUrl ?? currentPhotoUrl,
-                                      "updatedAt":
-                                          FieldValue.serverTimestamp(),
-                                    });
-
-                                    if (!context.mounted) return;
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            "Student updated successfully ✅"),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    if (!context.mounted) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content:
-                                            Text("Failed to update ❌ $e"),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  } finally {
-                                    if (mounted)
-                                      setState(() => isUpdating = false);
-                                  }
-                                },
+                                  },
+                          ),
                         ),
                       ],
                     ),
@@ -1456,110 +1471,116 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                       ),
                       const SizedBox(height: 32),
 
+                      // Desktop buttons — unchanged from original
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero),
-                              side: BorderSide(
-                                  color: isUpdating
-                                      ? Colors.grey
-                                      : AllColors.primaryColor),
-                            ),
-                            onPressed: isUpdating
-                                ? null
-                                : () => Navigator.pop(context),
-                            child: Text("Cancel",
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero),
+                                side: BorderSide(
+                                    color: isUpdating
+                                        ? Colors.grey
+                                        : AllColors.primaryColor),
+                              ),
+                              onPressed: isUpdating
+                                  ? null
+                                  : () => Navigator.pop(context),
+                              child: Text(
+                                "Cancel",
                                 style: GoogleFonts.inter(
-                                    color: AllColors.primaryColor)),
+                                  fontSize: 12,
+                                  height: 3.5,
+                                  color: AllColors.primaryColor,
+                                ),
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 16),
-                          CustomButton(
-                            label: isUpdating
-                                ? "Saving..."
-                                : "Update Student",
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            height: 48,
-                            isLoading: isUpdating,
-                            onPressed: isUpdating
-                                ? null
-                                : () async {
-                                    setState(() => isUpdating = true);
-                                    try {
-                                      String? newPhotoUrl;
-                                      if (editImageBytes != null) {
-                                        final fileName =
-                                            'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
-                                        final ref = FirebaseStorage.instance
-                                            .ref()
-                                            .child(fileName);
-                                        final snapshot = await ref.putData(
-                                          editImageBytes!,
-                                          SettableMetadata(
-                                              contentType: 'image/jpeg'),
-                                        );
-                                        newPhotoUrl = await snapshot.ref
-                                            .getDownloadURL();
-                                        setState(() {
-                                          currentPhotoUrl = newPhotoUrl!;
-                                          editImageBytes = null;
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: CustomButton(
+                              label: isUpdating
+                                  ? "Saving..."
+                                  : "Update Student",
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              height: 44,
+                              isLoading: isUpdating,
+                              onPressed: isUpdating
+                                  ? null
+                                  : () async {
+                                      setState(() => isUpdating = true);
+                                      try {
+                                        String? newPhotoUrl;
+                                        if (editImageBytes != null) {
+                                          final fileName =
+                                              'students/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+                                          final ref = FirebaseStorage.instance
+                                              .ref()
+                                              .child(fileName);
+                                          final snapshot = await ref.putData(
+                                            editImageBytes!,
+                                            SettableMetadata(
+                                                contentType: 'image/jpeg'),
+                                          );
+                                          newPhotoUrl = await snapshot.ref
+                                              .getDownloadURL();
+                                          setState(() {
+                                            currentPhotoUrl = newPhotoUrl!;
+                                            editImageBytes = null;
+                                          });
+                                        }
+
+                                        await FirebaseFirestore.instance
+                                            .collection('Student_collection')
+                                            .doc(member.id)
+                                            .update({
+                                          "name":    nameController.text.trim(),
+                                          "phone":   phoneController.text.trim(),
+                                          "email":   emailController.text.trim(),
+                                          "collage": collageController.text.trim(),
+                                          "course":  courseController.text.trim(),
+                                          "state":   selectedState,
+                                          "gender":  selectedGender,
+                                          "arrivalDate": arrivalDate != null
+                                              ? Timestamp.fromDate(arrivalDate!)
+                                              : null,
+                                          "exitDate": exitDate != null
+                                              ? Timestamp.fromDate(exitDate!)
+                                              : null,
+                                          "photoUrl":
+                                              newPhotoUrl ?? currentPhotoUrl,
+                                          "updatedAt":
+                                              FieldValue.serverTimestamp(),
                                         });
+
+                                        if (!context.mounted) return;
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                              "Student updated successfully ✅"),
+                                          backgroundColor: Colors.green,
+                                        ));
+                                      } catch (e) {
+                                        if (!context.mounted) return;
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content:
+                                              Text("Failed to update ❌ $e"),
+                                          backgroundColor: Colors.red,
+                                        ));
+                                      } finally {
+                                        if (context.mounted)
+                                          setState(() => isUpdating = false);
                                       }
-
-                                      await FirebaseFirestore.instance
-                                          .collection('Student_collection')
-                                          .doc(member.id)
-                                          .update({
-                                        "name": nameController.text.trim(),
-                                        "phone":
-                                            phoneController.text.trim(),
-                                        "email":
-                                            emailController.text.trim(),
-                                        "collage":
-                                            collageController.text.trim(),
-                                        "course":
-                                            courseController.text.trim(),
-                                        "state": selectedState,
-                                        "gender": selectedGender,
-                                        "arrivalDate": arrivalDate != null
-                                            ? Timestamp.fromDate(arrivalDate!)
-                                            : null,
-                                        "exitDate": exitDate != null
-                                            ? Timestamp.fromDate(exitDate!)
-                                            : null,
-                                        "photoUrl":
-                                            newPhotoUrl ?? currentPhotoUrl,
-                                        "updatedAt":
-                                            FieldValue.serverTimestamp(),
-                                      });
-
-                                      if (!context.mounted) return;
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text(
-                                            "Student updated successfully ✅"),
-                                        backgroundColor: Colors.green,
-                                      ));
-                                    } catch (e) {
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content:
-                                            Text("Failed to update ❌ $e"),
-                                        backgroundColor: Colors.red,
-                                      ));
-                                    } finally {
-                                      if (context.mounted)
-                                        setState(() => isUpdating = false);
-                                    }
-                                  },
+                                    },
+                            ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
@@ -1838,13 +1859,7 @@ void _openCalendar(
 //                     const SizedBox(width: 16),
 //                     CustomButton(
 //                       label: "Add Student",
-//                       onPressed: () {
-//                         showDialog(
-//                           context: context,
-//                           barrierDismissible: false,
-//                           builder: (_) => const AddStudentMemberPage(),
-//                         );
-//                       },
+//                       onPressed: () => showAddStudentPage(context),
 //                     ),
 //                   ],
 //                 ),
@@ -2067,13 +2082,7 @@ void _openCalendar(
 //             padding: const EdgeInsets.only(right: 12),
 //             child: CustomButton(
 //               label: "Add Student",
-//               onPressed: () {
-//                 showDialog(
-//                   context: context,
-//                   barrierDismissible: false,
-//                   builder: (_) => const AddStudentMemberPage(),
-//                 );
-//               },
+//               onPressed: () => showAddStudentPage(context),
 //             ),
 //           ),
 //         ],
@@ -2197,121 +2206,88 @@ void _openCalendar(
 // //  DELETE BOTTOM SHEET  (mobile)
 // // ─────────────────────────────────────────────
 // void _showDeleteBottomSheet(BuildContext context, Member member) {
-//   showModalBottomSheet(
+//   showDialog(
 //     context: context,
-//     isScrollControlled: true,
-//     backgroundColor: Colors.transparent,
-//     builder: (_) => _DeleteBottomSheet(member: member),
-//   );
-// }
-
-// class _DeleteBottomSheet extends StatelessWidget {
-//   final Member member;
-//   const _DeleteBottomSheet({required this.member});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: MediaQuery.of(context).size.height,
-//       decoration: const BoxDecoration(
-//         color: AllColors.secondaryColor,
-//         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-//       ),
-//       child: SafeArea(
-//         child: Column(
-//           children: [
-//             // ── Close button ──
-//             Padding(
-//               padding:
-//                   const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-//               child: Align(
-//                 alignment: Alignment.topRight,
-//                 child: IconButton(
-//                   icon: const Icon(Icons.close),
-//                   onPressed: () => Navigator.pop(context),
-//                 ),
-//               ),
-//             ),
-
-//             // ── Content ──
-//             Expanded(
-//               child: Center(
-//                 child: Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 24),
-//                   child: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: [
-//                       member.photoUrl.isNotEmpty
-//                           ? CircleAvatar(
-//                               radius: 60,
-//                               backgroundImage:
-//                                   NetworkImage(member.photoUrl),
-//                             )
-//                           : Image.asset("assets/image/dustbin.png",
-//                               height: 120),
-//                       const SizedBox(height: 20),
-//                       Text(
-//                         "Delete Student",
-//                         style: GoogleFonts.inter(
-//                           fontSize: 28,
-//                           fontWeight: FontWeight.w700,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 12),
-//                       Text(
-//                         "Are you sure you want to delete this student?",
-//                         textAlign: TextAlign.center,
-//                         style: GoogleFonts.inter(
-//                             fontSize: 12, color: Colors.grey[600]),
-//                       ),
-//                       const SizedBox(height: 40),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           OutlinedButton(
-//                             style: OutlinedButton.styleFrom(
-//                               shape: const RoundedRectangleBorder(
-//                                   borderRadius: BorderRadius.zero),
-//                               side: const BorderSide(
-//                                   color: Color.fromARGB(255, 240, 26, 11)),
-//                             ),
-//                             onPressed: () => Navigator.pop(context),
-//                             child: Text(
-//                               "Cancel",
-//                               style: GoogleFonts.inter(
-//                                 fontSize: 12,
-//                                 color: Color.fromARGB(255, 240, 26, 11),
-//                               ),
-//                             ),
-//                           ),
-//                           const SizedBox(width: 24),
-//                           CustomButton(
-//                             label: "Delete",
-//                             backgroundColor:
-//                                 const Color.fromARGB(255, 240, 26, 11),
-//                             textColor: Colors.white,
-//                             onPressed: () async {
-//                               await FirebaseFirestore.instance
-//                                   .collection('Student_collection')
-//                                   .doc(member.id)
-//                                   .delete();
-//                               Navigator.pop(context);
-//                             },
-//                           ),
-//                         ],
-//                       ),
-//                     ],
+//     barrierDismissible: true,
+//     builder: (_) {
+//       return Dialog(
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//         backgroundColor: AllColors.secondaryColor,
+//         child: SizedBox(
+//           width: 420,
+//           child: Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 member.photoUrl.isNotEmpty
+//                     ? CircleAvatar(
+//                         radius: 60,
+//                         backgroundImage: NetworkImage(member.photoUrl),
+//                       )
+//                     : Image.asset("assets/image/dustbin.png", height: 120),
+//                 const SizedBox(height: 20),
+//                 Text(
+//                   "Delete Member",
+//                   style: GoogleFonts.inter(
+//                     fontSize: 28,
+//                     fontWeight: FontWeight.w700,
 //                   ),
 //                 ),
-//               ),
+//                 const SizedBox(height: 12),
+//                 Text(
+//                   "Are you sure you want to delete this member?",
+//                   textAlign: TextAlign.center,
+//                   style: GoogleFonts.inter(
+//                     fontSize: 12,
+//                     color: Colors.grey[600],
+//                   ),
+//                 ),
+//                 const SizedBox(height: 28),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     OutlinedButton(
+//                       style: OutlinedButton.styleFrom(
+//                         shape: const RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.zero,
+//                         ),
+//                         side: const BorderSide(
+//                           color: Color.fromARGB(255, 240, 26, 11),
+//                         ),
+//                       ),
+//                       onPressed: () => Navigator.pop(context),
+//                       child: Text(
+//                         "Cancel",
+//                         style: GoogleFonts.inter(
+//                           fontSize: 12,
+//                           color: Color.fromARGB(255, 240, 26, 11),
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(width: 24),
+//                     CustomButton(
+//                       label: "Delete",
+//                       backgroundColor: const Color.fromARGB(255, 240, 26, 11),
+//                       textColor: Colors.white,
+//                       onPressed: () async {
+//                         await FirebaseFirestore.instance
+//                             .collection('Member_collection')
+//                             .doc(member.id)
+//                             .delete();
+//                         Navigator.pop(context);
+//                       },
+//                     ),
+//                   ],
+//                 ),
+//               ],
 //             ),
-//           ],
+//           ),
 //         ),
-//       ),
-//     );
-//   }
+//       );
+//     },
+//   );
 // }
-
 // // ─────────────────────────────────────────────
 // //  EDIT BOTTOM SHEET  (mobile)
 // // ─────────────────────────────────────────────
@@ -2731,14 +2707,16 @@ void _openCalendar(
 //                               : () => Navigator.pop(context),
 //                           child: Text("Cancel",
 //                               style: GoogleFonts.inter(
+//                                 fontSize: 12,
+//                                 height: 3.5,
 //                                   color: AllColors.primaryColor)),
 //                         ),
-//                         const SizedBox(width: 16),
+//                         const SizedBox(width: 9),
 //                         CustomButton(
 //                           label: isUpdating ? "Saving..." : "Update Student",
 //                           fontSize: 12,
 //                           fontWeight: FontWeight.w300,
-//                           height: 48,
+//                           height: 44,
 //                           isLoading: isUpdating,
 //                           onPressed: isUpdating
 //                               ? null

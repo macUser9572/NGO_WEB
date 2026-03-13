@@ -42,7 +42,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
   final emailController = TextEditingController();
 
   String?    selectedGender  = 'Male';
-  String?    selectedState   = 'Arunachal Pradesh';
+  String?    selectedState   = 'Select States';
   DateTime?  arrivalDate;
   DateTime?  exitDate;
   bool       isLoading       = false;
@@ -52,6 +52,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
 
   final List<String> genders = ['Male', 'Female', 'Children', 'Others'];
   final List<String> states = [
+    'Select States',   // ← add this as first item
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
     'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
     'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
@@ -458,7 +459,7 @@ class _MembershipDesktopState extends State<MembershipDesktop> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _label("Arrival Date"),
+                  _label("Arrival Date",required: true),
                   _dateBox(arrivalDate, () => _pickDate(true)),
                 ],
               ),
@@ -620,7 +621,7 @@ class _MembershipMobileState extends State<MembershipMobile> {
   final emailController = TextEditingController();
 
   String?    selectedGender  = 'Male';
-  String?    selectedState   = 'Arunachal Pradesh';
+  String?    selectedState   = 'Select States';
   DateTime?  arrivalDate;
   DateTime?  exitDate;
   bool       isLoading       = false;
@@ -629,7 +630,8 @@ class _MembershipMobileState extends State<MembershipMobile> {
 
   final List<String> genders = ['Male', 'Female', 'Children', 'Others'];
   final List<String> states = [
-    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+      'Select States',   // ← add this as first item
+      'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
     'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
     'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
     'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',

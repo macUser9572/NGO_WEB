@@ -35,16 +35,16 @@ class _DesktopLayout extends StatefulWidget {
 }
 
 class _DesktopLayoutState extends State<_DesktopLayout> {
-  final TextEditingController nameController    = TextEditingController();
-  final TextEditingController phoneController   = TextEditingController();
-  final TextEditingController emailController   = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
 
   bool isLoading = false;
 
-  static const String _serviceId  = 'service_id_1';
+  static const String _serviceId = 'service_id_1';
   static const String _templateId = 'template_pfxf54s';
-  static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
+  static const String _publicKey = 'L5HZmZFqQVCwcb7Q_';
 
   @override
   void dispose() {
@@ -63,13 +63,13 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
         'origin': 'http://localhost',
       },
       body: jsonEncode({
-        'service_id':  _serviceId,
+        'service_id': _serviceId,
         'template_id': _templateId,
-        'user_id':     _publicKey,
+        'user_id': _publicKey,
         'template_params': {
-          'name':    nameController.text.trim(),
-          'phone':   phoneController.text.trim(),
-          'email':   emailController.text.trim(),
+          'name': nameController.text.trim(),
+          'phone': phoneController.text.trim(),
+          'email': emailController.text.trim(),
           'message': messageController.text.trim(),
         },
       }),
@@ -82,10 +82,10 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
   Future<void> _saveToFirestore() async {
     await FirebaseFirestore.instance.collection('contact_messages').add({
-      'name':      nameController.text.trim(),
-      'phone':     phoneController.text.trim(),
-      'email':     emailController.text.trim(),
-      'message':   messageController.text.trim(),
+      'name': nameController.text.trim(),
+      'phone': phoneController.text.trim(),
+      'email': emailController.text.trim(),
+      'message': messageController.text.trim(),
       'createdAt': FieldValue.serverTimestamp(),
     });
   }
@@ -102,10 +102,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
     setState(() => isLoading = true);
 
     try {
-      await Future.wait([
-        _sendEmail(),
-        _saveToFirestore(),
-      ]);
+      await Future.wait([_sendEmail(), _saveToFirestore()]);
 
       _showSnackBar("Message sent successfully ✅");
 
@@ -113,7 +110,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
       phoneController.clear();
       emailController.clear();
       messageController.clear();
-
     } catch (e) {
       _showSnackBar("Failed to send message ❌");
       debugPrint('Error: $e');
@@ -124,7 +120,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final width  = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
     return SafeArea(
@@ -135,11 +131,10 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
           color: AllColors.secondaryColor,
           child: Stack(
             children: [
-
               // ================= LEFT FORM =================
               Positioned(
-                top:  height * 0.15,
-                left: width  * 0.06,
+                top: height * 0.15,
+                left: width * 0.06,
                 child: Container(
                   width: width * 0.38,
                   padding: const EdgeInsets.all(30),
@@ -208,10 +203,15 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                           controller: messageController,
                           maxLines: null,
                           expands: true,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             hintText: "Write your Message here",
+                            hintStyle: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300, 
+                              color: Colors.grey.shade400, 
+                            ),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(12),
+                            contentPadding: const EdgeInsets.all(12),
                           ),
                         ),
                       ),
@@ -230,8 +230,8 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
               // ================= RIGHT CONTENT =================
               Positioned(
-                top:   height * 0.20,
-                right: width  * 0.05,
+                top: height * 0.20,
+                right: width * 0.05,
                 child: SizedBox(
                   width: width * 0.40,
                   child: Column(
@@ -256,9 +256,12 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                       ),
                       const SizedBox(height: 40),
 
-                      _infoRow(Icons.email_outlined, "varshinigowdav8@gmail.com"),
+                      _infoRow(
+                        Icons.email_outlined,
+                        "varshinigowdav8@gmail.com",
+                      ),
                       const SizedBox(height: 16),
-                      _infoRow(Icons.phone_outlined, "+91 7892345671"),
+                      _infoRow(Icons.phone_outlined, "+91 6366009470"),
 
                       const SizedBox(height: 30),
                       Text(
@@ -282,7 +285,6 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -292,9 +294,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
   // ================= HELPERS =================
   void _showSnackBar(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Widget _label(String text, {bool required = false}) {
@@ -364,16 +364,16 @@ class _MobileLayout extends StatefulWidget {
 }
 
 class _MobileLayoutState extends State<_MobileLayout> {
-  final TextEditingController nameController    = TextEditingController();
-  final TextEditingController phoneController   = TextEditingController();
-  final TextEditingController emailController   = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
 
   bool isLoading = false;
 
-  static const String _serviceId  = 'service_id_1';
+  static const String _serviceId = 'service_id_1';
   static const String _templateId = 'template_pfxf54s';
-  static const String _publicKey  = 'L5HZmZFqQVCwcb7Q_';
+  static const String _publicKey = 'L5HZmZFqQVCwcb7Q_';
 
   @override
   void dispose() {
@@ -392,13 +392,13 @@ class _MobileLayoutState extends State<_MobileLayout> {
         'origin': 'http://localhost',
       },
       body: jsonEncode({
-        'service_id':  _serviceId,
+        'service_id': _serviceId,
         'template_id': _templateId,
-        'user_id':     _publicKey,
+        'user_id': _publicKey,
         'template_params': {
-          'name':    nameController.text.trim(),
-          'phone':   phoneController.text.trim(),
-          'email':   emailController.text.trim(),
+          'name': nameController.text.trim(),
+          'phone': phoneController.text.trim(),
+          'email': emailController.text.trim(),
           'message': messageController.text.trim(),
         },
       }),
@@ -410,10 +410,10 @@ class _MobileLayoutState extends State<_MobileLayout> {
 
   Future<void> _saveToFirestore() async {
     await FirebaseFirestore.instance.collection('contact_messages').add({
-      'name':      nameController.text.trim(),
-      'phone':     phoneController.text.trim(),
-      'email':     emailController.text.trim(),
-      'message':   messageController.text.trim(),
+      'name': nameController.text.trim(),
+      'phone': phoneController.text.trim(),
+      'email': emailController.text.trim(),
+      'message': messageController.text.trim(),
       'createdAt': FieldValue.serverTimestamp(),
     });
   }
@@ -445,9 +445,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
   }
 
   void _showSnackBar(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -460,7 +458,6 @@ class _MobileLayoutState extends State<_MobileLayout> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
           // ── Title ──
           Text(
             "Reach Us",
@@ -505,10 +502,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
                 const SizedBox(height: 4),
                 Text(
                   "Drop your message and we get back to you.",
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
+                  style: GoogleFonts.inter(fontSize: 12, color: Colors.black54),
                 ),
                 const SizedBox(height: 20),
 
@@ -535,8 +529,13 @@ class _MobileLayoutState extends State<_MobileLayout> {
                     controller: messageController,
                     maxLines: null,
                     expands: true,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "Write your Message here",
+                      hintStyle: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight:FontWeight.w300,
+                        color: Colors.grey.shade400,
+                      ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.all(12),
                     ),
@@ -564,20 +563,14 @@ class _MobileLayoutState extends State<_MobileLayout> {
           const SizedBox(height: 16),
           Text(
             "Registered Office",
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 6),
           Text(
             "B 501 Elegant Whispering Winds\n"
             "Thalagattapura\n"
             "Bangalore - 560109",
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: AllColors.thirdColor,
-            ),
+            style: GoogleFonts.inter(fontSize: 12, color: AllColors.thirdColor),
           ),
         ],
       ),
@@ -593,7 +586,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
             TextSpan(
               text: text,
               style: GoogleFonts.inter(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
               ),
@@ -635,12 +628,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
       children: [
         Icon(icon, size: 16, color: AllColors.primaryColor),
         const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: GoogleFonts.inter(fontSize: 12),
-          ),
-        ),
+        Expanded(child: Text(text, style: GoogleFonts.inter(fontSize: 12))),
       ],
     );
   }

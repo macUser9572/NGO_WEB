@@ -132,7 +132,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
               // ── User Name ──
               Text(
-                "User Name",
+                "User Id",
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -143,7 +143,12 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: "Enter email id",
+                  hintText: "Enter User Id",
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade400,
+                     ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide(
@@ -196,6 +201,11 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
                 obscureText: !isPasswordVisible,
                 decoration: InputDecoration(
                   hintText: "Enter Password ",
+                  hintStyle: GoogleFonts.inter(
+                    fontSize:14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade400
+                     ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide(

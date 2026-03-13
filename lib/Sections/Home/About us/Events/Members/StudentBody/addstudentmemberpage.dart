@@ -576,6 +576,11 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
     TextInputType type = TextInputType.text,
   }) =>
       TextField(
+        style: GoogleFonts.inter(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+        ),
         controller: controller,
         keyboardType: type,
         decoration: _decoration(hint: hint),
@@ -583,6 +588,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
 
   InputDecoration _decoration({String? hint}) => InputDecoration(
         hintText: hint,
+        hintStyle: GoogleFonts.inter(fontSize: 16),
         filled: true,
         fillColor: Colors.grey[100],
         border: OutlineInputBorder(
@@ -1068,6 +1074,8 @@ class _MobileLayoutState extends State<_MobileLayout> {
                         Expanded(
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
                               shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.zero),
                               side: const BorderSide(
@@ -1078,6 +1086,8 @@ class _MobileLayoutState extends State<_MobileLayout> {
                                 : () => Navigator.pop(context),
                             child: Text("Cancel",
                                 style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  // height: 3.5,
                                     color: AllColors.primaryColor)),
                           ),
                         ),
@@ -1085,9 +1095,9 @@ class _MobileLayoutState extends State<_MobileLayout> {
                         Expanded(
                           child: CustomButton(
                             label: "Add Student",
-                            height: 44,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
+                            height: 48,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                             isLoading: _isLoading,
                             onPressed: _isLoading ? null : _addStudent,
                           ),
