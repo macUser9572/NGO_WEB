@@ -558,7 +558,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
           // ── Contact Info ──
           _infoRow(Icons.email_outlined, "varshinigowdav8@gmail.com"),
           const SizedBox(height: 12),
-          _infoRow(Icons.phone_outlined, "+91 7892345671"),
+          _infoRow(Icons.phone_outlined, "+91 6366009470"),
 
           const SizedBox(height: 16),
           Text(

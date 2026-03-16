@@ -1107,7 +1107,7 @@ void _showDeleteDialog(BuildContext context, Member member) {
                 ),
                 const SizedBox(height: 28),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(

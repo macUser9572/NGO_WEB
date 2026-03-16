@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -641,10 +642,8 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                 }
 
                 ImageProvider? avatarImage() {
-                  if (editImageBytes != null)
-                    return MemoryImage(editImageBytes!);
-                  if (currentPhotoUrl.isNotEmpty)
-                    return NetworkImage(currentPhotoUrl);
+                  if (editImageBytes != null) return MemoryImage(editImageBytes!);
+                  if (currentPhotoUrl.isNotEmpty) return NetworkImage(currentPhotoUrl);
                   return null;
                 }
 
@@ -663,22 +662,18 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                               Text(
                                 "Edit Member",
                                 style: GoogleFonts.inter(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w700),
+                                    fontSize: 28, fontWeight: FontWeight.w700),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 "Fill in the details to edit a member.",
                                 style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: AllColors.thirdColor),
+                                    fontSize: 12, color: AllColors.thirdColor),
                               ),
                             ],
                           ),
                           IconButton(
-                            onPressed: isUpdating
-                                ? null
-                                : () => Navigator.pop(context),
+                            onPressed: isUpdating ? null : () => Navigator.pop(context),
                             icon: Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
@@ -701,8 +696,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                         padding: const EdgeInsets.all(24),
                         child: Center(
                           child: ConstrainedBox(
-                            constraints:
-                                const BoxConstraints(maxWidth: 520),
+                            constraints: const BoxConstraints(maxWidth: 520),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -710,20 +704,15 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 _label("Profile Photo"),
                                 Center(
                                   child: MouseRegion(
-                                    onEnter: (_) => setState(
-                                        () => isEditHovered = true),
-                                    onExit: (_) => setState(
-                                        () => isEditHovered = false),
+                                    onEnter: (_) => setState(() => isEditHovered = true),
+                                    onExit: (_) => setState(() => isEditHovered = false),
                                     child: GestureDetector(
-                                      onTap: isUpdating
-                                          ? null
-                                          : pickEditImage,
+                                      onTap: isUpdating ? null : pickEditImage,
                                       child: Stack(
                                         clipBehavior: Clip.none,
                                         children: [
                                           AnimatedContainer(
-                                            duration: const Duration(
-                                                milliseconds: 200),
+                                            duration: const Duration(milliseconds: 200),
                                             width: 100,
                                             height: 100,
                                             decoration: BoxDecoration(
@@ -745,28 +734,20 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                             child: ClipOval(
                                               child: avatarImage() == null
                                                   ? Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Icon(
-                                                          Icons
-                                                              .cloud_upload_outlined,
+                                                          Icons.cloud_upload_outlined,
                                                           size: 28,
-                                                          color: Colors
-                                                              .grey[500],
+                                                          color: Colors.grey[500],
                                                         ),
-                                                        const SizedBox(
-                                                            height: 4),
+                                                        const SizedBox(height: 4),
                                                         Text(
                                                           "Upload\nPhoto",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              GoogleFonts.inter(
+                                                          textAlign: TextAlign.center,
+                                                          style: GoogleFonts.inter(
                                                             fontSize: 10,
-                                                            color: AllColors
-                                                                .fourthColor,
+                                                            color: AllColors.fourthColor,
                                                           ),
                                                         ),
                                                       ],
@@ -781,16 +762,11 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                               decoration: BoxDecoration(
                                                 color: AllColors.primaryColor,
                                                 shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 2),
+                                                border: Border.all(color: Colors.white, width: 2),
                                               ),
-                                              padding:
-                                                  const EdgeInsets.all(4),
-                                              child: const Icon(
-                                                  Icons.camera_alt,
-                                                  color: Colors.white,
-                                                  size: 12),
+                                              padding: const EdgeInsets.all(4),
+                                              child: const Icon(Icons.camera_alt,
+                                                  color: Colors.white, size: 12),
                                             ),
                                           ),
                                           if (editImageBytes != null)
@@ -803,17 +779,13 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                                   editImageName = null;
                                                 }),
                                                 child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                     color: Colors.red,
                                                     shape: BoxShape.circle,
                                                   ),
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  child: const Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                      size: 13),
+                                                  padding: const EdgeInsets.all(4),
+                                                  child: const Icon(Icons.close,
+                                                      color: Colors.grey, size: 13),
                                                 ),
                                               ),
                                             ),
@@ -832,8 +804,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                             : "Tap to upload a photo",
                                     style: GoogleFonts.inter(
                                       fontSize: 11,
-                                      color: editImageBytes != null ||
-                                              currentPhotoUrl.isNotEmpty
+                                      color: editImageBytes != null || currentPhotoUrl.isNotEmpty
                                           ? Colors.green
                                           : Colors.grey[500],
                                     ),
@@ -842,8 +813,7 @@ void _showEditMemberDialog(BuildContext context, Member member) {
 
                                 const SizedBox(height: 24),
                                 _label("Member Name"),
-                                _textField("Edit member name",
-                                    controller: nameController),
+                                _textField("Edit member name", controller: nameController),
                                 const SizedBox(height: 20),
 
                                 _label("Phone Number"),
@@ -862,38 +832,24 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                   children: [
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           _label("Gender"),
                                           DropdownButtonFormField<String>(
                                             isExpanded: true,
                                             dropdownColor: Colors.grey[100],
-                                            decoration: _inputDecoration()
-                                                .copyWith(
-                                                    filled: true,
-                                                    fillColor:
-                                                        Colors.grey[100]),
-                                            hint:
-                                                const Text("Select Gender"),
+                                            decoration: _inputDecoration().copyWith(
+                                                filled: true, fillColor: Colors.grey[100]),
+                                            hint: const Text("Select Gender"),
                                             items: const [
-                                              DropdownMenuItem(
-                                                  value: "Male",
-                                                  child: Text("Male")),
-                                              DropdownMenuItem(
-                                                  value: "Female",
-                                                  child: Text("Female")),
-                                              DropdownMenuItem(
-                                                  value: "Children",
-                                                  child: Text("Children")),
-                                              DropdownMenuItem(
-                                                  value: "Others",
-                                                  child: Text("Others")),
+                                              DropdownMenuItem(value: "Male", child: Text("Male")),
+                                              DropdownMenuItem(value: "Female", child: Text("Female")),
+                                              DropdownMenuItem(value: "Children", child: Text("Children")),
+                                              DropdownMenuItem(value: "Others", child: Text("Others")),
                                             ],
                                             onChanged: isUpdating
                                                 ? null
-                                                : (v) => setState(
-                                                    () => selectedGender = v),
+                                                : (v) => setState(() => selectedGender = v),
                                           ),
                                         ],
                                       ),
@@ -901,28 +857,23 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           _label("State / Hometown"),
                                           DropdownButtonFormField<String>(
                                             isExpanded: true,
                                             dropdownColor: Colors.grey[100],
-                                            decoration: _inputDecoration()
-                                                .copyWith(
-                                                    filled: true,
-                                                    fillColor:
-                                                        Colors.grey[100]),
+                                            decoration: _inputDecoration().copyWith(
+                                                filled: true, fillColor: Colors.grey[100]),
                                             hint: const Text("Select State"),
                                             value: selectedState,
                                             items: states
-                                                .map((s) => DropdownMenuItem(
-                                                    value: s, child: Text(s)))
+                                                .map((s) =>
+                                                    DropdownMenuItem(value: s, child: Text(s)))
                                                 .toList(),
                                             onChanged: isUpdating
                                                 ? null
-                                                : (v) => setState(
-                                                    () => selectedState = v),
+                                                : (v) => setState(() => selectedState = v),
                                           ),
                                         ],
                                       ),
@@ -936,15 +887,13 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                   children: [
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           _label("Arrival Date"),
                                           _dateBox(arrivalDate, () {
                                             if (isUpdating) return;
                                             _openCalendar(context, arrivalDate,
-                                                (d) => setState(
-                                                    () => arrivalDate = d));
+                                                (d) => setState(() => arrivalDate = d));
                                           }),
                                         ],
                                       ),
@@ -952,15 +901,13 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           _label("Exit Date"),
                                           _dateBox(exitDate, () {
                                             if (isUpdating) return;
                                             _openCalendar(context, exitDate,
-                                                (d) => setState(
-                                                    () => exitDate = d));
+                                                (d) => setState(() => exitDate = d));
                                           }),
                                         ],
                                       ),
@@ -974,131 +921,123 @@ void _showEditMemberDialog(BuildContext context, Member member) {
                                 TextField(
                                   controller: descriptionController,
                                   maxLines: 4,
-                                  decoration: _inputDecoration(
-                                      hint: "Enter a brief description"),
+                                  decoration:
+                                      _inputDecoration(hint: "Enter a brief description"),
                                 ),
 
                                 const SizedBox(height: 32),
 
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.zero),
-                                        side: BorderSide(
-                                          color: isUpdating
-                                              ? Colors.grey
-                                              : AllColors.primaryColor,
+                                    Expanded(
+                                      child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(vertical: 14),
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.zero),
+                                          side: BorderSide(
+                                            color: isUpdating
+                                                ? Colors.grey
+                                                : AllColors.primaryColor,
+                                          ),
+                                        ),
+                                        onPressed:
+                                            isUpdating ? null : () => Navigator.pop(context),
+                                        child: Text(
+                                          "Cancel",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: isUpdating
+                                                ? Colors.grey
+                                                : AllColors.primaryColor,
+                                          ),
                                         ),
                                       ),
-                                      onPressed: isUpdating
-                                          ? null
-                                          : () => Navigator.pop(context),
-                                      child: Text("Cancel",
-                                          style: GoogleFonts.inter(
-                                              color: AllColors.primaryColor)),
                                     ),
-                                    const SizedBox(width: 16),
-                                    CustomButton(
-                                      label: isUpdating
-                                          ? "Saving..."
-                                          : "Update Member",
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w300,
-                                      height: 48,
-                                      isLoading: isUpdating,
-                                      onPressed: isUpdating
-                                          ? null
-                                          : () async {
-                                              setState(
-                                                  () => isUpdating = true);
-                                              try {
-                                                String? newPhotoUrl;
-                                                if (editImageBytes != null) {
-                                                  final fileName =
-                                                      'members/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
-                                                  final ref = FirebaseStorage
-                                                      .instance
-                                                      .ref()
-                                                      .child(fileName);
-                                                  final snap =
-                                                      await ref.putData(
-                                                    editImageBytes!,
-                                                    SettableMetadata(
-                                                        contentType:
-                                                            'image/jpeg'),
-                                                  );
-                                                  newPhotoUrl = await snap.ref
-                                                      .getDownloadURL();
-                                                  setState(() {
-                                                    currentPhotoUrl =
-                                                        newPhotoUrl!;
-                                                    editImageBytes = null;
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: CustomButton(
+                                        label: isUpdating ? "Saving..." : "Update Member",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        height: 48,
+                                        isLoading: isUpdating,
+                                        onPressed: isUpdating
+                                            ? null
+                                            : () async {
+                                                setState(() => isUpdating = true);
+                                                try {
+                                                  String? newPhotoUrl;
+                                                  if (editImageBytes != null) {
+                                                    final fileName =
+                                                        'members/${DateTime.now().millisecondsSinceEpoch}_$editImageName';
+                                                    final ref = FirebaseStorage.instance
+                                                        .ref()
+                                                        .child(fileName);
+                                                    final snap = await ref.putData(
+                                                      editImageBytes!,
+                                                      SettableMetadata(
+                                                          contentType: 'image/jpeg'),
+                                                    );
+                                                    newPhotoUrl =
+                                                        await snap.ref.getDownloadURL();
+                                                    setState(() {
+                                                      currentPhotoUrl = newPhotoUrl!;
+                                                      editImageBytes = null;
+                                                    });
+                                                  }
+
+                                                  await FirebaseFirestore.instance
+                                                      .collection('Member_collection')
+                                                      .doc(member.id)
+                                                      .update({
+                                                    "name": nameController.text.trim(),
+                                                    "phone": phoneController.text.trim(),
+                                                    "email": emailController.text.trim(),
+                                                    "state": selectedState,
+                                                    "gender": selectedGender,
+                                                    "arrivalDate": arrivalDate != null
+                                                        ? Timestamp.fromDate(arrivalDate!)
+                                                        : null,
+                                                    "exitDate": exitDate != null
+                                                        ? Timestamp.fromDate(exitDate!)
+                                                        : null,
+                                                    "photoUrl":
+                                                        newPhotoUrl ?? currentPhotoUrl,
+                                                    "updatedAt":
+                                                        FieldValue.serverTimestamp(),
                                                   });
+
+                                                  if (!context.mounted) return;
+                                                  Navigator.pop(context);
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          "Member updated successfully ✅"),
+                                                      backgroundColor: Colors.green,
+                                                    ),
+                                                  );
+                                                } catch (e) {
+                                                  if (!context.mounted) return;
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      content:
+                                                          Text("Failed to update ❌ $e"),
+                                                      backgroundColor: Colors.red,
+                                                    ),
+                                                  );
+                                                } finally {
+                                                  if (context.mounted) {
+                                                    setState(() => isUpdating = false);
+                                                  }
                                                 }
-
-                                                await FirebaseFirestore.instance
-                                                    .collection(
-                                                        'Member_collection')
-                                                    .doc(member.id)
-                                                    .update({
-                                                  "name": nameController.text
-                                                      .trim(),
-                                                  "phone": phoneController
-                                                      .text
-                                                      .trim(),
-                                                  "email": emailController
-                                                      .text
-                                                      .trim(),
-                                                  "state": selectedState,
-                                                  "gender": selectedGender,
-                                                  "arrivalDate":
-                                                      arrivalDate != null
-                                                          ? Timestamp.fromDate(
-                                                              arrivalDate!)
-                                                          : null,
-                                                  "exitDate": exitDate != null
-                                                      ? Timestamp.fromDate(
-                                                          exitDate!)
-                                                      : null,
-                                                  "photoUrl": newPhotoUrl ??
-                                                      currentPhotoUrl,
-                                                  "updatedAt": FieldValue
-                                                      .serverTimestamp(),
-                                                });
-
-                                                if (!context.mounted) return;
-                                                Navigator.pop(context);
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        "Member updated successfully ✅"),
-                                                    backgroundColor:
-                                                        Colors.green,
-                                                  ),
-                                                );
-                                              } catch (e) {
-                                                if (!context.mounted) return;
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                        "Failed to update ❌ $e"),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
-                                              } finally {
-                                                if (context.mounted)
-                                                  setState(() =>
-                                                      isUpdating = false);
-                                              }
-                                            },
+                                              },
+                                      ),
                                     ),
                                   ],
                                 ),
+
                                 const SizedBox(height: 24),
                               ],
                             ),
