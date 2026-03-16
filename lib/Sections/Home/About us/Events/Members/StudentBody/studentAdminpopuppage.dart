@@ -314,8 +314,8 @@ class _MobileLayoutState extends State<_MobileLayout> {
   String loginError    = "";
   bool isLoading       = false;
 
-  static const String ADMIN_EMAIL    = "admin@ngo.com";
-  static const String ADMIN_PASSWORD = "changma@2026";
+  static const String ADMIN_EMAIL    = "admin@bangalorechakmasociety.org";
+  static const String ADMIN_PASSWORD = "bcssince2007";
 
   void loginAdmin() {
     setState(() {

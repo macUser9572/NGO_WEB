@@ -1,16 +1,7 @@
 const {onCall, HttpsError} = require("firebase-functions/v2/https");
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "varshinigowdav8@gmail.com",
-    pass: "lzolvnjunechkvfx",
-  },
-});
-
 exports.sendMembershipEmail = onCall(async (request) => {
-  // ✅ In Firebase Functions v2, data is at request.data
   const {email, name, status} = request.data;
 
   console.log("Received request.data:", request.data);
@@ -21,29 +12,45 @@ exports.sendMembershipEmail = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "Recipient email is required");
   }
 
+  // ✅ Create transporter INSIDE the function (not at module level)
+  // This avoids cold-start auth caching issues in Cloud Functions
+  const transporter = nodemailer.createTransport({
+    host: "smtp.zoho.in",   // ✅ Use .in if your account is on Zoho India
+    port: 465,
+    secure: true,
+    auth: {
+      user: "admin@bangalorechakmasociety.org",
+      pass: "i8uUpMnZXQf1",  // ✅ App Password, not account password
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
   let subject;
   let message;
 
   if (status === "approved") {
     subject = "Membership Approved 🎉";
-    message = `Hello ${name},\n\nYour membership request has been successfully approved. We’re happy to have you with us.`;
+    message = `Hello ${name},\n\nYour membership request has been successfully approved. We're happy to have you with us.\n\nRegards,\nBangalore Chakma Society`;
   } else {
     subject = "Membership Rejected";
-    message = `Hello ${name},\n\nA representative will reach out to you shortly. Thank you for your understanding..`;
+    message = `Hello ${name},\n\nA representative will reach out to you shortly. Thank you for your understanding.\n\nRegards,\nBangalore Chakma Society;`;
   }
 
   try {
     await transporter.sendMail({
-      from: "varshinigowdav8@gmail.com",
+      from: '"Bangalore Chakma Society" <admin@bangalorechakmasociety.org>',
+      replyTo: "admin@bangalorechakmasociety.org",
       to: email,
       subject: subject,
       text: message,
     });
 
-    console.log("Email sent successfully to:", email);
+    console.log("✅ Email sent successfully to:", email);
     return {success: true};
   } catch (error) {
-    console.error("Mail Error:", error);
+    console.error("❌ Mail Error:", error);
     throw new HttpsError("internal", "Email sending failed: " + error.message);
   }
 });
