@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ngo_web/Sections/Home/About%20us/Events/Members/adminloginpop_memberpage.dart';
+import 'package:ngo_web/Sections/Home/NewsPaper.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:ngo_web/widgets/scroll_helper.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,8 @@ class NavbarDesktop extends StatelessWidget {
           _buildLogo(context),
           const Spacer(),
           _buildMenu(context),
+          const SizedBox(width: 12),
+          _buildNewspaperIcon(context),
           const SizedBox(width: 12),
           _buildAdminIcon(context),
         ],
@@ -72,7 +75,25 @@ class NavbarDesktop extends StatelessWidget {
       ],
     );
   }
+ Widget _buildNewspaperIcon(BuildContext context){
+  return Tooltip(
+    message: "New Paper",
+    child: InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () {
+        showDialog(
+          context: context, 
+          builder: (_) => const Newspaper()
+          );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: SvgPicture.asset("assets/icons/Newspaper.svg", height: 24, width: 24),
 
+        ),
+    ),
+  );
+ }
   Widget _buildAdminIcon(BuildContext context) {
     return Tooltip(
       message: "Admin Login",
@@ -86,7 +107,7 @@ class NavbarDesktop extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.all(6),
-          child: Image.asset("assets/image/adminlogo.png", height: 24, width: 24),
+          child: SvgPicture.asset("assets/icons/adminicon.svg", height: 24, width: 24),
         ),
       ),
     );
