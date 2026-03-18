@@ -1,8 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:ngo_web/constraints/CustomButton.dart';
 import 'package:ngo_web/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Newspapersetting extends StatelessWidget {
   const Newspapersetting({super.key});
@@ -22,10 +28,178 @@ class Newspapersetting extends StatelessWidget {
   }
 }
 
-//===================Desktop==============
-class NewspapersettingsDesktop extends StatelessWidget {
+// ─── Shared State Mixin ──────────────────────────────────────────────────────
+
+mixin NewsPostMixin<T extends StatefulWidget> on State<T> {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  XFile? pickedFile;
+  Uint8List? imageBytes;
+  bool isUploading = false;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final XFile? file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (file == null) return;
+
+    final bytes = await file.readAsBytes();
+    setState(() {
+      pickedFile = file;
+      imageBytes = bytes;
+    });
+  }
+
+  Future<void> postNews(BuildContext context) async {
+    final title = titleController.text.trim();
+    final description = descriptionController.text.trim();
+
+    if (title.isEmpty || description.isEmpty || pickedFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields and select an image.')),
+      );
+      return;
+    }
+
+    setState(() => isUploading = true);
+
+    try {
+      // 1. Upload image to Firebase Storage
+      final fileName = 'news/${DateTime.now().millisecondsSinceEpoch}_${pickedFile!.name}';
+      final storageRef = FirebaseStorage.instance.ref().child(fileName);
+
+      UploadTask uploadTask;
+      if (kIsWeb) {
+        uploadTask = storageRef.putData(
+          imageBytes!,
+          SettableMetadata(contentType: 'image/jpeg'),
+        );
+      } else {
+        uploadTask = storageRef.putFile(File(pickedFile!.path));
+      }
+
+      final snapshot = await uploadTask;
+      final imageUrl = await snapshot.ref.getDownloadURL();
+
+      // 2. Save post to Firestore
+      await FirebaseFirestore.instance.collection('news_posts').add({
+        'title': title,
+        'description': description,
+        'imageUrl': imageUrl,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News posted successfully!')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error posting news: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => isUploading = false);
+    }
+  }
+
+  Widget buildImagePicker({required double height, required String tapText}) {
+    return InkWell(
+      onTap: pickImage,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        height: height,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey[300]!),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: imageBytes != null
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.memory(imageBytes!, fit: BoxFit.cover),
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        'Change image',
+                        style: TextStyle(color: Colors.white, fontSize: 11),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.cloud_upload_outlined, color: Colors.grey[400], size: 36),
+                  const SizedBox(height: 8),
+                  Text(
+                    tapText,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  InputDecoration fieldDecoration(String hint) => InputDecoration(
+        hintText: hint,
+        filled: true,
+        fillColor: Colors.grey[50],
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[200]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AllColors.thirdColor.withOpacity(0.6)),
+        ),
+      );
+
+  TextStyle labelStyle(double size) => GoogleFonts.inter(
+        fontSize: size,
+        fontWeight: FontWeight.w600,
+        color: AllColors.thirdColor,
+      );
+}
+
+// ============================== Desktop LAYOUT ==============================
+
+class NewspapersettingsDesktop extends StatefulWidget {
   const NewspapersettingsDesktop({super.key});
 
+  @override
+  State<NewspapersettingsDesktop> createState() => _NewspapersettingsDesktopState();
+}
+
+class _NewspapersettingsDesktopState extends State<NewspapersettingsDesktop>
+    with NewsPostMixin {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -42,18 +216,12 @@ class NewspapersettingsDesktop extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row with Title and Close Button
+            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Text(
-                  'Post News',
-                  style: GoogleFonts.inter(
-                    fontSize: 40, 
-                    fontWeight: FontWeight.bold,
-                    color: AllColors.thirdColor
-                    ),
-                ),
+                Text('Post News', style: GoogleFonts.inter(
+                  fontSize: 40, fontWeight: FontWeight.bold, color: AllColors.thirdColor)),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.close),
@@ -67,101 +235,28 @@ class NewspapersettingsDesktop extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Upload Photo Section
-            Text(
-              'Upload photo',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AllColors.thirdColor
-                ),
-            ),
+            // Upload Photo
+            Text('Upload photo', style: labelStyle(16)),
             const SizedBox(height: 8),
-            InkWell(
-              onTap: () {
-                // Add image picker logic here
-              },
-              child: Container(
-                height: 140,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.cloud_upload_outlined,
-                      color: Colors.grey[400],
-                      size: 32,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Drag and drop or choose an image',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+            buildImagePicker(height: 140, tapText: 'Drag and drop or choose an image'),
+            const SizedBox(height: 20),
+
+            // Title
+            Text('Title', style: labelStyle(16)),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: titleController,
+              decoration: fieldDecoration('Post title'),
             ),
             const SizedBox(height: 20),
 
-            // Title Field
-            Text('Title', 
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AllColors.thirdColor
-              )),
+            // Description
+            Text('Description', style: labelStyle(16)),
             const SizedBox(height: 8),
             TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Post title',
-                filled: true,
-                fillColor: Colors.grey[50],
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 16,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[200]!),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Description Field
-             Text(
-              'Description',
-              style: GoogleFonts.inter( 
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AllColors.thirdColor),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+              controller: descriptionController,
               maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'Enter a brief description about the post',
-                filled: true,
-                fillColor: Colors.grey[50],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[200]!),
-                ),
-              ),
+              decoration: fieldDecoration('Enter a brief description about the post'),
             ),
             const SizedBox(height: 32),
 
@@ -171,17 +266,19 @@ class NewspapersettingsDesktop extends StatelessWidget {
               children: [
                 CustomButton(
                   label: 'Cancel',
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: isUploading ? null : () => Navigator.pop(context),
                   outlined: true,
                 ),
                 const SizedBox(width: 12),
-                CustomButton(
-                  label: 'Post News',
-                  onPressed: () {
-                    // Add post logic here
-                    Navigator.pop(context);
-                  },
-                ),
+                isUploading
+                    ? const SizedBox(
+                        width: 100,
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    : CustomButton(
+                        label: 'Post News',
+                        onPressed: () => postNews(context),
+                      ),
               ],
             ),
           ],
@@ -191,23 +288,24 @@ class NewspapersettingsDesktop extends StatelessWidget {
   }
 }
 
-//===================Mobile==============
-class NewspapersettingsMobile extends StatelessWidget {
+// ============================== MOBILE LAYOUT ==============================
+
+class NewspapersettingsMobile extends StatefulWidget {
   const NewspapersettingsMobile({super.key});
 
+  @override
+  State<NewspapersettingsMobile> createState() => _NewspapersettingsMobileState();
+}
+
+class _NewspapersettingsMobileState extends State<NewspapersettingsMobile>
+    with NewsPostMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AllColors.secondaryColor,
       appBar: AppBar(
-        title: const Text(
-          'Post News',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('Post News',
+            style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold)),
         backgroundColor: AllColors.secondaryColor,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -224,102 +322,34 @@ class NewspapersettingsMobile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Upload Photo Section
-             Text(
-              'Upload photo',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600),
-            ),
+            Text('Upload photo', style: labelStyle(14)),
             const SizedBox(height: 8),
-            InkWell(
-              onTap: () {
-                // Add image picker logic here
-              },
-              child: Container(
-                height: 180,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.cloud_upload_outlined,
-                      color: Colors.grey[400],
-                      size: 40,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Tap to choose an image',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
+            buildImagePicker(height: 180, tapText: 'Tap to choose an image'),
+            const SizedBox(height: 24),
+
+            Text('Title', style: labelStyle(14)),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: titleController,
+              decoration: fieldDecoration('Post title'),
             ),
             const SizedBox(height: 24),
 
-            // Title Field
-             Text('Title',  
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w600)),
+            Text('Description', style: labelStyle(14)),
             const SizedBox(height: 8),
             TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Post title',
-                filled: true,
-                fillColor: Colors.grey[50],
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[200]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Description Field
-             Text(
-              'Description',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+              controller: descriptionController,
               maxLines: 5,
-              decoration: InputDecoration(
-                hintText: 'Enter a brief description about the post',
-                filled: true,
-                fillColor: Colors.grey[50],
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[200]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+              decoration: fieldDecoration('Enter a brief description about the post'),
             ),
             const SizedBox(height: 40),
 
-            // Buttons - Stacked for mobile UX
-            // Buttons - Side by side
             Row(
               children: [
                 Expanded(
                   child: CustomButton(
                     label: 'Cancel',
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: isUploading ? null : () => Navigator.pop(context),
                     outlined: true,
                     height: 48,
                     fontSize: 16,
@@ -327,15 +357,14 @@ class NewspapersettingsMobile extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: CustomButton(
-                    label: 'Post News',
-                    onPressed: () {
-                      // Add post logic here
-                      Navigator.pop(context);
-                    },
-                    height: 48,
-                    fontSize: 16,
-                  ),
+                  child: isUploading
+                      ? const SizedBox(height: 48, child: Center(child: CircularProgressIndicator()))
+                      : CustomButton(
+                          label: 'Post News',
+                          onPressed: () => postNews(context),
+                          height: 48,
+                          fontSize: 16,
+                        ),
                 ),
               ],
             ),
