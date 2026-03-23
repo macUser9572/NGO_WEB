@@ -1,4 +1,4 @@
-package com.example.ngo_web
+package com.example.bangalore_chakma_society
 
 import io.flutter.embedding.android.FlutterActivity
 

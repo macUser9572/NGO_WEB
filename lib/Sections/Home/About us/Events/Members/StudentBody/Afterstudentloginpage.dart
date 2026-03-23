@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/addstudentmemberpage.dart';
-import 'package:ngo_web/constraints/CustomButton.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:ngo_web/constraints/custom_text.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/addstudentmemberpage.dart';
+import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/custom_text.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 // ─────────────────────────────────────────────
@@ -1755,10 +1755,10 @@ void _openCalendar(
 // import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:google_fonts/google_fonts.dart';
 // import 'package:image_picker/image_picker.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/addstudentmemberpage.dart';
-// import 'package:ngo_web/constraints/CustomButton.dart';
-// import 'package:ngo_web/constraints/all_colors.dart';
-// import 'package:ngo_web/constraints/custom_text.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/addstudentmemberpage.dart';
+// import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+// import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+// import 'package:bangalore_chakma_society/constraints/custom_text.dart';
 // import 'package:responsive_builder/responsive_builder.dart';
 
 // // ─────────────────────────────────────────────

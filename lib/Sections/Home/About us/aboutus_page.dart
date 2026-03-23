@@ -1,13 +1,13 @@
 import 'dart:js_interop';
 import 'dart:ui_web' as ui;
 // ignore: avoid_web_libraries_in_flutter
-import 'package:ngo_web/Sections/Home/Be%20a%20contributor.dart';
+import 'package:bangalore_chakma_society/Sections/Home/Be%20a%20contributor.dart';
 import 'package:web/web.dart' as web;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/constraints/CustomButton.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';

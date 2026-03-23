@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String label;
@@ -92,7 +92,7 @@ class CustomButton extends StatelessWidget {
 }
 // import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
-// import 'package:ngo_web/constraints/all_colors.dart';
+// import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 
 // class CustomButton extends StatelessWidget {
 //   final String label;

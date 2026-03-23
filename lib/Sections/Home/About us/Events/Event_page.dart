@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class EventPage extends StatelessWidget {

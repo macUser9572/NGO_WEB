@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/studentimagebackend.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/upload_event.dart';
-import 'package:ngo_web/Sections/Home/About%20us/vediolink.dart';
-import 'package:ngo_web/Sections/Home/HomepageImageUpload.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/studentimagebackend.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/upload_event.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/vediolink.dart';
+import 'package:bangalore_chakma_society/Sections/Home/HomepageImageUpload.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 

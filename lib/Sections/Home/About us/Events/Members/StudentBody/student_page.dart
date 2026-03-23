@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Student_list_page.dart';
-import 'package:ngo_web/constraints/CustomButton.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/Student_list_page.dart';
+import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class StudentPage extends StatelessWidget {

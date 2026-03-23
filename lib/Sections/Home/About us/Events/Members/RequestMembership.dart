@@ -3,8 +3,8 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:ngo_web/constraints/custom_text.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/custom_text.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 // ─────────────────────────────────────────────

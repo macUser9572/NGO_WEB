@@ -17,7 +17,7 @@ class NavBar extends StatelessWidget {
 }
 // import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
-// import 'package:ngo_web/widgets/scroll_helper.dart';
+// import 'package:bangalore_chakma_society/widgets/scroll_helper.dart';
 // import 'package:provider/provider.dart';
 // import 'nav_models.dart';
 

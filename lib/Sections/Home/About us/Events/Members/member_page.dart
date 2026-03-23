@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/constraints/CustomButton.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Member_List_page.dart';
@@ -563,8 +563,8 @@ class _MobileLayout extends StatelessWidget {
 }
 // import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
-// import 'package:ngo_web/constraints/CustomButton.dart';
-// import 'package:ngo_web/constraints/all_colors.dart';
+// import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+// import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 // import 'package:responsive_builder/responsive_builder.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'Member_List_page.dart';

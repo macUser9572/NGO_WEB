@@ -4,10 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/studentAdminpopuppage.dart';
-import 'package:ngo_web/constraints/CustomButton.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:ngo_web/constraints/custom_text.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/studentAdminpopuppage.dart';
+import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/custom_text.dart';
 
 // ====================== ENTRY POINT ======================
 class StudentListPage extends StatelessWidget {

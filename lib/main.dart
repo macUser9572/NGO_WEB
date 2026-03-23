@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-import 'package:ngo_web/widgets/scroll_helper.dart';
-import 'package:ngo_web/Page/homeview.dart';
+import 'package:bangalore_chakma_society/widgets/scroll_helper.dart';
+import 'package:bangalore_chakma_society/Page/homeview.dart';
 import 'firebase_options.dart';
 
 void main() async {

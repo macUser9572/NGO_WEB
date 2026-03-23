@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:ngo_web/widgets/scroll_helper.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/widgets/scroll_helper.dart';
 import 'package:provider/provider.dart';
 import 'section_key.dart';
 

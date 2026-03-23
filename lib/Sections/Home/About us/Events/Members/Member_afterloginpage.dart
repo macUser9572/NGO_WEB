@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/addmemberpage.dart';
-import 'package:ngo_web/constraints/CustomButton.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:ngo_web/constraints/custom_text.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/addmemberpage.dart';
+import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/constraints/custom_text.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'dart:typed_data';
 
@@ -765,7 +765,7 @@ void _showDesktopEditDialog(BuildContext context, Member member) {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     SizedBox(
-                                      width: 140,
+                                      width: 160,
                                       height: 30,
                                       child: OutlinedButton(
                                         style: OutlinedButton.styleFrom(
@@ -793,13 +793,14 @@ void _showDesktopEditDialog(BuildContext context, Member member) {
                                     ),
                                     const SizedBox(width: 9),
                                     SizedBox(
-                                      width: 180,
+                                      height: 30,
+                                      width: 160,
                                       child: CustomButton(
                                         label: isUpdating
                                             ? "Saving..."
                                             : "Update Member",
                                         fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         height: 48,
                                         isLoading: isUpdating,
                                         onPressed: isUpdating

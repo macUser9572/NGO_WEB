@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:ngo_web/Page/footer.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Event_page.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Contact/contact_page.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/student_page.dart';
-import 'package:ngo_web/Sections/Home/About%20us/Events/Members/member_page.dart';
-import 'package:ngo_web/Sections/Home/About%20us/aboutus_page.dart';
-import 'package:ngo_web/Sections/Home/About%20us/aboutus_page2.dart';
-import 'package:ngo_web/Sections/Home/home_page.dart';
-import 'package:ngo_web/Sections/ourInitiatives.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
-import 'package:ngo_web/widgets/app_drawer.dart';
-import 'package:ngo_web/widgets/navbar_desktop.dart';
-import 'package:ngo_web/widgets/navbar_mobile.dart';
-import 'package:ngo_web/widgets/scroll_helper.dart';
-import 'package:ngo_web/widgets/section_key.dart';
+import 'package:bangalore_chakma_society/Page/footer.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Event_page.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/Contact/contact_page.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/student_page.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/member_page.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/aboutus_page.dart';
+import 'package:bangalore_chakma_society/Sections/Home/About%20us/aboutus_page2.dart';
+import 'package:bangalore_chakma_society/Sections/Home/home_page.dart';
+import 'package:bangalore_chakma_society/Sections/ourInitiatives.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/widgets/app_drawer.dart';
+import 'package:bangalore_chakma_society/widgets/navbar_desktop.dart';
+import 'package:bangalore_chakma_society/widgets/navbar_mobile.dart';
+import 'package:bangalore_chakma_society/widgets/scroll_helper.dart';
+import 'package:bangalore_chakma_society/widgets/section_key.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
@@ -107,21 +107,21 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 // import 'package:flutter/material.dart';
-// import 'package:ngo_web/Page/footer.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/Events/Event_page.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/Contact/contact_page.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/Events/Members/StudentBody/student_page.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/Events/Members/member_page.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/aboutus_page.dart';
-// import 'package:ngo_web/Sections/Home/About%20us/aboutus_page2.dart';
-// import 'package:ngo_web/Sections/Home/home_page.dart';
-// import 'package:ngo_web/Sections/ourInitiatives.dart';
-// import 'package:ngo_web/constraints/all_colors.dart';
-// import 'package:ngo_web/widgets/app_drawer.dart';
-// import 'package:ngo_web/widgets/navbar_desktop.dart';
-// import 'package:ngo_web/widgets/navbar_mobile.dart';
-// import 'package:ngo_web/widgets/scroll_helper.dart';
-// import 'package:ngo_web/widgets/section_key.dart';
+// import 'package:bangalore_chakma_society/Page/footer.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Event_page.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/Contact/contact_page.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/student_page.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/member_page.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/aboutus_page.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/About%20us/aboutus_page2.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/home_page.dart';
+// import 'package:bangalore_chakma_society/Sections/ourInitiatives.dart';
+// import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+// import 'package:bangalore_chakma_society/widgets/app_drawer.dart';
+// import 'package:bangalore_chakma_society/widgets/navbar_desktop.dart';
+// import 'package:bangalore_chakma_society/widgets/navbar_mobile.dart';
+// import 'package:bangalore_chakma_society/widgets/scroll_helper.dart';
+// import 'package:bangalore_chakma_society/widgets/section_key.dart';
 // import 'package:provider/provider.dart';
 
 // class HomeView extends StatefulWidget {

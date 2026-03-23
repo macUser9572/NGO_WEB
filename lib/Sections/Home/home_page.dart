@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ngo_web/Sections/Home/Be%20a%20contributor.dart';
-import 'package:ngo_web/Sections/Home/joinAsMember.dart';
-import 'package:ngo_web/constraints/all_colors.dart';
+import 'package:bangalore_chakma_society/Sections/Home/Be%20a%20contributor.dart';
+import 'package:bangalore_chakma_society/Sections/Home/joinAsMember.dart';
+import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class HomePage extends StatelessWidget {
