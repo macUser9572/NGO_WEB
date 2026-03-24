@@ -11,19 +11,29 @@ import 'package:responsive_builder/responsive_builder.dart';
 // ─────────────────────────────────────────────
 //  RESPONSIVE ENTRY POINT
 // ─────────────────────────────────────────────
-class Homepageimageupload extends StatelessWidget {
-  const Homepageimageupload({super.key});
+class Adimagepage extends StatelessWidget {
+  const Adimagepage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveBuilder(
-      builder: (context, sizing) {
-        if (sizing.deviceScreenType == DeviceScreenType.desktop) {
-          return const _DesktopLayout();
-        } else {
-          return const _MobileLayout();
-        }
-      },
+    final bool isMobile = MediaQuery.of(context).size.width < 600;
+
+    return Dialog(
+      backgroundColor: Colors.white,
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 40,
+        vertical: isMobile ? 24 : 40,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ResponsiveBuilder(
+        builder: (context, sizing) {
+          if (sizing.deviceScreenType == DeviceScreenType.desktop) {
+            return const _DesktopLayout();
+          } else {
+            return const _MobileLayout();
+          }
+        },
+      ),
     );
   }
 }
@@ -36,57 +46,39 @@ class _DesktopLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AllColors.secondaryColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Back Button ──
-            InkWell(
-              onTap: () => Navigator.pop(context),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.arrow_back),
-                  SizedBox(width: 6),
-                  Text("Back"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // ── Title ──
-            Text(
-              "Homepage",
-              style: GoogleFonts.inter(
-                fontSize: 40,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            // ── Upload Card centered ──
-            Expanded(
-              child: Center(
-                child: Container(
-                  width: 700,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 30,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: const _UploadBody(),
+    return Container(
+      width: 700,
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ──
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Ad Pop Up",
+                style: GoogleFonts.inter(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
                 ),
               ),
-            ),
-          ],
-        ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+                splashRadius: 20,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 24),
+
+          // ── Upload Body ──
+          const _UploadBody(),
+        ],
       ),
     );
   }
@@ -100,32 +92,39 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AllColors.secondaryColor,
-      appBar: AppBar(
-        backgroundColor: AllColors.secondaryColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          "Homepage",
-          style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w700),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ──
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Ad Pop Up",
+                style: GoogleFonts.inter(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+                splashRadius: 20,
+              ),
+            ],
           ),
-          child: const _UploadBody(),
-        ),
+
+          const SizedBox(height: 20),
+
+          // ── Upload Body (scrollable on mobile) ──
+          SingleChildScrollView(child: const _UploadBody()),
+        ],
       ),
     );
   }
@@ -160,7 +159,7 @@ class _UploadBodyState extends State<_UploadBody> {
     try {
       final doc = await FirebaseFirestore.instance
           .collection('homepage')
-          .doc('banner_image')
+          .doc('ad_banner')
           .get();
 
       if (doc.exists) {
@@ -202,7 +201,7 @@ class _UploadBodyState extends State<_UploadBody> {
 
     try {
       final storageRef = FirebaseStorage.instance.ref().child(
-        'homepage_images/${DateTime.now().millisecondsSinceEpoch}_$fileName',
+        'ad_popup/${DateTime.now().millisecondsSinceEpoch}_$fileName',
       );
 
       final uploadTask = await storageRef.putData(
@@ -214,7 +213,7 @@ class _UploadBodyState extends State<_UploadBody> {
 
       await FirebaseFirestore.instance
           .collection('homepage')
-          .doc('banner_image')
+          .doc('ad_banner')
           .set({
             'imageUrl': downloadURL,
             'fileName': fileName,
@@ -224,7 +223,7 @@ class _UploadBodyState extends State<_UploadBody> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Image uploaded successfully!"),
+            content: Text("Ad image uploaded successfully!"),
             backgroundColor: Colors.green,
           ),
         );
@@ -264,7 +263,7 @@ class _UploadBodyState extends State<_UploadBody> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            "No existing image uploaded yet.",
+            "No existing ad image uploaded yet.",
             style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade500),
           ),
         ),
@@ -321,7 +320,7 @@ class _UploadBodyState extends State<_UploadBody> {
                     ? "New image selected ✓"
                     : _existingFileName.isNotEmpty
                     ? _existingFileName
-                    : "banner_image",
+                    : "ad_banner",
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   color: fileBytes != null
@@ -346,14 +345,17 @@ class _UploadBodyState extends State<_UploadBody> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── Existing image ──
         _buildExistingImageSection(),
 
+        // ── Label ──
         Text(
           "Image",
           style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 10),
 
+        // ── File picker row ──
         Container(
           height: 60,
           decoration: BoxDecoration(
@@ -392,6 +394,7 @@ class _UploadBodyState extends State<_UploadBody> {
 
         const SizedBox(height: 40),
 
+        // ── Upload button ──
         Align(
           alignment: Alignment.centerRight,
           child: CustomButton(
@@ -402,57 +405,6 @@ class _UploadBodyState extends State<_UploadBody> {
           ),
         ),
       ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────
-//  HOMEPAGE UPLOAD POPUP (Dialog — kept for showDialog usage)
-// ─────────────────────────────────────────────
-class HomepageUploadPopup extends StatelessWidget {
-  const HomepageUploadPopup({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isMobile = MediaQuery.of(context).size.width < 600;
-
-    return Dialog(
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        width: isMobile ? double.infinity : 700,
-        padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 40,
-          vertical: isMobile ? 20 : 30,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Homepage",
-                  style: GoogleFonts.inter(
-                    fontSize: isMobile ? 24 : 36,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
-                  splashRadius: 20,
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const _UploadBody(),
-          ],
-        ),
-      ),
     );
   }
 }

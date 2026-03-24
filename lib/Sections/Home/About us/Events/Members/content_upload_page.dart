@@ -1,3 +1,4 @@
+import 'package:bangalore_chakma_society/Sections/Home/adimagepage.dart';
 import 'package:flutter/material.dart';
 import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/Members/StudentBody/studentimagebackend.dart';
 import 'package:bangalore_chakma_society/Sections/Home/About%20us/Events/upload_event.dart';
@@ -33,6 +34,37 @@ class ContentUploadPageTab extends StatelessWidget {
 class _DesktopLayout extends StatelessWidget {
   const _DesktopLayout();
 
+  static const List<_CardData> _cards = [
+    _CardData(icon: Icons.home_outlined, label: "Homepage"),
+    _CardData(icon: Icons.play_circle_outline_rounded, label: "Video"),
+    _CardData(icon: Icons.image_outlined, label: "Events"),
+    _CardData(icon: Icons.groups_outlined, label: "Student Body"),
+    _CardData(icon: Icons.add_photo_alternate_outlined, label: "Ad Pop image"),
+  ];
+
+  void _handleTap(BuildContext context, String label) {
+    Widget dialog;
+    switch (label) {
+      case "Homepage":
+        dialog = const HomepageUploadPopup();
+        break;
+      case "Video":
+        dialog = const Videolink();
+        break;
+      case "Events":
+        dialog = EventsUploadPage();
+        break;
+      case "Student Body":
+        dialog = Studentimagebackend();
+        break;
+      case "Ad Pop image":
+      default:
+        dialog = const Adimagepage();
+        break;
+    }
+    showDialog(context: context, builder: (_) => dialog);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,7 +74,7 @@ class _DesktopLayout extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Title
+            // ── Title ──
             Text(
               "Content Upload",
               style: GoogleFonts.inter(
@@ -52,66 +84,53 @@ class _DesktopLayout extends StatelessWidget {
               ),
             ),
 
-            /// Cards centered in remaining space
+            // ── Cards ──
             Expanded(
               child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /// Homepage Card
-                    _UploadCard(
-                      icon: Icons.home_outlined,
-                      label: "Homepage",
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => const HomepageUploadPopup(),
-                        );
-                      },
-                    ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    const int cardCount = 5;
+                    const double minSpacing = 16.0;
+                    const double maxSpacing = 60.0;
+                    const double minCard = 120.0;
+                    const double maxCard = 180.0;
 
-                    const SizedBox(width: 60),
+                    // Try max card size first, shrink if needed
+                    double spacing = maxSpacing;
+                    double cardSize =
+                        ((constraints.maxWidth - spacing * (cardCount - 1)) /
+                                cardCount)
+                            .clamp(minCard, maxCard);
 
-                    /// Video Card
-                    _UploadCard(
-                      icon: Icons.play_circle_outline_rounded,
-                      label: "Video",
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => const Videolink(),
-                        );
-                      },
-                    ),
+                    // Recalculate spacing from actual card size
+                    spacing =
+                        ((constraints.maxWidth - cardSize * cardCount) /
+                                (cardCount - 1))
+                            .clamp(minSpacing, maxSpacing);
 
-                    const SizedBox(width: 60),
-
-                    /// Events Card
-                    _UploadCard(
-                      icon: Icons.image_outlined,
-                      label: "Events",
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => EventsUploadPage(),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(width: 60),
-
-                    /// Student Body Card
-                    _UploadCard(
-                      icon: Icons.groups_outlined,
-                      label: "Student Body",
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => Studentimagebackend(),
-                        );
-                      },
-                    ),
-                  ],
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(_cards.length, (i) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _UploadCard(
+                                icon: _cards[i].icon,
+                                label: _cards[i].label,
+                                cardSize: cardSize,
+                                onTap: () =>
+                                    _handleTap(context, _cards[i].label),
+                              ),
+                              if (i < _cards.length - 1)
+                                SizedBox(width: spacing),
+                            ],
+                          );
+                        }),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -128,8 +147,42 @@ class _DesktopLayout extends StatelessWidget {
 class _MobileLayout extends StatelessWidget {
   const _MobileLayout();
 
+  void _handleTap(BuildContext context, String label) {
+    Widget dialog;
+    switch (label) {
+      case "Homepage":
+        dialog = const HomepageUploadPopup();
+        break;
+      case "Video":
+        dialog = const Videolink();
+        break;
+      case "Events":
+        dialog = EventsUploadPage();
+        break;
+      case "Student Body":
+        dialog = Studentimagebackend();
+        break;
+      case "Ad Pop image":
+      default:
+        dialog = const Adimagepage();
+        break;
+    }
+    showDialog(context: context, builder: (_) => dialog);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final cards = [
+      _CardData(icon: Icons.home_outlined, label: "Homepage"),
+      _CardData(icon: Icons.play_circle_outline_rounded, label: "Video"),
+      _CardData(icon: Icons.image_outlined, label: "Events"),
+      _CardData(icon: Icons.groups_outlined, label: "Student Body"),
+      _CardData(
+        icon: Icons.add_photo_alternate_outlined,
+        label: "Ad Pop image",
+      ),
+    ];
+
     return Container(
       color: Colors.white,
       child: Padding(
@@ -137,7 +190,7 @@ class _MobileLayout extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Title
+            // ── Title ──
             Text(
               "Content Upload",
               style: GoogleFonts.inter(
@@ -149,61 +202,21 @@ class _MobileLayout extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            /// Cards in a 2x2 grid
+            // ── Cards Grid ──
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
-                children: [
-                  /// Homepage Card
-                  _UploadCard(
-                    icon: Icons.home_outlined,
-                    label: "Homepage",
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => const HomepageUploadPopup(),
-                      );
-                    },
-                  ),
-
-                  /// Video Card
-                  _UploadCard(
-                    icon: Icons.play_circle_outline_rounded,
-                    label: "Video",
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => const Videolink(),
-                      );
-                    },
-                  ),
-
-                  /// Events Card
-                  _UploadCard(
-                    icon: Icons.image_outlined,
-                    label: "Events",
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => EventsUploadPage(),
-                      );
-                    },
-                  ),
-
-                  /// Student Body Card
-                  _UploadCard(
-                    icon: Icons.groups_outlined,
-                    label: "Student Body",
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => Studentimagebackend(),
-                      );
-                    },
-                  ),
-                ],
+                children: cards
+                    .map(
+                      (card) => _UploadCard(
+                        icon: card.icon,
+                        label: card.label,
+                        onTap: () => _handleTap(context, card.label),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ],
@@ -214,17 +227,28 @@ class _MobileLayout extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-// UPLOAD CARD WIDGET
+//  CARD DATA MODEL
+// ─────────────────────────────────────────────
+class _CardData {
+  final IconData icon;
+  final String label;
+  const _CardData({required this.icon, required this.label});
+}
+
+// ─────────────────────────────────────────────
+//  UPLOAD CARD WIDGET
 // ─────────────────────────────────────────────
 class _UploadCard extends StatefulWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final double cardSize;
 
   const _UploadCard({
     required this.icon,
     required this.label,
     required this.onTap,
+    this.cardSize = 180,
   });
 
   @override
@@ -244,14 +268,12 @@ class _UploadCardState extends State<_UploadCard> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          width: 180,
-          height: 180,
+          width: widget.cardSize,
+          height: widget.cardSize,
           decoration: BoxDecoration(
             color: AllColors.fourthColor,
             border: Border.all(
-              color: _hovering
-                  ? AllColors.primaryColor
-                  : Colors.grey.shade300,
+              color: _hovering ? AllColors.primaryColor : Colors.grey.shade300,
               width: 1.2,
             ),
             borderRadius: BorderRadius.circular(4),
@@ -261,7 +283,7 @@ class _UploadCardState extends State<_UploadCard> {
                       color: AllColors.primaryColor.withOpacity(0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
-                    )
+                    ),
                   ]
                 : [],
           ),
@@ -270,14 +292,15 @@ class _UploadCardState extends State<_UploadCard> {
             children: [
               Icon(
                 widget.icon,
-                size: 32,
+                size: (widget.cardSize * 0.18).clamp(24, 36),
                 color: AllColors.primaryColor,
               ),
               const SizedBox(height: 12),
               Text(
                 widget.label,
+                textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  fontSize: 13,
+                  fontSize: (widget.cardSize * 0.072).clamp(11, 14),
                   fontWeight: FontWeight.w400,
                   color: AllColors.primaryColor,
                 ),
