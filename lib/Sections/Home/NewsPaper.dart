@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bangalore_chakma_society/Sections/Home/Newspaperadminpage.dart';
-import 'package:bangalore_chakma_society/Sections/Home/Newspapersetting.dart';
 import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
 import 'package:bangalore_chakma_society/constraints/all_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -61,18 +60,17 @@ class NewspaperDesktop extends StatelessWidget {
                     color: AllColors.thirdColor,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => const Newspaperadminpage(),
-                    );
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/icons/settings.svg',
-                    color: AllColors.thirdColor,
-                    width: 24,
-                    height: 24,
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: CustomButton(
+                    label: "Edit News",
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const Newspaperadminpage(),
+                        barrierDismissible: false,
+                      );
+                    },
                   ),
                 ),
               ],
@@ -138,7 +136,6 @@ class _NewsListBody extends StatelessWidget {
             final doc = docs[index];
             final data = doc.data() as Map<String, dynamic>;
             return _NewsCard(
-              docId: doc.id,
               title: data['title'] ?? '',
               description: data['description'] ?? '',
               imageUrl: data['imageUrl'] ?? '',
@@ -152,49 +149,17 @@ class _NewsListBody extends StatelessWidget {
 }
 
 class _NewsCard extends StatelessWidget {
-  final String docId;
   final String title;
   final String description;
   final String imageUrl;
   final String date;
 
   const _NewsCard({
-    required this.docId,
     required this.title,
     required this.description,
     required this.imageUrl,
     required this.date,
   });
-
-  void _showEditDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          builder: (_) => Newspapersetting(
-            docId: docId,
-            initialTitle: title,
-            initialDescription: description,
-            initialImageUrl: imageUrl,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          barrierDismissible: true,
-          builder: (_) => _DeleteDialog(docId: docId),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,50 +189,15 @@ class _NewsCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: AllColors.thirdColor,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      InkWell(
-                        onTap: () => _showEditDialog(context),
-                        borderRadius: BorderRadius.circular(4),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            'assets/icons/edit.svg',
-                            width: 18,
-                            height: 18,
-                            color: AllColors.thirdColor,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      InkWell(
-                        onTap: () => _showDeleteDialog(context),
-                        borderRadius: BorderRadius.circular(4),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            'assets/icons/Trash.svg',
-                            width: 18,
-                            height: 18,
-                            color: AllColors.thirdColor,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AllColors.thirdColor,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   if (date.isNotEmpty) ...[
                     const SizedBox(height: 3),
@@ -419,7 +349,6 @@ class _NewsListBodyMobile extends StatelessWidget {
             final doc = docs[index];
             final data = doc.data() as Map<String, dynamic>;
             return _NewsCardMobile(
-              docId: doc.id,
               title: data['title'] ?? '',
               description: data['description'] ?? '',
               imageUrl: data['imageUrl'] ?? '',
@@ -433,49 +362,17 @@ class _NewsListBodyMobile extends StatelessWidget {
 }
 
 class _NewsCardMobile extends StatelessWidget {
-  final String docId;
   final String title;
   final String description;
   final String imageUrl;
   final String date;
 
   const _NewsCardMobile({
-    required this.docId,
     required this.title,
     required this.description,
     required this.imageUrl,
     required this.date,
   });
-
-  void _showEditDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          builder: (_) => Newspapersetting(
-            docId: docId,
-            initialTitle: title,
-            initialDescription: description,
-            initialImageUrl: imageUrl,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          barrierDismissible: true,
-          builder: (_) => _DeleteDialog(docId: docId),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -503,50 +400,15 @@ class _NewsCardMobile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AllColors.thirdColor,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    InkWell(
-                      onTap: () => _showEditDialog(context),
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: SvgPicture.asset(
-                          'assets/icons/edit.svg',
-                          width: 16,
-                          height: 16,
-                          color: AllColors.thirdColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    InkWell(
-                      onTap: () => _showDeleteDialog(context),
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: SvgPicture.asset(
-                          'assets/icons/Trash.svg',
-                          width: 16,
-                          height: 16,
-                          color: AllColors.thirdColor,
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AllColors.thirdColor,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (date.isNotEmpty) ...[
                   const SizedBox(height: 3),
@@ -580,341 +442,6 @@ class _NewsCardMobile extends StatelessWidget {
       height: 80,
       color: Colors.grey[200],
       child: Icon(Icons.image_outlined, color: Colors.grey[400], size: 28),
-    );
-  }
-}
-
-// ============================== Delete Dialog ==============================
-
-class _DeleteDialog extends StatelessWidget {
-  final String docId;
-
-  const _DeleteDialog({required this.docId});
-
-  Future<void> _deletePost(BuildContext context) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('news_posts')
-          .doc(docId)
-          .delete();
-      if (context.mounted) Navigator.pop(context);
-    } catch (e) {
-      if (context.mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete: $e')),
-        );
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      backgroundColor: AllColors.secondaryColor,
-      child: SizedBox(
-        width: 420,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/image/dustbin.png',
-                height: 120,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Delete News',
-                style: GoogleFonts.inter(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Are you sure you want to delete this news post?',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 28),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      side: const BorderSide(
-                        color: Color.fromARGB(255, 240, 26, 11),
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'Cancel',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: Color.fromARGB(255, 240, 26, 11),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 24),
-                  CustomButton(
-                    label: 'YES, DELETE',
-                    backgroundColor: Color.fromARGB(255, 240, 26, 11),
-                    textColor: Colors.white,
-                    onPressed: () => _deletePost(context),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ============================== Admin Gate Dialog ==============================
-
-class _AdminGate extends StatefulWidget {
-  final void Function(BuildContext context) onSuccess;
-  const _AdminGate({required this.onSuccess});
-
-  @override
-  State<_AdminGate> createState() => _AdminGateState();
-}
-
-class _AdminGateState extends State<_AdminGate> {
-  static const String _adminEmail = "admin@bangalorechakmasociety.org";
-  static const String _adminPassword = "bcssince2007";
-
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  bool _isPasswordVisible = false;
-  bool _isLoading = false;
-  String _emailError = "";
-  String _passwordError = "";
-  String _loginError = "";
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _login() {
-    setState(() {
-      _emailError = "";
-      _passwordError = "";
-      _loginError = "";
-    });
-
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    bool hasError = false;
-
-    if (email.isEmpty) {
-      setState(() => _emailError = "Please fill the email id");
-      hasError = true;
-    }
-    if (password.isEmpty) {
-      setState(() => _passwordError = "Please fill the password");
-      hasError = true;
-    }
-    if (hasError) return;
-
-    setState(() => _isLoading = true);
-
-    Future.delayed(const Duration(milliseconds: 400), () {
-      if (!mounted) return;
-      if (email == _adminEmail && password == _adminPassword) {
-        Navigator.pop(context);
-        widget.onSuccess(context);
-      } else {
-        setState(() {
-          _loginError = "Invalid admin email or password";
-          _isLoading = false;
-        });
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: 420,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        decoration: BoxDecoration(
-          color: AllColors.secondaryColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Admin Login",
-                    style: GoogleFonts.inter(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              Text(
-                "Please login as Admin to continue",
-                style: GoogleFonts.inter(fontSize: 14, color: Colors.black),
-              ),
-              const SizedBox(height: 32),
-
-              // Email
-              Text(
-                "User Id",
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: "Enter User Id",
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _emailError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _emailError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _emailError.isNotEmpty ? Colors.red : Colors.blue),
-                  ),
-                ),
-                onChanged: (_) {
-                  if (_emailError.isNotEmpty) setState(() => _emailError = "");
-                },
-              ),
-              if (_emailError.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(_emailError,
-                    style: const TextStyle(color: Colors.red, fontSize: 12)),
-              ],
-
-              const SizedBox(height: 20),
-
-              // Password
-              Text(
-                "Password",
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _passwordController,
-                obscureText: !_isPasswordVisible,
-                decoration: InputDecoration(
-                  hintText: "Enter Password",
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _passwordError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _passwordError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _passwordError.isNotEmpty ? Colors.red : Colors.blue),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(_isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off),
-                    onPressed: () =>
-                        setState(() => _isPasswordVisible = !_isPasswordVisible),
-                  ),
-                ),
-                onChanged: (_) {
-                  if (_passwordError.isNotEmpty)
-                    setState(() => _passwordError = "");
-                },
-              ),
-              if (_passwordError.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(_passwordError,
-                    style: const TextStyle(color: Colors.red, fontSize: 12)),
-              ],
-              if (_loginError.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(_loginError,
-                    style: const TextStyle(color: Colors.red, fontSize: 13)),
-              ],
-
-              const SizedBox(height: 30),
-
-              // Login Button
-              SizedBox(
-                height: 45,
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AllColors.fifthColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  onPressed: _isLoading ? null : _login,
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2)
-                      : Text(
-                          "LOGIN",
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            color: AllColors.secondaryColor,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

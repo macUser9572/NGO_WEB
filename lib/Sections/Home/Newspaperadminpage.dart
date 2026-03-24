@@ -1,3 +1,4 @@
+import 'package:bangalore_chakma_society/Sections/Home/NewPaperEditNews.dart';
 import 'package:flutter/material.dart';
 import 'package:bangalore_chakma_society/Sections/Home/Newspapersetting.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -74,7 +75,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
         Navigator.pop(context);
         showDialog(
           context: context,
-          builder: (_) => const Newspapersetting(),
+          builder: (_) => const Newpapereditnews(),
         );
       } else {
         setState(() {
@@ -121,7 +122,7 @@ class _DesktopLayoutState extends State<_DesktopLayout> {
               ),
 
               Text(
-                "To post news kindly login as an Admin",
+                "To post or edit news, kindly log in as an admin",
                 style: GoogleFonts.inter(fontSize: 14, color: Colors.black),
               ),
 
@@ -348,7 +349,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
         Navigator.pop(context);
         showDialog(
           context: context,
-          builder: (_) => const Newspapersetting(),
+          builder: (_) => const Newpapereditnews(),
         );
       } else {
         setState(() {
@@ -395,7 +396,7 @@ class _MobileLayoutState extends State<_MobileLayout> {
               ),
 
               Text(
-                "To post news kindly login as an Admin",
+                "To post or edit news, kindly log in as an admin",
                 style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
               ),
 
