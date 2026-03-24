@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bangalore_chakma_society/Sections/Home/Newspaperadminpage.dart';
 import 'package:bangalore_chakma_society/Sections/Home/Newspapersetting.dart';
 import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
 import 'package:bangalore_chakma_society/constraints/all_colors.dart';
@@ -65,7 +64,7 @@ class NewspaperDesktop extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) => const Newspaperadminpage(),
+                      builder: (_) => const Newspapersetting(),
                     );
                   },
                   icon: SvgPicture.asset(
@@ -116,11 +115,18 @@ class _NewsListBody extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.newspaper_outlined, size: 60, color: Colors.grey[400]),
+                Icon(
+                  Icons.newspaper_outlined,
+                  size: 60,
+                  color: Colors.grey[400],
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'No news posts yet.',
-                  style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[500]),
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    color: Colors.grey[500],
+                  ),
                 ),
               ],
             ),
@@ -169,16 +175,11 @@ class _NewsCard extends StatelessWidget {
   void _showEditDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          builder: (_) => Newspapersetting(
-            docId: docId,
-            initialTitle: title,
-            initialDescription: description,
-            initialImageUrl: imageUrl,
-          ),
-        ),
+      builder: (_) => Newspapersetting(
+        docId: docId,
+        initialTitle: title,
+        initialDescription: description,
+        initialImageUrl: imageUrl,
       ),
     );
   }
@@ -186,13 +187,8 @@ class _NewsCard extends StatelessWidget {
   void _showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          barrierDismissible: true,
-          builder: (_) => _DeleteDialog(docId: docId),
-        ),
-      ),
+      barrierDismissible: true,
+      builder: (_) => _DeleteDialog(docId: docId),
     );
   }
 
@@ -273,7 +269,10 @@ class _NewsCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       date,
-                      style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[500]),
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.grey[500],
+                      ),
                     ),
                   ],
                   const SizedBox(height: 6),
@@ -342,11 +341,9 @@ class NewspaperMobile extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    showModalBottomSheet(
+                    showDialog(
                       context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (_) => const Newspaperadminpage(),
+                      builder: (_) => const Newspapersetting(),
                     );
                   },
                   icon: SvgPicture.asset(
@@ -397,11 +394,18 @@ class _NewsListBodyMobile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.newspaper_outlined, size: 60, color: Colors.grey[400]),
+                Icon(
+                  Icons.newspaper_outlined,
+                  size: 60,
+                  color: Colors.grey[400],
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'No news posts yet.',
-                  style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[500]),
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    color: Colors.grey[500],
+                  ),
                 ),
               ],
             ),
@@ -450,16 +454,11 @@ class _NewsCardMobile extends StatelessWidget {
   void _showEditDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          builder: (_) => Newspapersetting(
-            docId: docId,
-            initialTitle: title,
-            initialDescription: description,
-            initialImageUrl: imageUrl,
-          ),
-        ),
+      builder: (_) => Newspapersetting(
+        docId: docId,
+        initialTitle: title,
+        initialDescription: description,
+        initialImageUrl: imageUrl,
       ),
     );
   }
@@ -467,13 +466,8 @@ class _NewsCardMobile extends StatelessWidget {
   void _showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => _AdminGate(
-        onSuccess: (ctx) => showDialog(
-          context: ctx,
-          barrierDismissible: true,
-          builder: (_) => _DeleteDialog(docId: docId),
-        ),
-      ),
+      barrierDismissible: true,
+      builder: (_) => _DeleteDialog(docId: docId),
     );
   }
 
@@ -552,7 +546,10 @@ class _NewsCardMobile extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     date,
-                    style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[500]),
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                    ),
                   ),
                 ],
                 const SizedBox(height: 4),
@@ -601,9 +598,9 @@ class _DeleteDialog extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to delete: $e')));
       }
     }
   }
@@ -620,10 +617,7 @@ class _DeleteDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                'assets/image/dustbin.png',
-                height: 120,
-              ),
+              Image.asset('assets/image/dustbin.png', height: 120),
               const SizedBox(height: 20),
               Text(
                 'Delete News',
@@ -636,10 +630,7 @@ class _DeleteDialog extends StatelessWidget {
               Text(
                 'Are you sure you want to delete this news post?',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
               ),
               const SizedBox(height: 28),
               Row(
@@ -671,245 +662,6 @@ class _DeleteDialog extends StatelessWidget {
                     onPressed: () => _deletePost(context),
                   ),
                 ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ============================== Admin Gate Dialog ==============================
-
-class _AdminGate extends StatefulWidget {
-  final void Function(BuildContext context) onSuccess;
-  const _AdminGate({required this.onSuccess});
-
-  @override
-  State<_AdminGate> createState() => _AdminGateState();
-}
-
-class _AdminGateState extends State<_AdminGate> {
-  static const String _adminEmail = "admin@bangalorechakmasociety.org";
-  static const String _adminPassword = "bcssince2007";
-
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  bool _isPasswordVisible = false;
-  bool _isLoading = false;
-  String _emailError = "";
-  String _passwordError = "";
-  String _loginError = "";
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _login() {
-    setState(() {
-      _emailError = "";
-      _passwordError = "";
-      _loginError = "";
-    });
-
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    bool hasError = false;
-
-    if (email.isEmpty) {
-      setState(() => _emailError = "Please fill the email id");
-      hasError = true;
-    }
-    if (password.isEmpty) {
-      setState(() => _passwordError = "Please fill the password");
-      hasError = true;
-    }
-    if (hasError) return;
-
-    setState(() => _isLoading = true);
-
-    Future.delayed(const Duration(milliseconds: 400), () {
-      if (!mounted) return;
-      if (email == _adminEmail && password == _adminPassword) {
-        Navigator.pop(context);
-        widget.onSuccess(context);
-      } else {
-        setState(() {
-          _loginError = "Invalid admin email or password";
-          _isLoading = false;
-        });
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: 420,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        decoration: BoxDecoration(
-          color: AllColors.secondaryColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Admin Login",
-                    style: GoogleFonts.inter(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              Text(
-                "Please login as Admin to continue",
-                style: GoogleFonts.inter(fontSize: 14, color: Colors.black),
-              ),
-              const SizedBox(height: 32),
-
-              // Email
-              Text(
-                "User Id",
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: "Enter User Id",
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _emailError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _emailError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _emailError.isNotEmpty ? Colors.red : Colors.blue),
-                  ),
-                ),
-                onChanged: (_) {
-                  if (_emailError.isNotEmpty) setState(() => _emailError = "");
-                },
-              ),
-              if (_emailError.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(_emailError,
-                    style: const TextStyle(color: Colors.red, fontSize: 12)),
-              ],
-
-              const SizedBox(height: 20),
-
-              // Password
-              Text(
-                "Password",
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _passwordController,
-                obscureText: !_isPasswordVisible,
-                decoration: InputDecoration(
-                  hintText: "Enter Password",
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _passwordError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _passwordError.isNotEmpty ? Colors.red : Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(
-                        color: _passwordError.isNotEmpty ? Colors.red : Colors.blue),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(_isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off),
-                    onPressed: () =>
-                        setState(() => _isPasswordVisible = !_isPasswordVisible),
-                  ),
-                ),
-                onChanged: (_) {
-                  if (_passwordError.isNotEmpty)
-                    setState(() => _passwordError = "");
-                },
-              ),
-              if (_passwordError.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(_passwordError,
-                    style: const TextStyle(color: Colors.red, fontSize: 12)),
-              ],
-              if (_loginError.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(_loginError,
-                    style: const TextStyle(color: Colors.red, fontSize: 13)),
-              ],
-
-              const SizedBox(height: 30),
-
-              // Login Button
-              SizedBox(
-                height: 45,
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AllColors.fifthColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  onPressed: _isLoading ? null : _login,
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2)
-                      : Text(
-                          "LOGIN",
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            color: AllColors.secondaryColor,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                ),
               ),
             ],
           ),

@@ -114,11 +114,18 @@ class _NewsListBody extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.newspaper_outlined, size: 60, color: Colors.grey[400]),
+                Icon(
+                  Icons.newspaper_outlined,
+                  size: 60,
+                  color: Colors.grey[400],
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'No news posts yet.',
-                  style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[500]),
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    color: Colors.grey[500],
+                  ),
                 ),
               ],
             ),
@@ -203,7 +210,10 @@ class _NewsCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       date,
-                      style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[500]),
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.grey[500],
+                      ),
                     ),
                   ],
                   const SizedBox(height: 6),
@@ -270,20 +280,17 @@ class NewspaperMobile extends StatelessWidget {
                     color: AllColors.thirdColor,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (_) => const Newspaperadminpage(),
-                    );
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/icons/settings.svg',
-                    color: AllColors.thirdColor,
-                    width: 20,
-                    height: 20,
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: CustomButton(
+                    label: "Edit News",
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const Newspaperadminpage(),
+                        barrierDismissible: false,
+                      );
+                    },
                   ),
                 ),
               ],
@@ -327,11 +334,18 @@ class _NewsListBodyMobile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.newspaper_outlined, size: 60, color: Colors.grey[400]),
+                Icon(
+                  Icons.newspaper_outlined,
+                  size: 60,
+                  color: Colors.grey[400],
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'No news posts yet.',
-                  style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[500]),
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    color: Colors.grey[500],
+                  ),
                 ),
               ],
             ),
@@ -414,7 +428,10 @@ class _NewsCardMobile extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     date,
-                    style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[500]),
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                    ),
                   ),
                 ],
                 const SizedBox(height: 4),
