@@ -39,7 +39,7 @@ class _DesktopLayout extends StatelessWidget {
     _CardData(icon: Icons.play_circle_outline_rounded, label: "Video"),
     _CardData(icon: Icons.image_outlined, label: "Events"),
     _CardData(icon: Icons.groups_outlined, label: "Student Body"),
-    _CardData(icon: Icons.add_photo_alternate_outlined, label: "Ad Pop image"),
+    _CardData(icon: Icons.add_photo_alternate_outlined, label: "Announcement"),
   ];
 
   void _handleTap(BuildContext context, String label) {
@@ -57,7 +57,7 @@ class _DesktopLayout extends StatelessWidget {
       case "Student Body":
         dialog = Studentimagebackend();
         break;
-      case "Ad Pop image":
+      case "Announcement":
       default:
         dialog = const Adimagepage();
         break;
@@ -162,7 +162,7 @@ class _MobileLayout extends StatelessWidget {
       case "Student Body":
         dialog = Studentimagebackend();
         break;
-      case "Ad Pop image":
+      case "Announcement":
       default:
         dialog = const Adimagepage();
         break;
@@ -179,7 +179,7 @@ class _MobileLayout extends StatelessWidget {
       _CardData(icon: Icons.groups_outlined, label: "Student Body"),
       _CardData(
         icon: Icons.add_photo_alternate_outlined,
-        label: "Ad Pop image",
+        label: "Announcement",
       ),
     ];
 
