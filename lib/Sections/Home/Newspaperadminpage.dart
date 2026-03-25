@@ -1,6 +1,5 @@
 import 'package:bangalore_chakma_society/Sections/Home/NewPaperEditNews.dart';
 import 'package:flutter/material.dart';
-import 'package:bangalore_chakma_society/Sections/Home/Newspapersetting.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:bangalore_chakma_society/constraints/all_colors.dart';
