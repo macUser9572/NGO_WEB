@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:bangalore_chakma_society/Sections/Home/Newspaperadminpage.dart';
 import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
 import 'package:bangalore_chakma_society/constraints/all_colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -26,6 +25,229 @@ class Newspaper extends StatelessWidget {
   }
 }
 
+// ============================== PAGINATION CONTROLLER ==============================
+
+class _NewsPaginationController extends ChangeNotifier {
+  static const int _pageSize = 20;
+
+  final List<DocumentSnapshot> _docs = [];
+  DocumentSnapshot? _lastDocument;
+  bool _isLoading = false;
+  bool _hasMore = true;
+  String? _error;
+
+  List<DocumentSnapshot> get docs => List.unmodifiable(_docs);
+  bool get isLoading => _isLoading;
+  bool get hasMore => _hasMore;
+  String? get error => _error;
+
+  _NewsPaginationController() {
+    fetchNext();
+  }
+
+  Future<void> fetchNext() async {
+    if (_isLoading || !_hasMore) return;
+
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      Query query = FirebaseFirestore.instance
+          .collection('news_posts')
+          .orderBy('createdAt', descending: true)
+          .limit(_pageSize);
+
+      if (_lastDocument != null) {
+        query = query.startAfterDocument(_lastDocument!);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.length < _pageSize) {
+        _hasMore = false;
+      }
+
+      if (snapshot.docs.isNotEmpty) {
+        _lastDocument = snapshot.docs.last;
+        _docs.addAll(snapshot.docs);
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refresh() async {
+    _docs.clear();
+    _lastDocument = null;
+    _hasMore = true;
+    _error = null;
+    notifyListeners();
+    await fetchNext();
+  }
+}
+
+// ============================== SHARED NEWS LIST BODY ==============================
+
+class _NewsListBody extends StatefulWidget {
+  final bool isMobile;
+
+  const _NewsListBody({required this.isMobile});
+
+  @override
+  State<_NewsListBody> createState() => _NewsListBodyState();
+}
+
+class _NewsListBodyState extends State<_NewsListBody> {
+  late final _NewsPaginationController _controller;
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = _NewsPaginationController();
+    _scrollController = ScrollController();
+
+    _controller.addListener(() {
+      if (mounted) setState(() {});
+    });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        _controller.fetchNext();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  String _formatDate(Timestamp? timestamp) {
+    if (timestamp == null) return '';
+    return DateFormat('MMMM d, yyyy').format(timestamp.toDate());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ── Initial loading ──
+    if (_controller.isLoading && _controller.docs.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // ── Error with no data ──
+    if (_controller.error != null && _controller.docs.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 60, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'Something went wrong.',
+              style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[500]),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: _controller.refresh,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // ── Empty state ──
+    if (_controller.docs.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.newspaper_outlined, size: 60, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'No news posts yet.',
+              style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[500]),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final double horizontalPadding = widget.isMobile ? 16.0 : 40.0;
+
+    return RefreshIndicator(
+      onRefresh: _controller.refresh,
+      child: ListView.separated(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        // +1 for the bottom loader / end-of-list indicator
+        itemCount: _controller.docs.length + 1,
+        separatorBuilder: (_, __) => Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: const Divider(height: 1, thickness: 0.5),
+        ),
+        itemBuilder: (context, index) {
+          // ── Bottom indicator slot ──
+          if (index == _controller.docs.length) {
+            if (_controller.isLoading) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            if (!_controller.hasMore) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: Text(
+                    "You've reached the end",
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+
+          // ── News item ──
+          final data =
+              _controller.docs[index].data() as Map<String, dynamic>;
+          final title = data['title'] ?? '';
+          final description = data['description'] ?? '';
+          final imageUrl = data['imageUrl'] ?? '';
+          final date = _formatDate(data['createdAt'] as Timestamp?);
+
+          return widget.isMobile
+              ? _NewsCardMobile(
+                  title: title,
+                  description: description,
+                  imageUrl: imageUrl,
+                  date: date,
+                )
+              : _NewsCard(
+                  title: title,
+                  description: description,
+                  imageUrl: imageUrl,
+                  date: date,
+                );
+        },
+      ),
+    );
+  }
+}
+
 // ============================== Desktop LAYOUT ==============================
 
 class NewspaperDesktop extends StatelessWidget {
@@ -43,7 +265,8 @@ class NewspaperDesktop extends StatelessWidget {
               padding: const EdgeInsets.only(left: 4, top: 4),
               child: IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
+                icon:
+                    const Icon(Icons.arrow_back, color: AllColors.thirdColor),
               ),
             ),
           ),
@@ -77,83 +300,75 @@ class NewspaperDesktop extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Expanded(child: _NewsListBody()),
+          // isMobile: false → desktop card layout
+          const Expanded(child: _NewsListBody(isMobile: false)),
         ],
       ),
     );
   }
 }
 
-class _NewsListBody extends StatelessWidget {
-  const _NewsListBody();
+// ============================== Mobile LAYOUT ==============================
 
-  String _formatDate(Timestamp? timestamp) {
-    if (timestamp == null) return '';
-    return DateFormat('MMMM d, yyyy').format(timestamp.toDate());
-  }
+class NewspaperMobile extends StatelessWidget {
+  const NewspaperMobile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('news_posts')
-          .orderBy('createdAt', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-
-        final docs = snapshot.data?.docs ?? [];
-
-        if (docs.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: AllColors.secondaryColor,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4, top: 4),
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon:
+                    const Icon(Icons.arrow_back, color: AllColors.thirdColor),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  Icons.newspaper_outlined,
-                  size: 60,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 16),
                 Text(
-                  'No news posts yet.',
+                  'Weekly News',
                   style: GoogleFonts.inter(
-                    fontSize: 16,
-                    color: Colors.grey[500],
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AllColors.thirdColor,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: CustomButton(
+                    label: "Edit News",
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const Newspaperadminpage(),
+                        barrierDismissible: false,
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-          );
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: Divider(height: 1, thickness: 0.5),
           ),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            return _NewsCard(
-              title: data['title'] ?? '',
-              description: data['description'] ?? '',
-              imageUrl: data['imageUrl'] ?? '',
-              date: _formatDate(data['createdAt'] as Timestamp?),
-            );
-          },
-        );
-      },
+          const SizedBox(height: 8),
+          // isMobile: true → mobile card layout
+          const Expanded(child: _NewsListBody(isMobile: true)),
+        ],
+      ),
     );
   }
 }
+
+// ============================== Desktop News Card ==============================
 
 class _NewsCard extends StatelessWidget {
   final String title;
@@ -246,134 +461,7 @@ class _NewsCard extends StatelessWidget {
   }
 }
 
-// ============================== Mobile LAYOUT ==============================
-
-class NewspaperMobile extends StatelessWidget {
-  const NewspaperMobile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AllColors.secondaryColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 4, top: 4),
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Weekly News',
-                  style: GoogleFonts.inter(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: AllColors.thirdColor,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: CustomButton(
-                    label: "Edit News",
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => const Newspaperadminpage(),
-                        barrierDismissible: false,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Expanded(child: _NewsListBodyMobile()),
-        ],
-      ),
-    );
-  }
-}
-
-class _NewsListBodyMobile extends StatelessWidget {
-  const _NewsListBodyMobile();
-
-  String _formatDate(Timestamp? timestamp) {
-    if (timestamp == null) return '';
-    return DateFormat('MMMM d, yyyy').format(timestamp.toDate());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('news_posts')
-          .orderBy('createdAt', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-
-        final docs = snapshot.data?.docs ?? [];
-
-        if (docs.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.newspaper_outlined,
-                  size: 60,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No news posts yet.',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    color: Colors.grey[500],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(height: 1, thickness: 0.5),
-          ),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            return _NewsCardMobile(
-              title: data['title'] ?? '',
-              description: data['description'] ?? '',
-              imageUrl: data['imageUrl'] ?? '',
-              date: _formatDate(data['createdAt'] as Timestamp?),
-            );
-          },
-        );
-      },
-    );
-  }
-}
+// ============================== Mobile News Card ==============================
 
 class _NewsCardMobile extends StatelessWidget {
   final String title;
@@ -462,3 +550,467 @@ class _NewsCardMobile extends StatelessWidget {
     );
   }
 }
+// import 'package:flutter/material.dart';
+// import 'package:bangalore_chakma_society/Sections/Home/Newspaperadminpage.dart';
+// import 'package:bangalore_chakma_society/constraints/CustomButton.dart';
+// import 'package:bangalore_chakma_society/constraints/all_colors.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:responsive_builder/responsive_builder.dart';
+// import 'package:intl/intl.dart';
+
+// class Newspaper extends StatelessWidget {
+//   const Newspaper({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ResponsiveBuilder(
+//       builder: (context, sizing) {
+//         switch (sizing.deviceScreenType) {
+//           case DeviceScreenType.desktop:
+//             return const NewspaperDesktop();
+//           default:
+//             return const NewspaperMobile();
+//         }
+//       },
+//     );
+//   }
+// }
+
+// // ============================== Desktop LAYOUT ==============================
+
+// class NewspaperDesktop extends StatelessWidget {
+//   const NewspaperDesktop({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AllColors.secondaryColor,
+//       body: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           SafeArea(
+//             child: Padding(
+//               padding: const EdgeInsets.only(left: 4, top: 4),
+//               child: IconButton(
+//                 onPressed: () => Navigator.pop(context),
+//                 icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
+//               ),
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 40),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   'Weekly News',
+//                   style: GoogleFonts.inter(
+//                     fontSize: 48,
+//                     fontWeight: FontWeight.w700,
+//                     color: AllColors.thirdColor,
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: const EdgeInsets.only(right: 16),
+//                   child: CustomButton(
+//                     label: "Edit News",
+//                     onPressed: () {
+//                       showDialog(
+//                         context: context,
+//                         builder: (context) => const Newspaperadminpage(),
+//                         barrierDismissible: false,
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(height: 8),
+//           const Expanded(child: _NewsListBody()),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class _NewsListBody extends StatelessWidget {
+//   const _NewsListBody();
+
+//   String _formatDate(Timestamp? timestamp) {
+//     if (timestamp == null) return '';
+//     return DateFormat('MMMM d, yyyy').format(timestamp.toDate());
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<QuerySnapshot>(
+//       stream: FirebaseFirestore.instance
+//           .collection('news_posts')
+//           .orderBy('createdAt', descending: true)
+//           .snapshots(),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Center(child: CircularProgressIndicator());
+//         }
+//         if (snapshot.hasError) {
+//           return Center(child: Text('Error: ${snapshot.error}'));
+//         }
+
+//         final docs = snapshot.data?.docs ?? [];
+
+//         if (docs.isEmpty) {
+//           return Center(
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Icon(
+//                   Icons.newspaper_outlined,
+//                   size: 60,
+//                   color: Colors.grey[400],
+//                 ),
+//                 const SizedBox(height: 16),
+//                 Text(
+//                   'No news posts yet.',
+//                   style: GoogleFonts.inter(
+//                     fontSize: 16,
+//                     color: Colors.grey[500],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           );
+//         }
+
+//         return ListView.separated(
+//           padding: const EdgeInsets.symmetric(vertical: 8),
+//           itemCount: docs.length,
+//           separatorBuilder: (_, __) => const Padding(
+//             padding: EdgeInsets.symmetric(horizontal: 40),
+//             child: Divider(height: 1, thickness: 0.5),
+//           ),
+//           itemBuilder: (context, index) {
+//             final doc = docs[index];
+//             final data = doc.data() as Map<String, dynamic>;
+//             return _NewsCard(
+//               title: data['title'] ?? '',
+//               description: data['description'] ?? '',
+//               imageUrl: data['imageUrl'] ?? '',
+//               date: _formatDate(data['createdAt'] as Timestamp?),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+
+// class _NewsCard extends StatelessWidget {
+//   final String title;
+//   final String description;
+//   final String imageUrl;
+//   final String date;
+
+//   const _NewsCard({
+//     required this.title,
+//     required this.description,
+//     required this.imageUrl,
+//     required this.date,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(4),
+//             child: imageUrl.isNotEmpty
+//                 ? Image.network(
+//                     imageUrl,
+//                     width: 400,
+//                     height: 200,
+//                     fit: BoxFit.cover,
+//                     errorBuilder: (_, __, ___) => _placeholderImage(),
+//                     loadingBuilder: (_, child, progress) =>
+//                         progress == null ? child : _placeholderImage(),
+//                   )
+//                 : _placeholderImage(),
+//           ),
+//           const SizedBox(width: 16),
+//           Expanded(
+//             child: Padding(
+//               padding: const EdgeInsets.only(right: 40),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     title,
+//                     style: GoogleFonts.inter(
+//                       fontSize: 14,
+//                       fontWeight: FontWeight.w700,
+//                       color: AllColors.thirdColor,
+//                     ),
+//                     maxLines: 2,
+//                     overflow: TextOverflow.ellipsis,
+//                   ),
+//                   if (date.isNotEmpty) ...[
+//                     const SizedBox(height: 3),
+//                     Text(
+//                       date,
+//                       style: GoogleFonts.inter(
+//                         fontSize: 14,
+//                         color: Colors.grey[500],
+//                       ),
+//                     ),
+//                   ],
+//                   const SizedBox(height: 6),
+//                   Text(
+//                     description,
+//                     style: GoogleFonts.inter(
+//                       fontSize: 14,
+//                       color: Colors.grey[700],
+//                       height: 1.5,
+//                     ),
+//                     maxLines: 4,
+//                     overflow: TextOverflow.ellipsis,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _placeholderImage() {
+//     return Container(
+//       width: 160,
+//       height: 110,
+//       color: Colors.grey[200],
+//       child: Icon(Icons.image_outlined, color: Colors.grey[400], size: 32),
+//     );
+//   }
+// }
+
+// // ============================== Mobile LAYOUT ==============================
+
+// class NewspaperMobile extends StatelessWidget {
+//   const NewspaperMobile({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AllColors.secondaryColor,
+//       body: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           SafeArea(
+//             child: Padding(
+//               padding: const EdgeInsets.only(left: 4, top: 4),
+//               child: IconButton(
+//                 onPressed: () => Navigator.pop(context),
+//                 icon: const Icon(Icons.arrow_back, color: AllColors.thirdColor),
+//               ),
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   'Weekly News',
+//                   style: GoogleFonts.inter(
+//                     fontSize: 26,
+//                     fontWeight: FontWeight.w700,
+//                     color: AllColors.thirdColor,
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: const EdgeInsets.only(right: 16),
+//                   child: CustomButton(
+//                     label: "Edit News",
+//                     onPressed: () {
+//                       showDialog(
+//                         context: context,
+//                         builder: (context) => const Newspaperadminpage(),
+//                         barrierDismissible: false,
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(height: 8),
+//           const Expanded(child: _NewsListBodyMobile()),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class _NewsListBodyMobile extends StatelessWidget {
+//   const _NewsListBodyMobile();
+
+//   String _formatDate(Timestamp? timestamp) {
+//     if (timestamp == null) return '';
+//     return DateFormat('MMMM d, yyyy').format(timestamp.toDate());
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<QuerySnapshot>(
+//       stream: FirebaseFirestore.instance
+//           .collection('news_posts')
+//           .orderBy('createdAt', descending: true)
+//           .snapshots(),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Center(child: CircularProgressIndicator());
+//         }
+//         if (snapshot.hasError) {
+//           return Center(child: Text('Error: ${snapshot.error}'));
+//         }
+
+//         final docs = snapshot.data?.docs ?? [];
+
+//         if (docs.isEmpty) {
+//           return Center(
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Icon(
+//                   Icons.newspaper_outlined,
+//                   size: 60,
+//                   color: Colors.grey[400],
+//                 ),
+//                 const SizedBox(height: 16),
+//                 Text(
+//                   'No news posts yet.',
+//                   style: GoogleFonts.inter(
+//                     fontSize: 16,
+//                     color: Colors.grey[500],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           );
+//         }
+
+//         return ListView.separated(
+//           padding: const EdgeInsets.symmetric(vertical: 8),
+//           itemCount: docs.length,
+//           separatorBuilder: (_, __) => const Padding(
+//             padding: EdgeInsets.symmetric(horizontal: 16),
+//             child: Divider(height: 1, thickness: 0.5),
+//           ),
+//           itemBuilder: (context, index) {
+//             final doc = docs[index];
+//             final data = doc.data() as Map<String, dynamic>;
+//             return _NewsCardMobile(
+//               title: data['title'] ?? '',
+//               description: data['description'] ?? '',
+//               imageUrl: data['imageUrl'] ?? '',
+//               date: _formatDate(data['createdAt'] as Timestamp?),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+
+// class _NewsCardMobile extends StatelessWidget {
+//   final String title;
+//   final String description;
+//   final String imageUrl;
+//   final String date;
+
+//   const _NewsCardMobile({
+//     required this.title,
+//     required this.description,
+//     required this.imageUrl,
+//     required this.date,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(4),
+//             child: imageUrl.isNotEmpty
+//                 ? Image.network(
+//                     imageUrl,
+//                     width: 110,
+//                     height: 100,
+//                     fit: BoxFit.cover,
+//                     errorBuilder: (_, __, ___) => _placeholderImage(),
+//                     loadingBuilder: (_, child, progress) =>
+//                         progress == null ? child : _placeholderImage(),
+//                   )
+//                 : _placeholderImage(),
+//           ),
+//           const SizedBox(width: 12),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   title,
+//                   style: GoogleFonts.inter(
+//                     fontSize: 14,
+//                     fontWeight: FontWeight.w700,
+//                     color: AllColors.thirdColor,
+//                   ),
+//                   maxLines: 2,
+//                   overflow: TextOverflow.ellipsis,
+//                 ),
+//                 if (date.isNotEmpty) ...[
+//                   const SizedBox(height: 3),
+//                   Text(
+//                     date,
+//                     style: GoogleFonts.inter(
+//                       fontSize: 12,
+//                       color: Colors.grey[500],
+//                     ),
+//                   ),
+//                 ],
+//                 const SizedBox(height: 4),
+//                 Text(
+//                   description,
+//                   style: GoogleFonts.inter(
+//                     fontSize: 12,
+//                     color: Colors.grey[700],
+//                     height: 1.4,
+//                   ),
+//                   maxLines: 3,
+//                   overflow: TextOverflow.ellipsis,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _placeholderImage() {
+//     return Container(
+//       width: 110,
+//       height: 80,
+//       color: Colors.grey[200],
+//       child: Icon(Icons.image_outlined, color: Colors.grey[400], size: 28),
+//     );
+//   }
+// }
