@@ -35,7 +35,6 @@ class _DesktopLayout extends StatelessWidget {
       "Mental Health Support",
       "Education and Skill Programs",
       "Awareness of Chakma Culture and Religion",
-      "Test Rig Software Development",
     ];
 
     return SingleChildScrollView(
@@ -106,7 +105,7 @@ class _DesktopLayout extends StatelessWidget {
                     }).toList(),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
 
                   CustomButton(
                     label: "Know More",
@@ -164,7 +163,6 @@ class _MobileLayout extends StatelessWidget {
     "Mental Health Support",
     "Education and Skill Programs",
     "Awareness of Chakma Culture and Religion",
-    "Test Rig Software Development",
   ];
 
   @override
